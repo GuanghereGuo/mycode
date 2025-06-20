@@ -1,2 +1,1 @@
-# mycode
-私人
+# GuangHere’s code repository
