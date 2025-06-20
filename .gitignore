@@ -1,0 +1,7 @@
+#忽略整个文件夹及下面的文件
+cmake-build-debug
+cmake-build-release/*
+data/image/
+venv
+*.so #过滤某种类型的文件
+#指定过滤某个文件下具体文件

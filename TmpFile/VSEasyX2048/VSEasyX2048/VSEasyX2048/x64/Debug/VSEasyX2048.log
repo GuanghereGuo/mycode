@@ -1,0 +1,93 @@
+﻿  game_draw.cpp
+  game_logic.cpp
+  VSEasyX2048.cpp
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(69,19): warning C4305: “初始化”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(70,19): warning C4305: “初始化”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(87,10): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(99,18): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(100,18): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(103,25): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(105,43): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(108,32): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(108,25): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(108,16): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(108,7): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(114,57): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(114,52): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(115,58): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(115,53): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(116,59): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(116,54): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(122,24): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(138,70): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(138,65): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(142,22): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(142,15): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(144,41): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(144,22): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(144,15): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(156,12): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(161,61): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(161,42): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(174,54): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(174,45): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(176,48): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(176,43): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(181,63): warning C4305: “参数”: 从“double”到“float”截断
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\VSEasyX2048.cpp(181,44): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+  正在生成代码...
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_TranslateMessage，函数 "private: static unsigned long __cdecl EasyX::GraphWnd::ThreadFunc(void *)" (?ThreadFunc@GraphWnd@EasyX@@CAKPEAX@Z) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_TranslateMessage
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_DispatchMessageA，函数 "private: static unsigned long __cdecl EasyX::GraphWnd::ThreadFunc(void *)" (?ThreadFunc@GraphWnd@EasyX@@CAKPEAX@Z) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_DispatchMessageA
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_PeekMessageA，函数 "private: static unsigned long __cdecl EasyX::GraphWnd::ThreadFunc(void *)" (?ThreadFunc@GraphWnd@EasyX@@CAKPEAX@Z) 中引用了该符号
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_SendMessageA，函数 "public: void __cdecl EasyX::GraphWnd::ReleaseCapture(void)" (?ReleaseCapture@GraphWnd@EasyX@@QEAAXXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_SendMessageA
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_PostMessageA，函数 "private: static __int64 __cdecl EasyX::GraphWnd::WndProc(struct HWND__ *,unsigned int,unsigned __int64,__int64)" (?WndProc@GraphWnd@EasyX@@CA_JPEAUHWND__@@I_K_J@Z) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_PostMessageA
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_DefWindowProcA，函数 "private: static __int64 __cdecl EasyX::GraphWnd::WndProc(struct HWND__ *,unsigned int,unsigned __int64,__int64)" (?WndProc@GraphWnd@EasyX@@CA_JPEAUHWND__@@I_K_J@Z) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_DefWindowProcA
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_PostQuitMessage，函数 "private: static __int64 __cdecl EasyX::GraphWnd::WndProc(struct HWND__ *,unsigned int,unsigned __int64,__int64)" (?WndProc@GraphWnd@EasyX@@CA_JPEAUHWND__@@I_K_J@Z) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_PostQuitMessage
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_UnregisterClassA，函数 "private: static unsigned long __cdecl EasyX::GraphWnd::ThreadFunc(void *)" (?ThreadFunc@GraphWnd@EasyX@@CAKPEAX@Z) 中引用了该符号
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_RegisterClassExA，函数 "private: static unsigned long __cdecl EasyX::GraphWnd::ThreadFunc(void *)" (?ThreadFunc@GraphWnd@EasyX@@CAKPEAX@Z) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_RegisterClassExA
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_CreateWindowExA，函数 "private: static unsigned long __cdecl EasyX::GraphWnd::ThreadFunc(void *)" (?ThreadFunc@GraphWnd@EasyX@@CAKPEAX@Z) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_CreateWindowExA
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_DestroyWindow，函数 "public: void __cdecl EasyX::GraphWnd::CloseGraphWnd(void)" (?CloseGraphWnd@GraphWnd@EasyX@@QEAAXXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_DestroyWindow
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_ShowWindow，函数 "public: void __cdecl EasyX::GraphWnd::CloseGraphWnd(void)" (?CloseGraphWnd@GraphWnd@EasyX@@QEAAXXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_ShowWindow
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_SetWindowPos，函数 "public: void __cdecl EasyX::GraphWnd::CloseGraphWnd(void)" (?CloseGraphWnd@GraphWnd@EasyX@@QEAAXXZ) 中引用了该符号
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_IsWindowVisible，函数 "public: void __cdecl EasyX::GraphWnd::CloseGraphWnd(void)" (?CloseGraphWnd@GraphWnd@EasyX@@QEAAXXZ) 中引用了该符号
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_SetCapture，函数 "private: static __int64 __cdecl EasyX::GraphWnd::WndProc(struct HWND__ *,unsigned int,unsigned __int64,__int64)" (?WndProc@GraphWnd@EasyX@@CA_JPEAUHWND__@@I_K_J@Z) 中引用了该符号
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_ReleaseCapture，函数 "private: static __int64 __cdecl EasyX::GraphWnd::WndProc(struct HWND__ *,unsigned int,unsigned __int64,__int64)" (?WndProc@GraphWnd@EasyX@@CA_JPEAUHWND__@@I_K_J@Z) 中引用了该符号
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_GetDC，函数 "public: struct HWND__ * __cdecl EasyX::GraphWnd::InitGraphWnd(int,int,char *,bool,bool,bool,bool)" (?InitGraphWnd@GraphWnd@EasyX@@QEAAPEAUHWND__@@HHPEAD_N111@Z) 中引用了该符号
+EasyXa.lib(EasyX.DrawOnImg.obj) : error LNK2001: 无法解析的外部符号 __imp_GetDC
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_ReleaseDC，函数 "public: void __cdecl EasyX::GraphWnd::CloseGraphWnd(void)" (?CloseGraphWnd@GraphWnd@EasyX@@QEAAXXZ) 中引用了该符号
+EasyXa.lib(EasyX.DrawOnImg.obj) : error LNK2001: 无法解析的外部符号 __imp_ReleaseDC
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_ValidateRect，函数 "private: static __int64 __cdecl EasyX::GraphWnd::WndProc(struct HWND__ *,unsigned int,unsigned __int64,__int64)" (?WndProc@GraphWnd@EasyX@@CA_JPEAUHWND__@@I_K_J@Z) 中引用了该符号
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_GetWindowRect，函数 "public: void __cdecl EasyX::GraphWnd::CloseGraphWnd(void)" (?CloseGraphWnd@GraphWnd@EasyX@@QEAAXXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_GetWindowRect
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_AdjustWindowRectEx，函数 "public: virtual void __cdecl EasyX::GraphWnd::Resize(int,int)" (?Resize@GraphWnd@EasyX@@UEAAXHH@Z) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_AdjustWindowRectEx
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_ScreenToClient，函数 "private: static __int64 __cdecl EasyX::GraphWnd::WndProc(struct HWND__ *,unsigned int,unsigned __int64,__int64)" (?WndProc@GraphWnd@EasyX@@CA_JPEAUHWND__@@I_K_J@Z) 中引用了该符号
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_LoadCursorA，函数 "private: static unsigned long __cdecl EasyX::GraphWnd::ThreadFunc(void *)" (?ThreadFunc@GraphWnd@EasyX@@CAKPEAX@Z) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2001: 无法解析的外部符号 __imp_LoadCursorA
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_DestroyIcon，函数 "private: static unsigned long __cdecl EasyX::GraphWnd::ThreadFunc(void *)" (?ThreadFunc@GraphWnd@EasyX@@CAKPEAX@Z) 中引用了该符号
+EasyXa.lib(EasyX.GraphWnd.obj) : error LNK2019: 无法解析的外部符号 __imp_ExtractIconA，函数 "private: static unsigned long __cdecl EasyX::GraphWnd::ThreadFunc(void *)" (?ThreadFunc@GraphWnd@EasyX@@CAKPEAX@Z) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_GetMessageA，函数 "public: bool __cdecl EasyX::CInputBox::DoModal(void)" (?DoModal@CInputBox@EasyX@@QEAA_NXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_GetClassInfoExA，函数 "public: __cdecl EasyX::CInputBox::CInputBox(struct HWND__ *,char *,int,char const *,char const *,char const *,int,int,bool)" (??0CInputBox@EasyX@@QEAA@PEAUHWND__@@PEADHPEBD22HH_N@Z) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_SetFocus，函数 "public: bool __cdecl EasyX::CInputBox::DoModal(void)" (?DoModal@CInputBox@EasyX@@QEAA_NXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_GetFocus，函数 "public: bool __cdecl EasyX::CInputBox::DoModal(void)" (?DoModal@CInputBox@EasyX@@QEAA_NXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_GetKeyState，函数 "public: bool __cdecl EasyX::CInputBox::DoModal(void)" (?DoModal@CInputBox@EasyX@@QEAA_NXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_EnableWindow，函数 "public: bool __cdecl EasyX::CInputBox::DoModal(void)" (?DoModal@CInputBox@EasyX@@QEAA_NXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_DrawTextA，函数 "public: __cdecl EasyX::CInputBox::CInputBox(struct HWND__ *,char *,int,char const *,char const *,char const *,int,int,bool)" (??0CInputBox@EasyX@@QEAA@PEAUHWND__@@PEADHPEBD22HH_N@Z) 中引用了该符号
+EasyXa.lib(EasyX.DrawOnImg.obj) : error LNK2001: 无法解析的外部符号 __imp_DrawTextA
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_UpdateWindow，函数 "public: bool __cdecl EasyX::CInputBox::DoModal(void)" (?DoModal@CInputBox@EasyX@@QEAA_NXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_SetForegroundWindow，函数 "public: bool __cdecl EasyX::CInputBox::DoModal(void)" (?DoModal@CInputBox@EasyX@@QEAA_NXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_GetWindowTextA，函数 "public: bool __cdecl EasyX::CInputBox::DoModal(void)" (?DoModal@CInputBox@EasyX@@QEAA_NXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_GetWindowTextLengthA，函数 "public: bool __cdecl EasyX::CInputBox::DoModal(void)" (?DoModal@CInputBox@EasyX@@QEAA_NXZ) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_GetClientRect，函数 "private: void __cdecl EasyX::CInputBox::OnInitDialog(struct HWND__ *)" (?OnInitDialog@CInputBox@EasyX@@AEAAXPEAUHWND__@@@Z) 中引用了该符号
+EasyXa.lib(EasyX.InputBox.obj) : error LNK2019: 无法解析的外部符号 __imp_SystemParametersInfoA，函数 "public: bool __cdecl EasyX::CInputBox::DoModal(void)" (?DoModal@CInputBox@EasyX@@QEAA_NXZ) 中引用了该符号
+D:\mycode\TmpFile\VSEasyX2048\VSEasyX2048\x64\Debug\VSEasyX2048.exe : fatal error LNK1120: 38 个无法解析的外部命令
