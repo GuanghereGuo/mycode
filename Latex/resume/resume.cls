@@ -32,6 +32,7 @@
   margin=1.5cm,%
   includefoot,%
 ]{geometry}
+\RequirePackage{graphicx}
 \RequirePackage{xparse}
 \RequirePackage{etoolbox}
 \RequirePackage{fontspec}
@@ -264,25 +265,53 @@
 %   shape=<circular|square>,    % default is circular
 %   position=<left|right>,      % default is left
 % ]{<width>}{<filename>}
+
 \define@key{photo}{shape}{\def\@photo@shape{#1}}
 \define@key{photo}{position}{\def\@photo@position{#1}}
-\NewDocumentCommand{\photo}{
-  O{shape=circular, position=left}
-  m m
-}{
-  \setkeys{photo}{#1}
-  \def\@photo@width{#2}
+\define@key{photo}{width}{\def\@photo@width{#1}}
+\define@key{photo}{height}{\def\@photo@height{#1}}
+% \NewDocumentCommand{\photo}{
+%   O{shape=circular, position=left}
+%   m m
+% }{
+%   \setkeys{photo}{#1}
+%   \def\@photo@width{#2}
+%   \def\@photo{%
+%     \begin{minipage}{\@photo@width}
+%       \ifdefstring{\@photo@shape}{square}{%
+%         \tikz\path[fill overzoom image={#3}]
+%           rectangle (\linewidth, \linewidth);% (suppress blank)
+%       }{%
+%         \tikz\path[fill overzoom image={#3}]
+%           circle[radius=0.5\linewidth];% (suppress blank)
+%       }%
+%     \end{minipage}% (suppress blank)
+%   }
+% }
+
+\NewDocumentCommand{\photo}{ O{shape=circular, position=left, width=5cm} m }{%
+  \setkeys{photo}{#1}%
+  \ifdefstring{\@photo@shape}{rectangular}{%
+    \ifdefined\@photo@height\else%
+      \def\@photo@height{\@photo@width}%
+    \fi%
+  }{}%
   \def\@photo{%
-    \begin{minipage}{\@photo@width}
-      \ifdefstring{\@photo@shape}{square}{%
-        \tikz\path[fill overzoom image={#3}]
-          rectangle (\linewidth, \linewidth);% (suppress blank)
+    \begin{minipage}{\@photo@width}%
+      \ifdefstring{\@photo@shape}{circular}{%
+        \tikz\path[fill overzoom image={#2}]%
+          circle[radius=0.5\@photo@width];%
       }{%
-        \tikz\path[fill overzoom image={#3}]
-          circle[radius=0.5\linewidth];% (suppress blank)
+        \ifdefstring{\@photo@shape}{square}{%
+          \tikz\path[fill overzoom image={#2}]%
+            rectangle (\@photo@width, \@photo@width);%
+        }{%
+          \tikz\path[fill overzoom image={#2}]%
+            rectangle (\@photo@width, \@photo@height);%
+        }%
       }%
-    \end{minipage}% (suppress blank)
-  }
+    \end{minipage}%
+  }%
 }
 
 % Address
