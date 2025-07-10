@@ -18,11 +18,7 @@ int main() {
             std::cout << "empty\n";
             continue;
         }
-        int first_idx = -1, last_idx = -1;
         for (int i = 1; i < n; i++) {
-            if (first_idx == -1 && s[i] != s[0]) {
-                first_idx = i;
-            }
             if (s[i - 1] == s[i] && s[i] != s[0]) {
                 std::cout << "empty\n";
                 flag = true;
@@ -30,20 +26,29 @@ int main() {
             }
         }
         if (flag) continue;
-        for (int i = n - 2; i >= 0; i--) {
-            if (s[i] != s[n - 1]) {
-                last_idx = i;
-                break;
+        char target = s[n - 1];
+        int min_len = INT_MAX;
+        int now_len = 0;
+        bool has = false;
+
+        for (char c : s) {
+            if (c == target) {
+                now_len++;
+                has = true;
+            } else {
+                if (now_len > 0) {
+                    min_len = std::min(min_len, now_len);
+                }
+                now_len = 0;
             }
         }
-        if (first_idx == -1 || last_idx == -1) {
-            std::cout << s << '\n';
+        if (now_len > 0) {
+            min_len = std::min(min_len, now_len);
+        }
+        if (has) {
+            std::cout << std::string(min_len, target) << '\n';
         } else {
-            if (first_idx < n - last_idx - 1) {
-                std::cout << s.substr(0, first_idx) << '\n';
-            } else {
-                std::cout << s.substr(last_idx + 1) << '\n';
-            }
+            std::cout << s << '\n';
         }
     }
 }
