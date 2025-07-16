@@ -1,63 +1,199 @@
-#include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
+#include <iostream>
+#include <memory>
 
-using namespace std;
-using namespace __gnu_pbds;
+// 二叉搜索树 (BST) 实现，支持重复键值
+class BST {
+    struct TreeNode {
+        int key;                          // 节点键值
+        std::unique_ptr<TreeNode> left;   // 左子树指针
+        std::unique_ptr<TreeNode> right;  // 右子树指针
+        int size;   // 以该节点为根的子树大小（包括重复节点）
+        int count;  // 当前键值的重复次数
 
-// 定义支持重复元素和顺序统计的平衡树
-// - pair<int, int>: 键为(x, cnt)，cnt用于区分重复的x
-// - less<pair<int, int>>: 严格弱序，确保正确性
-using ost = tree<pair<int, int>, null_type, less<pair<int, int>>, rb_tree_tag, tree_order_statistics_node_update>;
+        explicit TreeNode(int value)
+            : key(value), size(1), count(1), left(nullptr), right(nullptr) {}
+    };
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n; // 读取操作数
-    ost t;    // 创建空的平衡树
-    int cnt = 0; // 全局计数器，用于生成唯一标识符
-
-    for (int i = 0; i < n; ++i) {
-        int opt, x;
-        cin >> opt >> x;
-
-        if (opt == 1) {
-            // 操作1：插入x
-            t.insert({x, cnt++}); // 插入(x, cnt)，cnt递增确保唯一性
-        } else if (opt == 2) {
-            // 操作2：删除一个x（若存在）
-            auto it = t.lower_bound({x, 0}); // 找到第一个>= (x, 0)的元素
-            if (it != t.end() && it->first == x) {
-                t.erase(it); // 删除该元素（只删除一个）
-            }
-        } else if (opt == 3) {
-            // 操作3：查询比x小的数的个数并加一（即x的插入排名）
-            cout << t.order_of_key({x, 0}) + 1 << '\n';
-        } else if (opt == 4) {
-            // 操作4：查询排名为x的数（从1开始）
-            auto it = t.find_by_order(x - 1); // 排名从0开始，故x-1
-            if (it != t.end()) {
-                cout << it->first << '\n'; // 输出pair的first（即x）
-            }
-        } else if (opt == 5) {
-            // 操作5：查询x的前驱（小于x的最大数）
-            auto it = t.lower_bound({x, 0});
-            if (it != t.begin()) {
-                --it; // 向前一位即为前驱
-                cout << it->first << '\n';
-            }
-            // 若无前驱（it == t.begin()），不输出
-        } else if (opt == 6) {
-            // 操作6：查询x的后继（大于x的最小数）
-            auto it = t.upper_bound({x, INT_MAX}); // 第一个>(x, INT_MAX)的元素
-            if (it != t.end()) {
-                cout << it->first << '\n';
-            }
-            // 若无后继（it == t.end()），不输出
-        }
+    // 中序遍历，用于调试或验证 BST 的有序性
+    void inorderTraversal(const std::unique_ptr<TreeNode>& root) {
+        if (!root) return;
+        inorderTraversal(root->left);
+        std::cout << root->key << " ";
+        inorderTraversal(root->right);
     }
 
+    // 查找最小值，时间复杂度 O(h)
+    int findMin(const std::unique_ptr<TreeNode>& root) {
+        if (!root) return -1;  // 空树返回 -1
+        auto current = root.get();
+        while (current->left) current = current->left.get();
+        return current->key;
+    }
+
+    // 查找最大值，时间复杂度 O(h)
+    int findMax(const std::unique_ptr<TreeNode>& root) {
+        if (!root) return -1;  // 空树返回 -1
+        auto current = root.get();
+        while (current->right) current = current->right.get();
+        return current->key;
+    }
+
+    // 搜索键值是否存在，时间复杂度 O(h)
+    bool search(const std::unique_ptr<TreeNode>& root, int target) {
+        if (!root) return false;
+        if (root->key == target) return true;
+        return target < root->key ? search(root->left, target)
+                                  : search(root->right, target);
+    }
+
+    // 插入键值，时间复杂度 O(h)
+    std::unique_ptr<TreeNode> insert(std::unique_ptr<TreeNode> root,
+                                     int value) {
+        if (!root) return std::make_unique<TreeNode>(value);
+        if (value < root->key) {
+            root->left = insert(std::move(root->left), value);
+        } else if (value > root->key) {
+            root->right = insert(std::move(root->right), value);
+        } else {
+            root->count++;  // 重复键值，增加计数
+        }
+        root->size = root->count + (root->left ? root->left->size : 0) +
+                     (root->right ? root->right->size : 0);  // 更新子树大小
+        return root;
+    }
+
+    // 删除键值，时间复杂度 O(h)
+    std::unique_ptr<TreeNode> remove(std::unique_ptr<TreeNode> root,
+                                     int value) {
+        if (!root) return nullptr;
+        if (value < root->key) {
+            root->left = remove(std::move(root->left), value);
+        } else if (value > root->key) {
+            root->right = remove(std::move(root->right), value);
+        } else {
+            if (root->count > 1) {
+                root->count--;  // 重复次数 > 1，仅减少计数
+            } else if (!root->left) {
+                return std::move(root->right);  // 无左子树，用右子树替换
+            } else if (!root->right) {
+                return std::move(root->left);  // 无右子树，用左子树替换
+            } else {
+                // 有两个子树，用右子树的最小节点（后继）替换
+                auto successor = findMinNode(root->right.get());
+                root->key = successor->key;
+                root->count = successor->count;
+                root->right = remove(std::move(root->right), successor->key);
+            }
+        }
+        // 更新当前节点的子树大小
+        root->size = root->count + (root->left ? root->left->size : 0) +
+                     (root->right ? root->right->size : 0);
+        return root;
+    }
+
+    // 辅助函数：查找以某节点为根的子树中的最小节点
+    TreeNode* findMinNode(TreeNode* root) {
+        while (root->left) root = root->left.get();
+        return root;
+    }
+
+    // 查询键值的排名（小于该键值的节点数 + 1），时间复杂度 O(h)
+    int queryRank(const std::unique_ptr<TreeNode>& root, int v) {
+        if (!root) return 0;
+        if (root->key == v) return (root->left ? root->left->size : 0) + 1;
+        if (v < root->key) return queryRank(root->left, v);
+        return queryRank(root->right, v) + (root->left ? root->left->size : 0) +
+               root->count;
+    }
+
+    // 查询第 k 小元素，时间复杂度 O(h)
+    int querykth(const std::unique_ptr<TreeNode>& root, int k) {
+        if (!root || k <= 0 || k > root->size) return -1;  // 非法 k 或空树
+        int leftSize = root->left ? root->left->size : 0;
+        if (k <= leftSize) return querykth(root->left, k);  // 在左子树中
+        if (k <= leftSize + root->count) return root->key;  // 当前节点即答案
+        return querykth(root->right, k - leftSize - root->count);  // 在右子树中
+    }
+
+    // 查询小于 v 的最大键值（前驱），时间复杂度 O(h)
+    int pre(const std::unique_ptr<TreeNode>& root, int v) {
+        int res = -1;
+        auto cur = root.get();
+        while (cur) {
+            if (cur->key < v) {
+                res = cur->key;
+                cur = cur->right.get();
+            } else {
+                cur = cur->left.get();
+            }
+        }
+        return res;
+    }
+
+    // 查询大于 v 的最小键值（后继），时间复杂度 O(h)
+    int aft(const std::unique_ptr<TreeNode>& root, int v) {
+        int res = -1;
+        auto cur = root.get();
+        while (cur) {
+            if (cur->key > v) {
+                res = cur->key;
+                cur = cur->left.get();
+            } else {
+                cur = cur->right.get();
+            }
+        }
+        return res;
+    }
+
+    std::unique_ptr<TreeNode> rt;  // BST 的根节点
+
+   public:
+    BST() : rt(nullptr) {}
+    void insert(int value) { rt = insert(std::move(rt), value); }
+    void remove(int value) { rt = remove(std::move(rt), value); }
+    bool search(int target) { return search(rt, target); }
+    int findMin() { return findMin(rt); }
+    int findMax() { return findMax(rt); }
+    void inorderTraversal() { inorderTraversal(rt); }
+    int rank(int v) { return queryRank(rt, v); }
+    int kth(int k) { return querykth(rt, k); }
+    int pre(int v) { return pre(rt, v); }
+    int aft(int v) { return aft(rt, v); }
+};
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+
+    BST bst;
+    int n;
+    std::cin >> n;
+    while (n--) {
+        int opt, data;
+        std::cin >> opt >> data;
+        switch (opt) {
+            case 1:
+                bst.insert(data);
+                break;  // 插入
+            case 2:
+                bst.remove(data);
+                break;  // 删除
+            case 3:
+                std::cout << bst.rank(data) << "\n";
+                break;  // 查询排名
+            case 4:
+                std::cout << bst.kth(data) << "\n";
+                break;  // 查询第 k 小
+            case 5:
+                std::cout << bst.pre(data) << "\n";
+                break;  // 查询前驱
+            case 6:
+                std::cout << bst.aft(data) << "\n";
+                break;  // 查询后继
+            default:
+                break;
+        }
+    }
     return 0;
 }
