@@ -7,3 +7,4 @@ add_executable(main main.cpp)
 
 add_executable(BST BST.cpp)
 add_executable(Treap Treap.cpp)
+add_executable(Treap_unique Treap_unique.cpp)

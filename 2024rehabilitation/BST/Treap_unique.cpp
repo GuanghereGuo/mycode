@@ -1,11 +1,14 @@
 //
 // Created by guanghere on 25-7-16.
 //
+//
+// Created by guanghere on 25-7-16.
+//
 #include <bits/stdc++.h>
 
 class Treap {
     struct Node {
-        Node *ch[2];
+        std::unique_ptr<Node> ch[2];
         int val, cnt, siz;
         unsigned rank;
         explicit Node(const int v)
@@ -13,28 +16,28 @@ class Treap {
         }
     };
     enum RotType { L = 1, R = 0 };
-    Node *root = nullptr;
+    std::unique_ptr<Node> root = nullptr;
     inline static std::random_device rd;
     inline static std::mt19937 gen = std::mt19937(rd());
 
-    static void update(Node *const now) {
+    static void update(const std::unique_ptr<Node> &now) {
         if (!now) return;
         now->siz = now->cnt + (now->ch[0] ? now->ch[0]->siz : 0) +
                    (now->ch[1] ? now->ch[1]->siz : 0);
     }
 
-    static void rotate(Node *&now, const RotType type) {
-        Node *tmp = now->ch[type];
-        now->ch[type] = tmp->ch[1 ^ type];
-        tmp->ch[1 ^ type] = now;
+    static void rotate(std::unique_ptr<Node> &now, const RotType type) {
+        std::unique_ptr<Node> tmp = std::move(now->ch[type]);
+        now->ch[type] = std::move(tmp->ch[1 ^ type]);
         update(now);
+        tmp->ch[1 ^ type] = std::move(now);
         update(tmp);
-        now = tmp;
+        now = std::move(tmp);
     }
 
-    static void insert(Node *&now, const int x) {
+    static void insert(std::unique_ptr<Node> &now, const int x) {
         if (now == nullptr) {
-            now = new Node(x);
+            now = std::make_unique<Node>(x);
             return;
         }
         if (x == now->val) {
@@ -52,7 +55,7 @@ class Treap {
         }
         update(now);
     }
-    static void erase(Node *&now, const int x) {
+    static void erase(std::unique_ptr<Node> &now, const int x) {
         if (now == nullptr) return;
         if (x < now->val) {
             erase(now->ch[0], x);
@@ -63,9 +66,7 @@ class Treap {
                 now->cnt--;
             } else {
                 if (now->ch[0] == nullptr || now->ch[1] == nullptr) {
-                    Node *tmp = now->ch[0] ? now->ch[0] : now->ch[1];
-                    delete now;
-                    now = tmp;
+                    now = std::move(now->ch[0] ? now->ch[0] : now->ch[1]);
                 } else {
                     if (now->ch[0]->rank > now->ch[1]->rank) {
                         rotate(now, R);
@@ -80,7 +81,7 @@ class Treap {
         update(now);
     }
 
-    static int count_less(const Node *now, const int x) {
+    static int count_less(const std::unique_ptr<Node> &now, const int x) {
         if (now == nullptr) return 0;
         if (x > now->val) {
             return (now->ch[0] ? now->ch[0]->siz : 0) + now->cnt +
@@ -93,7 +94,7 @@ class Treap {
         return count_less(now->ch[0], x);
     }
 
-    static int find_by_rank(const Node *now, const int x) {
+    static int find_by_rank(const std::unique_ptr<Node> &now, const int x) {
         int less_siz = now->ch[0] ? now->ch[0]->siz : 0;
         if (x <= less_siz) {
             return find_by_rank(now->ch[0], x);
@@ -104,7 +105,7 @@ class Treap {
         return now->val;
     }
 
-    static int pre(const Node *now, const int x) {
+    static int pre(const std::unique_ptr<Node> &now, const int x) {
         if (now == nullptr) return None;
         if (x < now->val) {
             return pre(now->ch[0], x);
@@ -113,9 +114,9 @@ class Treap {
             if (now->ch[0] == nullptr) {
                 return None;  // 没有前驱
             }
-            const Node *tmp = now->ch[0];
+            const Node *tmp = now->ch[0].get();
             while (tmp->ch[1]) {
-                tmp = tmp->ch[1];
+                tmp = tmp->ch[1].get();
             }
             return tmp->val;
         }
@@ -126,7 +127,7 @@ class Treap {
         int res = pre(now->ch[1], x);
         return (res == None) ? now->val : res;  // 返回前驱或当前值
     }
-    static int suf(const Node *now, const int x) {
+    static int suf(const std::unique_ptr<Node> &now, const int x) {
         if (now == nullptr) return None;
         if (x < now->val) {
             if (now->ch[0] == nullptr) {
@@ -139,9 +140,9 @@ class Treap {
             if (now->ch[1] == nullptr) {
                 return None;  // 没有后继
             }
-            const Node *tmp = now->ch[1];
+            const Node *tmp = now->ch[1].get();
             while (tmp->ch[0]) {
-                tmp = tmp->ch[0];
+                tmp = tmp->ch[0].get();
             }
             return tmp->val;
         }
@@ -152,16 +153,6 @@ class Treap {
    public:
     static constexpr int None = INT_MAX;
     Treap() = default;
-    ~Treap() {
-        std::function<void(Node *)> clear = [&](const Node *now) {
-            if (now == nullptr) return;
-            clear(now->ch[0]);
-            clear(now->ch[1]);
-            delete now;
-        };
-        clear(root);
-        root = nullptr;
-    }
     void insert(const int x) { insert(root, x); }
     void erase(const int x) { erase(root, x); }
     [[nodiscard]] int rank(const int x) const {
