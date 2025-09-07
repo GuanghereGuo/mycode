@@ -9,7 +9,6 @@ using namespace std;
 int n, fa[static_cast<long long>(1e6)], maxgr[static_cast<long long>(1e6)], mingr[static_cast<long long>(1e6)], vis[
         static_cast<long long>(1e6)];
 
-
 int find(int x)
 {
     if (fa[x] == x)return x;
