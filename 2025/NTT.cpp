@@ -5,7 +5,6 @@
 #include <cmath>
 #include <iostream>
 #include <map>
-#include <ranges>
 #include <string>
 #include <vector>
 
@@ -79,30 +78,30 @@ void transform(std::vector<ll>& a, bool invert) {
         }
     }
 }
-}  // namespace ntt
+}
 
-int main() {
-    std::ios_base::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+void solve() {
+    std::string sa, sb;
+    std::cin >> sa >> sb;
 
-    std::vector<ll> a, b;
-    int n, m;
-    std::cin >> n >> m;
-    n++;
-    m++;
-    a.resize(n);
-    b.resize(m);
-    for (int i = 0; i < n; i++) {
-        std::cin >> a[i];
+    if (sa == "0" || sb == "0") {
+        std::cout << "0\n";
+        return;
     }
-    for (int i = 0; i < m; i++) {
-        std::cin >> b[i];
-    }
-    std::ranges::reverse(a);
-    std::ranges::reverse(b);
+
+    int n = sa.length();
+    int m = sb.length();
+
+    std::vector<ll> a(n), b(m);
+    for (int i = 0; i < n; ++i)
+        a[i] = sa[n - 1 - i] - '0';
+    for (int i = 0; i < m; ++i)
+        b[i] = sb[m - 1 - i] - '0';
 
     int len = 1;
-    while (len < n + m) len <<= 1;
+    while (len < n + m)
+        len <<= 1;
+
     a.resize(len, 0);
     b.resize(len, 0);
 
@@ -116,13 +115,39 @@ int main() {
 
     ntt::transform(c, true);
 
-    int first_digit = n + m - 1;
+    int res_len = n + m + 50;
+    c.resize(res_len, 0);
+
+    for (int i = 0; i < res_len - 2; ++i) {
+        ll val = c[i];
+
+        ll r = val % 2;
+        if (r < 0) r += 2;
+
+        ll q = (val - r) / 2;
+
+        c[i] = r;
+        c[i + 2] -= q;
+    }
+
+    int first_digit = res_len - 1;
     while (first_digit > 0 && c[first_digit] == 0) {
         first_digit--;
     }
 
     for (int i = first_digit; i >= 0; --i) {
-        std::cout << c[i] << ' ';
+        std::cout << c[i];
     }
     std::cout << "\n";
+}
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    int t;
+    std::cin >> t;
+    while (t--) {
+        solve();
+    }
+    return 0;
 }
