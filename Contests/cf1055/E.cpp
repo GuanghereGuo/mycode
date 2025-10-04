@@ -13,13 +13,13 @@ int main() {
         int n;
         std::cout << std::flush;
         std::cin >> n;
-        std::vector flag(n + 1, std::vector<bool>(n * n + 2, false));
-        std::vector<bool> pre(n * n + 2);
+        std::vector flag(n + 1, std::set<int>());
+        std::set<int> pre;
         bool found = false;
         for (int i = 1; i <= n; ++i) {
             std::vector<int> indices;
             for (int j = 1; j <= n * n + 1; ++j) {
-                if (!pre[j]) {
+                if (!pre.contains(j)) {
                     indices.push_back(j);
                 }
             }
@@ -30,26 +30,25 @@ int main() {
                 std::cout << idx << " ";
             }
             std::cout << std::endl;
-            std::cout << std::flush;
 
             int k;
             std::cin >> k;
             for (int j = 1, x; j <= k; ++j) {
                 std::cin >> x;
-                pre[x] = flag[i][x] = true;
+                pre.insert(x);
+                flag[i].insert(x);
             }
             if (k >= n + 1) {
                 std::cout << std::flush;
                 std::cout << "! ";
-                for (int j = 1, cnt = 0; j <= n * n + 1 && cnt <= n + 1; ++j) {
-                    if (flag[1][j]) {
-                        std::cout << j << " ";
-                        std::cout << std::flush;
-                        cnt++;
-                    }
+                int cnt = 0;
+                for (const auto j: flag[i]) {
+                    std::cout << j << " ";
+                    cnt++;
+                    if (cnt == n + 1)
+                        break;
                 }
                 std::cout << std::endl;
-                std::cout << std::flush;
                 found = true;
                 break;
             }
@@ -57,22 +56,16 @@ int main() {
         if (!found) {
             std::cout << "! ";
             std::vector<int> indices;
-            for (int j = 1; j <= n * n + 1; ++j) {
-                if (!pre[j]) {
+            for (int j = n * n + 1; j >= 1; --j) {
+                if (!pre.contains(j)) {
                     indices.push_back(j);
                     break;
                 }
             }
             for (int i = n; i >= 1; --i) {
-                for (int j = n * n + 1; j >= 1; --j) {
-                    if (flag[i][j]) {
-                        indices.push_back(j);
-                        break;
-                    }
-                }
-                if (indices.size() == n + 1) {
-                    break;
-                }
+                auto it = flag[i].lower_bound(indices.back());
+                --it;
+                indices.push_back(*it);
             }
             std::ranges::reverse(indices);
             for (const auto idx: indices) {
