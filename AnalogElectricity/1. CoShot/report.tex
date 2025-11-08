@@ -1,0 +1,226 @@
+\documentclass[UTF8]{ctexrep} % <-- 已更改为 ctexrep，更适合多章节报告
+
+% --- 导言区 (Preamble) ---
+% (完全采纳并优化了您提供的设置)
+\usepackage{graphicx}        % 用于插入图片
+\usepackage{geometry}        % 用于设置页边距
+\usepackage{listings}        % 用于插入代码
+\usepackage{float}           % 用于控制图表浮动位置
+\usepackage{booktabs}        % 用于创建更美观的三线表
+\usepackage{siunitx}         % 用于标准地排版物理单位和数值
+\usepackage{amsmath}         % 用于数学公式环境 (已移除重复加载)
+\usepackage{fancyhdr}        % 用于自定义页眉页脚
+
+% --- 格式设置 ---
+\geometry{a4paper, left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+\linespread{1.5} % 设置行距
+\sisetup{per-mode=symbol} % 设置单位格式，例如 m/s
+\setlength{\jot}{6pt} % 增加多行公式之间的行距
+
+% --- 页眉页脚设置 ---
+% (这是一个基础设置，我们之后可以随时按需修改)
+\pagestyle{fancy}
+\fancyhf{} % 清空所有页眉页脚
+\fancyhead[C]{模拟电子技术基础实验} % 页眉居中：课程名
+\fancyfoot[C]{\thepage} % 页脚居中：页码
+\renewcommand{\headrulewidth}{0.4pt} % 页眉分割线
+\renewcommand{\footrulewidth}{0pt} % 去掉页脚分割线
+
+% --- 正文区 (Document Body) ---
+\begin{document}
+
+% --- 封面 ---
+% (完全按照您的设计)
+\begin{titlepage} % 使用 titlepage 环境，更规范
+    \thispagestyle{empty} % 封面无页眉页脚
+    \centering
+    \includegraphics[width=13cm]{figures/logo1.png}
+    
+    \vspace*{\fill}
+    {\Huge\bfseries 模拟电子技术基础实验报告\par} % \bfseries 替代 \textbf
+    \vspace{0.5cm}
+    % {\Large\bfseries (共七个实验)\par}
+    \vspace*{\fill}
+    
+    \large
+    \begin{tabular}{ll}
+    \toprule % 使用 booktabs 命令，更美观
+    \textbf{课程:} & 模拟电子技术基础实验 \\
+    \textbf{姓名:} & 郭浩然 \\
+    \textbf{学号:} & 2024303980 \\
+    \textbf{桌号:} & 27 \\
+    \textbf{班级:} & 01班 \\
+    \textbf{学院:} & 民航学院 \\
+    \textbf{专业:} & 飞行器控制与信息工程 \\
+    \textbf{时间:} & \today \\
+    \bottomrule
+    \end{tabular}
+\end{titlepage}
+
+% --- 目录 ---
+\tableofcontents % 生成目录
+\newpage
+
+% --- 正文开始 ---
+\clearpage
+\pagenumbering{arabic} % 对于 report/book 类，标志着正文开始，页码会从1开始计数
+
+\chapter{实验一：单级共射极放大器}
+\label{chap:exp1}
+
+% ==================================================
+% Section 1.1: 实验目的
+% ==================================================
+\section{实验目的}
+\begin{itemize}
+    \item 掌握示波器、万用表、信号源、直流电源等基本仪器的使用方法。
+    \item 学习连接单级共射极放大器电路，并对其关键性能指标进行测量与分析。
+\end{itemize}
+% ==================================================
+% Section 1.2: 实验原理
+% ==================================================
+\section{实验原理}
+\subsection{静态工作点的测量}
+静态工作点 (Quiescent Operating Point, Q-point) 是指在放大器输入端无交流信号时，电路处于的直流工作状态。它由晶体管的集电极电流 $I_{CQ}$ 和集电极-发射极间电压 $V_{CEQ}$ 共同决定。测量方法如下：
+\begin{itemize}
+    \item 将放大器输入端通过耦合电容接地，施加直流电源 VCC。
+    \item \textbf{测量 $V_{CEQ}$}: 使用万用表的直流电压档直接测量晶体管集电极 (c) 与发射极 (e) 之间的电压。
+    \item \textbf{测量 $I_{CQ}$}:
+    \begin{enumerate}
+        \item \textbf{直接法}: 将万用表的直流电流档串联到集电极回路中，直接读取电流值。此法精度高，但操作繁琐。
+        \item \textbf{间接法}: 使用万用表的直流电压档测量集电极电阻 $R_{c}$ 两端的电压降 $V_{Rc}$，再根据欧姆定律计算 $I_{CQ} = V_{Rc} / R_{c}$。此法操作简便，是实验中常用的方法。
+    \end{enumerate}
+\end{itemize}
+\subsection{静态工作点对输出波形的影响}
+静态工作点的位置直接影响放大器对交流信号的放大质量。当输入一个频率为 \SI{1}{\kilo\hertz} 的正弦信号时：
+\begin{itemize}
+    \item 若工作点过高（靠近饱和区），输出波形的负半周会被削平，产生 \textbf{饱和失真}。
+    \item 若工作点过低（靠近截止区），输出波形的正半周会被削平，产生 \textbf{截止失真}。
+    \item 只有当工作点设置在负载线中点附近时，放大器才能在输出端获得最大不失真输出电压摆幅。
+\end{itemize}
+\subsection{电压放大倍数的测量}
+电压放大倍数 $A_v$ 是衡量放大电路放大能力的核心指标，定义为输出电压有效值 $V_o$ 与输入电压有效值 $V_i$ 之比。
+\begin{equation}
+    A_v = \frac{V_o}{V_i}
+    \label{eq:Av}
+\end{equation}
+电压放大倍数的值会受到负载电阻 $R_L$ 的影响。
+% ==================================================
+% Section 1.3: 电路方案与元器件
+% ==================================================
+\section{电路方案与元器件}
+
+\subsection{电路原理图}
+本实验所采用的单级共射极放大器电路如图 \ref{fig:circuit1} 所示。电路采用 NPN 型三极管 2N3904 作为核心放大元件，并配置了分压式偏置电路以提供稳定的静态工作点。其中，Rp 为可变电阻，用于精细调节基极偏置电压，从而找到最佳静态工作点。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/circuit_exp1.png}
+    \caption{实验一：单级共射极放大器电路原理图}
+    \label{fig:circuit1}
+\end{figure}
+
+\subsection{电路元器件}
+电路中各元器件的详细参数及作用如表 \ref{tab:components1} 所示。
+
+\begin{table}[H]
+    \centering
+    \caption{电路元器件清单}
+    \label{tab:components1}
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{元件符号} & \textbf{参数值} & \textbf{作用} \\
+        \midrule
+        Q2 & 2N3904 & NPN型三极管，核心放大元件 \\
+        Rp & \SI{47}{\kilo\ohm} & 可变电阻，调节静态工作点 \\
+        R1, R2 & \SI{5.1}{\kilo\ohm} & 基极分压偏置电阻 \\
+        Rc1 & \SI{2}{\kilo\ohm} & 集电极负载电阻 \\
+        Re3, Re4 & \SI{1}{\kilo\ohm}, \SI{100}{\ohm} & 发射极电阻，稳定静态工作点 \\
+        RL1 & \SI{1}{\kilo\ohm} & 交流负载电阻 \\
+        C1, C3 & \SI{10}{\micro\farad} & 耦合电容，隔直通交 \\
+        Ce1 & \SI{100}{\micro\farad} & 旁路电容，提高交流放大倍数 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{实验仪器与设备}
+本实验所需仪器与设备清单如表 \ref{tab:instruments1} 所示。
+
+\begin{table}[H]
+    \centering
+    \caption{实验仪器与设备清单}
+    \label{tab:instruments1}
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{仪器名称} & \textbf{数量} \\
+        \midrule
+        双路直流稳压电源 & 1台 \\
+        函数信号发生器 & 1台 \\
+        双踪示波器 & 1台 \\
+        数字万用表 & 1台 \\
+        模拟电路实验箱 & 1台 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+% ==================================================
+% Section 1.4: 分析与计算 (已更新)
+% ==================================================
+\section{分析与计算}
+\label{sec:exp1_analysis}
+
+本节对电路的静态工作点 (Q-point) 进行理论估算，并分析实验任务中 V1 与 V2 的关系，为后续的实验测量提供理论参考。计算基于实验中为获得最佳输出而设定的可变电阻值 $R_p = \SI{5.17}{\kilo\ohm}$。
+
+\subsection{静态工作点 (Q-point) 估算}
+静态工作点由集电极直流电流 $I_{CQ}$ 和集电极-发射极直流电压 $V_{CEQ}$ 共同确定。
+
+\textbf{1. 计算基极电压 $V_B$ (对应实验任务中的 V2)}
+
+在输入信号接地时（即无交流输入），基极的静态直流电压 V2 由电阻 $R_p, R_1$ 和 $R_2$ 构成的分压电路决定。
+\begin{align}
+    V_2 = V_B &= V_{CC} \times \frac{R_2}{(R_p + R_1) + R_2} \nonumber \\
+        &= \SI{12}{\volt} \times \frac{\SI{5.1}{\kilo\ohm}}{(\SI{5.17}{\kilo\ohm} + \SI{5.1}{\kilo\ohm}) + \SI{5.1}{\kilo\ohm}} \nonumber \\
+        &= \SI{12}{\volt} \times \frac{5.1}{15.37} \approx \SI{3.97}{\volt} \label{eq:V2_calc}
+\end{align}
+
+\textbf{2. 计算发射极与集电极参数}
+
+假设晶体管导通时基极-发射极电压 $V_{BE} = \SI{0.7}{\volt}$，发射极总电阻 $R_E = R_{e3} + R_{e4} = \SI{1.1}{\kilo\ohm}$。
+\begin{align*}
+    V_E &= V_B - V_{BE} = \SI{3.97}{\volt} - \SI{0.7}{\volt} = \SI{3.27}{\volt} \\
+    I_{EQ} &= \frac{V_E}{R_E} = \frac{\SI{3.27}{\volt}}{\SI{1.1}{\kilo\ohm}} \approx \SI{2.97}{\milli\ampere}
+\end{align*}
+假设 $\beta$ 足够大，$I_{CQ} \approx I_{EQ} = \SI{2.97}{\milli\ampere}$。
+\begin{align*}
+    V_C &= V_{CC} - I_{CQ} \times R_{c1} = \SI{12}{\volt} - \SI{2.97}{\milli\ampere} \times \SI{2}{\kilo\ohm} = \SI{6.06}{\volt} \\
+    V_{CEQ} &= V_C - V_E = \SI{6.06}{\volt} - \SI{3.27}{\volt} = \SI{2.79}{\volt}
+\end{align*}
+\textbf{理论静态工作点：} $Q(\SI{2.97}{\milli\ampere}, \SI{2.79}{\volt})$。
+
+\subsection{V1 与 V2 关系分析}
+根据实验任务要求，V1 是在有交流信号输入时，用示波器直流耦合模式测得的基极正弦波的直流偏置电压；V2 是输入信号接地时，用万用表测得的基极直流电压。
+
+\textbf{理论预测：V1 = V2}。
+
+\textbf{原因分析：}
+输入信号 $v_i$ 是通过耦合电容 C3 连接到三极管基极的。电容器的核心特性是“隔直流，通交流”。这意味着：
+\begin{itemize}
+    \item \textbf{直流通路：} 对于电路的直流偏置而言，电容 C3 相当于开路。因此，基极的直流电压完全由 $V_{CC}$ 和分压电阻 $R_p, R_1, R_2$ 决定，与是否有输入信号无关。
+    \item \textbf{交流通路：} 交流信号 $v_i$ 可以通过电容 C3 叠加在基极的直流电压之上。
+\end{itemize}
+因此，示波器在直流耦合模式下观察到的基极波形，应该是一个交流正弦波叠加在一个直流分量上。这个直流分量就是 V1，它在数值上应该等于纯直流状态下的基极电压 V2。实验中测量 V1 和 V2，正是为了验证耦合电容的隔直流特性以及放大电路静态与动态的独立性。
+
+
+\section{测试方案与测试结果}
+\label{sec:exp1_test}
+% 在这里填充“测试方案与测试结果”部分的内容。
+
+% --- 后续实验章节的占位符 ---
+% \chapter{实验二：...}
+% \label{chap:exp2}
+
+% \chapter{实验三：...}
+% \label{chap:exp3}
+
+\end{document}
