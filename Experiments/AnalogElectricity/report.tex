@@ -14,21 +14,21 @@
 \usepackage{amsfonts}       % 用于数学字体
 
 % --- 格式设置 ---
-\geometry{a4paper, left=1.5cm, right=1.5cm, top=1.5cm, bottom=1.5cm}
+\geometry{a4paper, left=2cm, right=2cm, top=2cm, bottom=2cm}
 \linespread{1.5} % 设置行距
 \sisetup{per-mode=symbol} % 设置单位格式，例如 m/s
 \setlength{\jot}{6pt} % 增加多行公式之间的行距
 
-\setlength{\headheight}{12.64723pt} % 避免页眉高度警告
+\setlength{\headheight}{13pt} % 避免页眉高度警告
 
 % --- 页眉页脚设置 ---
 % (这是一个基础设置，我们之后可以随时按需修改)
 \pagestyle{fancy}
-\fancyhf{} % 清空所有页眉页脚
+% \fancyhf{} % 清空所有页眉页脚
 \fancyhead[C]{模拟电子技术基础实验} % 页眉居中：课程名
-\fancyfoot[C]{\thepage} % 页脚居中：页码
-\renewcommand{\headrulewidth}{0.4pt} % 页眉分割线
-\renewcommand{\footrulewidth}{0pt} % 去掉页脚分割线
+% \fancyfoot[C]{\thepage} % 页脚居中：页码
+% \renewcommand{\headrulewidth}{0.4pt} % 页眉分割线
+% \renewcommand{\footrulewidth}{0pt} % 去掉页脚分割线
 
 % --- 正文区 (Document Body) ---
 \begin{document}
@@ -91,7 +91,7 @@
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/1_Co_shot/circuit_exp1.png}
+    \includegraphics[width=0.6\textwidth]{figures/1_Co_shot/circuit_exp1.png}
     \caption{共射放大电路原理图}
     \label{fig:circuit}
 \end{figure}
@@ -226,7 +226,7 @@
 
 \begin{figure}[H] % 使用 [H] 强制图片在此处显示
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/1_Co_shot/scope_q_point.jpg}
+    \includegraphics[width=0.6\textwidth]{figures/1_Co_shot/scope_q_point.jpg}
     \caption{输出波形达到最大不失真动态范围（最佳Q点）}
     \label{fig:q_point}
 \end{figure}
@@ -295,7 +295,7 @@
     \item 带载输出电压 $V_L = \SI{116.472}{\milli\volt}$
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
@@ -327,7 +327,7 @@
     \item \textbf{高频截止频率 $f_H$：} 在 $f = \SI{1.8}{\mega\hertz}$ 时，测得 $V_{opp} = \SI{324.53}{\milli\volt}$。
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
@@ -351,7 +351,12 @@
     \text{BW} = f_H - f_L = \SI{1.8}{\mega\hertz} - \SI{25}{\hertz} \approx \SI{1.8}{\mega\hertz}
 \end{equation}
 
-
-
+拟合得到的幅频特性曲线如图 \ref{fig:bode_plot} 所示。
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/1_Co_shot/A_jw.png}
+    \caption{幅频特性曲线拟合}
+    \label{fig:bode_plot}
+\end{figure}
 
 \end{document}
