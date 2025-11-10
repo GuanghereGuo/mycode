@@ -10,6 +10,8 @@
 \usepackage{siunitx}         % 用于标准地排版物理单位和数值
 \usepackage{amsmath}         % 用于数学公式环境 (已移除重复加载)
 \usepackage{fancyhdr}        % 用于自定义页眉页脚
+\usepackage{subcaption}     % 用于子图环境
+\usepackage{amsfonts}       % 用于数学字体
 
 % --- 格式设置 ---
 \geometry{a4paper, left=1.5cm, right=1.5cm, top=1.5cm, bottom=1.5cm}
@@ -67,7 +69,7 @@
 \clearpage
 \pagenumbering{arabic} % 对于 report/book 类，标志着正文开始，页码会从1开始计数
 
-\chapter{实验一：单级共射极放大器}
+\chapter{单级共射极放大器}
 \label{chap:exp1}
 
 % ==================================================
@@ -78,63 +80,32 @@
     \item 掌握示波器、万用表、信号源、直流电源等基本仪器的使用方法。
     \item 学习连接单级共射极放大器电路，并对其关键性能指标进行测量与分析。
 \end{itemize}
-% ==================================================
-% Section 1.2: 实验原理
-% ==================================================
-\section{实验原理}
-\subsection{静态工作点的测量}
-静态工作点 (Quiescent Operating Point, Q-point) 是指在放大器输入端无交流信号时，电路处于的直流工作状态。它由晶体管的集电极电流 $I_{CQ}$ 和集电极-发射极间电压 $V_{CEQ}$ 共同决定。测量方法如下：
-\begin{itemize}
-    \item 将放大器输入端通过耦合电容接地，施加直流电源 VCC。
-    \item \textbf{测量 $V_{CEQ}$}: 使用万用表的直流电压档直接测量晶体管集电极 (c) 与发射极 (e) 之间的电压。
-    \item \textbf{测量 $I_{CQ}$}:
-    \begin{enumerate}
-        \item \textbf{直接法}: 将万用表的直流电流档串联到集电极回路中，直接读取电流值。此法精度高，但操作繁琐。
-        \item \textbf{间接法}: 使用万用表的直流电压档测量集电极电阻 $R_{c}$ 两端的电压降 $V_{Rc}$，再根据欧姆定律计算 $I_{CQ} = V_{Rc} / R_{c}$。此法操作简便，是实验中常用的方法。
-    \end{enumerate}
-\end{itemize}
-\subsection{静态工作点对输出波形的影响}
-静态工作点的位置直接影响放大器对交流信号的放大质量。当输入一个频率为 \SI{1}{\kilo\hertz} 的正弦信号时：
-\begin{itemize}
-    \item 若工作点过高（靠近饱和区），输出波形的负半周会被削平，产生 \textbf{饱和失真}。
-    \item 若工作点过低（靠近截止区），输出波形的正半周会被削平，产生 \textbf{截止失真}。
-    \item 只有当工作点设置在负载线中点附近时，放大器才能在输出端获得最大不失真输出电压摆幅。
-\end{itemize}
-\subsection{电压放大倍数的测量}
-电压放大倍数 $A_v$ 是衡量放大电路放大能力的核心指标，定义为输出电压有效值 $V_o$ 与输入电压有效值 $V_i$ 之比。
-\begin{equation}
-    A_v = \frac{V_o}{V_i}
-    \label{eq:Av}
-\end{equation}
-电压放大倍数的值会受到负载电阻 $R_L$ 的影响。
-% ==================================================
-% Section 1.3: 电路方案与元器件
-% ==================================================
-\section{电路方案与元器件}
 
-\subsection{电路原理图}
-本实验所采用的单级共射极放大器电路如图 \ref{fig:circuit1} 所示。电路采用 NPN 型三极管 2N3904 作为核心放大元件，并配置了分压式偏置电路以提供稳定的静态工作点。其中，Rp 为可变电阻，用于精细调节基极偏置电压，从而找到最佳静态工作点。
+% =================================================
+% 第一部分：电路方案
+% =================================================
+\section{电路方案}
+\label{sec:scheme}
 
-\begin{figure}[H]
+本实验所采用的共射放大电路如图 \ref{fig:circuit} 所示。该电路采用分压式偏置，并通过在发射极串联电阻的方式稳定静态工作点。电路中各元器件的参数与作用如表 \ref{tab:components} 所示。
+
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/1_Co_shot/circuit_exp1.png}
-    \caption{实验一：单级共射极放大器电路原理图}
-    \label{fig:circuit1}
+    \caption{共射放大电路原理图}
+    \label{fig:circuit}
 \end{figure}
 
-\subsection{电路元器件}
-电路中各元器件的详细参数及作用如表 \ref{tab:components1} 所示。
-
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \caption{电路元器件清单}
-    \label{tab:components1}
+    \label{tab:components}
     \begin{tabular}{lll}
         \toprule
         \textbf{元件符号} & \textbf{参数值} & \textbf{作用} \\
         \midrule
         Q2 & 2N3904 & NPN型三极管，核心放大元件 \\
-        Rp & \SI{47}{\kilo\ohm} & 可变电阻，调节静态工作点 \\
+        Rp & \SI{47}{\kilo\ohm} & 可变电阻，用于精细调节静态工作点 \\
         R1, R2 & \SI{5.1}{\kilo\ohm} & 基极分压偏置电阻 \\
         Rc1 & \SI{2}{\kilo\ohm} & 集电极负载电阻 \\
         Re3, Re4 & \SI{1}{\kilo\ohm}, \SI{100}{\ohm} & 发射极电阻，稳定静态工作点 \\
@@ -145,84 +116,242 @@
     \end{tabular}
 \end{table}
 
-\subsection{实验仪器与设备}
-本实验所需仪器与设备清单如表 \ref{tab:instruments1} 所示。
-
-\begin{table}[H]
-    \centering
-    \caption{实验仪器与设备清单}
-    \label{tab:instruments1}
-    \begin{tabular}{ll}
-        \toprule
-        \textbf{仪器名称} & \textbf{数量} \\
-        \midrule
-        双路直流稳压电源 & 1台 \\
-        函数信号发生器 & 1台 \\
-        双踪示波器 & 1台 \\
-        数字万用表 & 1台 \\
-        模拟电路实验箱 & 1台 \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-
-% ==================================================
-% Section 1.4: 分析与计算 (已更新)
-% ==================================================
-\section{分析与计算}
-\label{sec:exp1_analysis}
-
-本节对电路的静态工作点 (Q-point) 进行理论估算，并分析实验任务中 V1 与 V2 的关系，为后续的实验测量提供理论参考。计算基于实验中为获得最佳输出而设定的可变电阻值 $R_p = \SI{5.17}{\kilo\ohm}$。
-
-\subsection{静态工作点 (Q-point) 估算}
-静态工作点由集电极直流电流 $I_{CQ}$ 和集电极-发射极直流电压 $V_{CEQ}$ 共同确定。
-
-\textbf{1. 计算基极电压 $V_B$ (对应实验任务中的 V2)}
-
-在输入信号接地时（即无交流输入），基极的静态直流电压 V2 由电阻 $R_p, R_1$ 和 $R_2$ 构成的分压电路决定。
-\begin{align}
-    V_2 = V_B &= V_{CC} \times \frac{R_2}{(R_p + R_1) + R_2} \nonumber \\
-        &= \SI{12}{\volt} \times \frac{\SI{5.1}{\kilo\ohm}}{(\SI{5.17}{\kilo\ohm} + \SI{5.1}{\kilo\ohm}) + \SI{5.1}{\kilo\ohm}} \nonumber \\
-        &= \SI{12}{\volt} \times \frac{5.1}{15.37} \approx \SI{3.97}{\volt} \label{eq:V2_calc}
-\end{align}
-
-\textbf{2. 计算发射极与集电极参数}
-
-假设晶体管导通时基极-发射极电压 $V_{BE} = \SI{0.7}{\volt}$，发射极总电阻 $R_E = R_{e3} + R_{e4} = \SI{1.1}{\kilo\ohm}$。
-\begin{align*}
-    V_E &= V_B - V_{BE} = \SI{3.97}{\volt} - \SI{0.7}{\volt} = \SI{3.27}{\volt} \\
-    I_{EQ} &= \frac{V_E}{R_E} = \frac{\SI{3.27}{\volt}}{\SI{1.1}{\kilo\ohm}} \approx \SI{2.97}{\milli\ampere}
-\end{align*}
-假设 $\beta$ 足够大，$I_{CQ} \approx I_{EQ} = \SI{2.97}{\milli\ampere}$。
-\begin{align*}
-    V_C &= V_{CC} - I_{CQ} \times R_{c1} = \SI{12}{\volt} - \SI{2.97}{\milli\ampere} \times \SI{2}{\kilo\ohm} = \SI{6.06}{\volt} \\
-    V_{CEQ} &= V_C - V_E = \SI{6.06}{\volt} - \SI{3.27}{\volt} = \SI{2.79}{\volt}
-\end{align*}
-\textbf{理论静态工作点：} $Q(\SI{2.97}{\milli\ampere}, \SI{2.79}{\volt})$。
-
-\subsection{V1 与 V2 关系分析}
-根据实验任务要求，V1 是在有交流信号输入时，用示波器直流耦合模式测得的基极正弦波的直流偏置电压；V2 是输入信号接地时，用万用表测得的基极直流电压。
-
-\textbf{理论预测：V1 = V2}。
-
-\textbf{原因分析：}
-输入信号 $v_i$ 是通过耦合电容 C3 连接到三极管基极的。电容器的核心特性是“隔直流，通交流”。这意味着：
+\paragraph{备注：}
 \begin{itemize}
-    \item \textbf{直流通路：} 对于电路的直流偏置而言，电容 C3 相当于开路。因此，基极的直流电压完全由 $V_{CC}$ 和分压电阻 $R_p, R_1, R_2$ 决定，与是否有输入信号无关。
-    \item \textbf{交流通路：} 交流信号 $v_i$ 可以通过电容 C3 叠加在基极的直流电压之上。
+    \item 在实际测试中，滑动变阻器 Rp 接入电路的有效阻值为 \SI{3.7}{\kilo\ohm}。
+    \item 在进行第二部分实验（测量输入输出电阻及幅频特性）时，为便于测量，在输入耦合电容 C3 前串联了一个 \SI{1}{\kilo\ohm} 的电阻 Rs。
 \end{itemize}
-因此，示波器在直流耦合模式下观察到的基极波形，应该是一个交流正弦波叠加在一个直流分量上。这个直流分量就是 V1，它在数值上应该等于纯直流状态下的基极电压 V2。实验中测量 V1 和 V2，正是为了验证耦合电容的隔直流特性以及放大电路静态与动态的独立性。
 
+% =================================================
+% 第二部分：分析与计算
+% =================================================
+\section{分析与计算}
+\label{sec:analysis}
 
+本章节旨在通过理论计算，分析电路的静态工作点与交流动态参数，为实验测量提供理论依据。
+
+\subsection{静态工作点(Q点)估算}
+
+静态工作点的设置是为了保证三极管工作在放大区，避免信号失真。我们首先计算基极、集电极的静态电流以及集电极与发射极之间的静态电压。
+
+\paragraph{计算前提与假设：}
+\begin{itemize}
+    \item 晶体管 Q2 (2N3904) 的电流放大系数 $\beta$ 设为典型值 150。
+    \item 基极-发射极导通电压 $V_{BEQ} = \SI{0.7}{\volt}$。
+    \item 电源电压 $V_{CC} = \SI{12}{\volt}$。
+    \item 根据实验条件，滑动变阻器 Rp 的有效阻值为 $R_{p,eff} = \SI{3.7}{\kilo\ohm}$。
+    \item 发射极总电阻 $R_E = R_{e3} + R_{e4} = \SI{1}{\kilo\ohm} + \SI{100}{\ohm} = \SI{1.1}{\kilo\ohm}$。
+\end{itemize}
+
+\paragraph{1. 基极等效电路计算：}
+利用戴维南定理，计算基极偏置电路的等效电压 $V_{BB}$ 和等效电阻 $R_{BB}$。
+\begin{align*}
+    V_{BB} &= \frac{R_2}{R_p + R_1 + R_2} V_{CC} \\
+           &= \frac{\SI{5.1}{\kilo\ohm}}{\SI{3.7}{\kilo\ohm} + \SI{5.1}{\kilo\ohm} + \SI{5.1}{\kilo\ohm}} \times \SI{12}{\volt} \approx \SI{4.40}{\volt} \\
+    R_{BB} &= (R_p + R_1) \parallel R_2 \\
+           &= (\SI{3.7}{\kilo\ohm} + \SI{5.1}{\kilo\ohm}) \parallel \SI{5.1}{\kilo\ohm} = \SI{8.8}{\kilo\ohm} \parallel \SI{5.1}{\kilo\ohm} \approx \SI{3.23}{\kilo\ohm}
+\end{align*}
+
+\paragraph{2. 静态电流与电压计算：}
+根据基极-发射极回路的KVL方程，计算基极静态电流 $I_{BQ}$。
+\begin{align*}
+    I_{BQ} &= \frac{V_{BB} - V_{BEQ}}{R_{BB} + (1+\beta)R_E} \\
+           &= \frac{\SI{4.40}{\volt} - \SI{0.7}{\volt}}{\SI{3.23}{\kilo\ohm} + (1+150) \times \SI{1.1}{\kilo\ohm}} \approx \SI{21.8}{\micro\ampere}
+\end{align*}
+由此可得集电极静态电流 $I_{CQ}$ 和发射极静态电流 $I_{EQ}$：
+\begin{align*}
+    I_{CQ} &= \beta I_{BQ} = 150 \times \SI{21.8}{\micro\ampere} \approx \SI{3.27}{\milli\ampere} \\
+    I_{EQ} &= (1+\beta) I_{BQ} \approx I_{CQ} = \SI{3.27}{\milli\ampere}
+\end{align*}
+最后，根据集电极-发射极回路的KVL方程，计算管压降 $V_{CEQ}$。
+\begin{align*}
+    V_{CEQ} &= V_{CC} - I_{CQ}R_{c1} - I_{EQ}R_E \\
+            &\approx V_{CC} - I_{CQ}(R_{c1} + R_E) \\
+            &= \SI{12}{\volt} - \SI{3.27}{\milli\ampere} \times (\SI{2}{\kilo\ohm} + \SI{1.1}{\kilo\ohm}) \approx \SI{1.86}{\volt}
+\end{align*}
+由于 $V_{CEQ} \approx \SI{1.86}{\volt} > V_{CE,sat} (\approx \SI{0.2}{\volt})$，因此晶体管工作在放大区，静态工作点设置合理。
+
+\subsection{交流动态特性分析}
+
+基于静态工作点，我们可以建立交流小信号模型，估算电路的电压放大倍数 $A_u$、输入电阻 $R_i$ 和输出电阻 $R_o$。
+
+\paragraph{1. 晶体管交流参数：}
+首先计算晶体管的发射结动态电阻 $r_{be}$。
+\begin{align*}
+    r_e &= \frac{V_T}{I_{EQ}} \approx \frac{\SI{26}{\milli\volt}}{\SI{3.27}{\milli\ampere}} \approx \SI{7.95}{\ohm} \\
+    r_{be} &= (1+\beta)r_e = (1+150) \times \SI{7.95}{\ohm} \approx \SI{1.20}{\kilo\ohm}
+\end{align*}
+
+\paragraph{2. 电压放大倍数 $A_u$：}
+在交流通路中，电容 $C_{e1}$ 旁路了电阻 $R_{e3}$，因此交流发射极电阻为 $R_{e4}$。交流负载为 $R_{c1}$ 和 $R_{L1}$ 的并联。
+\begin{align*}
+    R'_L &= R_{c1} \parallel R_{L1} = \SI{2}{\kilo\ohm} \parallel \SI{1}{\kilo\ohm} = \frac{2 \times 1}{2+1}\,\si{\kilo\ohm} \approx \SI{667}{\ohm} \\
+    A_u &= -\frac{\beta R'_L}{r_{be} + (1+\beta)R_{e4}} \\
+        &= -\frac{150 \times \SI{667}{\ohm}}{\SI{1.20}{\kilo\ohm} + (1+150) \times \SI{100}{\ohm}} \approx -5.81
+\end{align*}
+理论计算的电压放大倍数约为 -5.81，负号表示输出信号与输入信号反相。
+
+\paragraph{3. 输入电阻 $R_i$：}
+放大电路的输入电阻是基极偏置等效电阻 $R_{BB}$ 与晶体管输入电阻 $R_{ib}$ 的并联。
+\begin{align*}
+    R_{ib} &= r_{be} + (1+\beta)R_{e4} = \SI{1.20}{\kilo\ohm} + (1+150) \times \SI{100}{\ohm} = \SI{16.3}{\kilo\ohm} \\
+    R_i &= R_{BB} \parallel R_{ib} = \SI{3.23}{\kilo\ohm} \parallel \SI{16.3}{\kilo\ohm} \approx \SI{2.70}{\kilo\ohm}
+\end{align*}
+
+\paragraph{4. 输出电阻 $R_o$：}
+放大电路的输出电阻约等于集电极电阻 $R_{c1}$。
+\begin{equation*}
+    R_o \approx R_{c1} = \SI{2}{\kilo\ohm}
+\end{equation*}
+
+% =================================================
+% 第三部分：测试方案与测试结果
+% =================================================
 \section{测试方案与测试结果}
-\label{sec:exp1_test}
-% 在这里填充“测试方案与测试结果”部分的内容。
+\label{sec:results}
 
-% --- 后续实验章节的占位符 ---
-% \chapter{实验二：...}
-% \label{chap:exp2}
+本章节将详细描述实验的测试流程，展示并分析测量数据，最后将实验结果与理论值进行对比。以下是实际电路连接的照片，如图 \ref{fig:actual_circuit} 所示。
 
-% \chapter{实验三：...}
-% \label{chap:exp3}
+\begin{figure}[H] 
+    \centering
+    \includegraphics[width=0.3\textwidth]{figures/1_Co_shot/actual_circuit.jpg}
+    \caption{实际电路连接照片}
+    \label{fig:actual_circuit}
+\end{figure}
+
+\subsection{第一部分：静态工作点与电压放大倍数}
+
+\paragraph{1. 测试方案：}
+使用直流电源提供 $\pm\SI{12}{\volt}$ 的工作电压。信号发生器产生一个频率为 \SI{1}{\kilo\hertz} 的正弦波作为输入信号 $v_i$。通过调节信号发生器的幅度和可变电阻 Rp，在示波器上观察输出信号 $v_o$，直至其上下削波（饱和失真与截止失真）的幅度基本对称，此时电路的静态工作点达到最优。该状态下的波形如图 \ref{fig:q_point} 所示。
+
+\begin{figure}[H] % 使用 [H] 强制图片在此处显示
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/1_Co_shot/scope_q_point.jpg}
+    \caption{输出波形达到最大不失真动态范围（最佳Q点）}
+    \label{fig:q_point}
+\end{figure}
+
+\paragraph{2. 电压放大倍数测量：}
+在最佳工作点下，使用万用表的交流电压档（有效值）测量输入电压 $V_i$ 和输出电压 $V_o$，测量读数如图 \ref{fig:volt_gain_measure} 所示。
+\begin{itemize}
+    \item 输入电压有效值 $V_i = \SI{34.388}{\milli\volt}$
+    \item 输出电压有效值 $V_o = \SI{207.219}{\milli\volt}$
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/1_Co_shot/av2.jpg}
+        \caption{输入电压 $V_i$ 测量}
+        \label{fig:vi_gain}
+    \end{subfigure}
+    \hfill % 水平填充
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/1_Co_shot/av1.jpg}
+        \caption{输出电压 $V_o$ 测量}
+        \label{fig:vo_gain}
+    \end{subfigure}
+    \caption{电压放大倍数测量读数}
+    \label{fig:volt_gain_measure}
+\end{figure}
+
+电压放大倍数 $A_u$ 的计算如下：
+\begin{equation}
+    A_u = \frac{V_o}{V_i} = \frac{\SI{207.219}{\milli\volt}}{\SI{34.388}{\milli\volt}} \approx 6.03
+\end{equation}
+实验测得的电压放大倍数约为 6.03。其理论计算值为 -5.81，两者绝对值大小接近，差异可能源于晶体管 $\beta$ 值的实际偏差。
+
+\paragraph{3. 静态基极电压测量与分析：}
+分别测量在有交流信号输入时（示波器直流耦合读数）和输入端接地时（万用表直流电压档读数）的基极直流电压。
+\begin{itemize}
+    \item 有信号输入时基极直流偏置 $V_1 = \SI{4.2234}{\volt}$
+    \item 输入信号接地时基极直流电压 $V_2 = \SI{4.2068}{\volt}$
+\end{itemize}
+\textbf{分析：} 理论上，一个设计良好的偏置电路，其静态工作点不应受到小信号交流输入的影响。实验测得 $V_1$ 和 $V_2$ 的值非常接近，相对误差仅为 $0.4\%$，这证明了本电路静态工作点的稳定性。
+
+\subsection{第二部分：输入/输出电阻与幅频特性}
+
+\paragraph{测试说明：}
+为便于测量输入电阻，本部分实验在输入耦合电容 C3 前串联了一个 $R_s = \SI{1}{\kilo\ohm}$ 的已知电阻，但包括输出电阻在内的其他元件并未改动（未按照PPT上的仿真电路修改）。
+
+\paragraph{1. 输入电阻 $R_i$ 测量：}
+根据测试方法，测量串联电阻 $R_s$ 两端的电压 $V_{Rs}$ 和放大电路输入端的电压 $V_i$。
+\begin{itemize}
+    \item 串联电阻两端电压 $V_{Rs} = \SI{25.716}{\milli\volt}$
+    \item 电路输入端电压 $V_i = \SI{390.65}{\milli\volt}$
+\end{itemize}
+输入电阻 $R_i$ 计算如下：
+\begin{equation}
+    R_i = \frac{V_i}{I_i} = \frac{V_i}{V_{Rs} / R_s} = \frac{V_i}{V_{Rs}} \times R_s = \frac{\SI{390.65}{\milli\volt}}{\SI{25.716}{\milli\volt}} \times \SI{1}{\kilo\ohm} \approx \SI{15.19}{\kilo\ohm}
+\end{equation}
+实验测得输入电阻约为 \SI{15.19}{\kilo\ohm}，与理论值 \SI{2.70}{\kilo\ohm} 存在较大差异。这主要是因为理论计算中采用的晶体管 $\beta$ 值 (150) 可能远小于实际值。
+
+\paragraph{2. 输出电阻 $R_o$ 测量：}
+测量空载（断开 $R_{L1}$）时的输出电压 $V_o$ 和接入负载 $R_{L1} = \SI{1}{\kilo\ohm}$ 时的输出电压 $V_L$。测量读数如图 \ref{fig:res_out_measure} 所示。
+\begin{itemize}
+    \item 空载输出电压 $V_o = \SI{155.693}{\milli\volt}$
+    \item 带载输出电压 $V_L = \SI{116.472}{\milli\volt}$
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/1_Co_shot/vo.jpg}
+        \caption{空载输出电压 $V_o$ 测量}
+        \label{fig:vo_noload}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/1_Co_shot/vl.jpg}
+        \caption{带载输出电压 $V_L$ 测量}
+        \label{fig:vl_load}
+    \end{subfigure}
+    \caption{输出电阻测量读数}
+    \label{fig:res_out_measure}
+\end{figure}
+
+根据电压分压原理，输出电阻 $R_o$ 计算如下：
+\begin{equation}
+    R_o = \left( \frac{V_o}{V_L} - 1 \right) \times R_{L1} = \left( \frac{\SI{155.693}{\milli\volt}}{\SI{116.472}{\milli\volt}} - 1 \right) \times \SI{1}{\kilo\ohm} \approx \SI{337}{\ohm}
+\end{equation}
+实验测得输出电阻约为 \SI{337}{\ohm}，远小于理论估算值 \SI{2}{\kilo\ohm}。这是因为理论计算 $R_o \approx R_{c1}$ 是一个粗略近似，实际的输出电阻是 $R_{c1}$ 与晶体管自身输出电阻 $r_{ce}$ 的并联值。
+
+\paragraph{3. 幅频特性与带宽：}
+在 \SI{1}{\kilo\hertz} 中频段，测得输出电压峰峰值为 $V_{opp,mid} = \SI{466.58}{\milli\volt}$。根据 $-3\text{dB}$ 定义，截止频率点对应的输出电压峰峰值为 $V_{opp, -3dB} \approx \SI{329.9}{\milli\volt}$。通过扫频测量，找到截止频率点，其示波器截图如图 \ref{fig:freq_response} 所示。
+\begin{itemize}
+    \item \textbf{低频截止频率 $f_L$：} 在 $f = \SI{25}{\hertz}$ 时，测得 $V_{opp} = \SI{332.54}{\milli\volt}$。
+    \item \textbf{高频截止频率 $f_H$：} 在 $f = \SI{1.8}{\mega\hertz}$ 时，测得 $V_{opp} = \SI{324.53}{\milli\volt}$。
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/1_Co_shot/25hz.jpg}
+        \caption{低频截止频率 $f_L$ 处波形}
+        \label{fig:low_cutoff}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/1_Co_shot/1.8mhz.jpg}
+        \caption{高频截止频率 $f_H$ 处波形}
+        \label{fig:high_cutoff}
+    \end{subfigure}
+    \caption{上下截止频率测量}
+    \label{fig:freq_response}
+\end{figure}
+
+因此，该放大电路的通频带宽度 BW 为：
+\begin{equation}
+    \text{BW} = f_H - f_L = \SI{1.8}{\mega\hertz} - \SI{25}{\hertz} \approx \SI{1.8}{\mega\hertz}
+\end{equation}
+
+
+
 
 \end{document}
