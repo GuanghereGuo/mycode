@@ -275,31 +275,36 @@
 
 \paragraph{测试说明：}
 为便于测量输入电阻，本部分实验在输入耦合电容 C3 前串联了一个 $R_s = \SI{1}{\kilo\ohm}$ 的已知电阻，但包括输出电阻在内的其他元件并未改动（未按照PPT上的仿真电路修改）。
-
 \paragraph{1. 输入电阻 $R_i$ 测量：}
-根据测试方法，测量串联电阻 $R_s$ 两端的电压 $V_{Rs}$ 和放大电路输入端的电压 $V_i$。
+根据测试方法，测量信号源电压 $V_s$ 和放大电路输入端电压 $V_i$。
 \begin{itemize}
-    \item 串联电阻两端电压 $V_{Rs} = \SI{25.716}{\milli\volt}$
-    \item 电路输入端电压 $V_i = \SI{390.65}{\milli\volt}$
+    \item 信号源电压 $V_s = \SI{33.898}{\milli\volt}$
+    \item 电路输入端电压 $V_i = \SI{32.021}{\milli\volt}$
 \end{itemize}
-输入电阻 $R_i$ 计算如下：
+输入电流 $I_i$ 为流过串联电阻 $R_s = \SI{1}{\kilo\ohm}$ 的电流，即 $I_i = (V_s - V_i) / R_s$。因此输入电阻 $R_i$ 计算如下：
 \begin{equation}
-    R_i = \frac{V_i}{I_i} = \frac{V_i}{V_{Rs} / R_s} = \frac{V_i}{V_{Rs}} \times R_s = \frac{\SI{390.65}{\milli\volt}}{\SI{25.716}{\milli\volt}} \times \SI{1}{\kilo\ohm} \approx \SI{15.19}{\kilo\ohm}
+    R_i = \frac{V_i}{I_i} = \frac{V_i}{(V_s - V_i) / R_s} = \frac{\SI{32.021}{\milli\volt}}{(\SI{33.898}{\milli\volt} - \SI{32.021}{\milli\volt})} \times \SI{1}{\kilo\ohm} \approx \SI{17.06}{\kilo\ohm}
 \end{equation}
-实验测得输入电阻约为 \SI{15.19}{\kilo\ohm}，与理论值 \SI{2.70}{\kilo\ohm} 存在较大差异。这主要是因为理论计算中采用的晶体管 $\beta$ 值 (150) 可能远小于实际值。
+实验测得输入电阻约为 \SI{17.06}{\kilo\ohm}。该值与理论计算值 \SI{2.70}{\kilo\ohm} 存在较大差异，这主要是因为理论计算中采用的晶体管 $\beta$ 值 (150) 可能远小于实际值。输入电阻对 $\beta$ 值非常敏感，较高的 $\beta$ 值会显著增大晶体管的动态电阻 $r_{be}$，从而导致整体输入电阻 $R_i$ 增大。
 
 \paragraph{2. 输出电阻 $R_o$ 测量：}
-测量空载（断开 $R_{L1}$）时的输出电压 $V_o$ 和接入负载 $R_{L1} = \SI{1}{\kilo\ohm}$ 时的输出电压 $V_L$。测量读数如图 \ref{fig:res_out_measure} 所示。
+测量空载时的输出电压 $V_o$ 和接入负载 $R_{L} = \SI{2}{\kilo\ohm}$ 时的输出电压 $V_L$。
 \begin{itemize}
-    \item 空载输出电压 $V_o = \SI{155.693}{\milli\volt}$
-    \item 带载输出电压 $V_L = \SI{116.472}{\milli\volt}$
+    \item 空载输出电压 $V_o = \SI{207.219}{\milli\volt}$
+    \item 带载输出电压 $V_L = \SI{116.47}{\milli\volt}$
 \end{itemize}
+根据电压分压原理，输出电阻 $R_o$ 计算如下：
+根据电压分压原理，输出电阻 $R_o$ 计算如下：
+\begin{equation}
+    R_o = \left( \frac{V_o}{V_L} - 1 \right) \times R_{L1} = \left( \frac{\SI{207.219}{\milli\volt}}{\SI{116.472}{\milli\volt}} - 1 \right) \times \SI{2}{\kilo\ohm} \approx \SI{1.567}{\kilo\ohm}
+\end{equation}
+实验测得输出电阻约为 \SI{1.567}{\kilo\ohm}，该测量结果与理论估算值 $R_o \approx R_{c1} = \SI{2}{\kilo\ohm}$ 基本吻合，验证了理论分析的准确性。
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{figures/1_Co_shot/vo.jpg}
+        \includegraphics[width=\textwidth]{figures/1_Co_shot/av1.jpg}
         \caption{空载输出电压 $V_o$ 测量}
         \label{fig:vo_noload}
     \end{subfigure}
@@ -313,12 +318,6 @@
     \caption{输出电阻测量读数}
     \label{fig:res_out_measure}
 \end{figure}
-
-根据电压分压原理，输出电阻 $R_o$ 计算如下：
-\begin{equation}
-    R_o = \left( \frac{V_o}{V_L} - 1 \right) \times R_{L1} = \left( \frac{\SI{155.693}{\milli\volt}}{\SI{116.472}{\milli\volt}} - 1 \right) \times \SI{1}{\kilo\ohm} \approx \SI{337}{\ohm}
-\end{equation}
-实验测得输出电阻约为 \SI{337}{\ohm}，远小于理论估算值 \SI{2}{\kilo\ohm}。这是因为理论计算 $R_o \approx R_{c1}$ 是一个粗略近似，实际的输出电阻是 $R_{c1}$ 与晶体管自身输出电阻 $r_{ce}$ 的并联值。
 
 \paragraph{3. 幅频特性与带宽：}
 在 \SI{1}{\kilo\hertz} 中频段，测得输出电压峰峰值为 $V_{opp,mid} = \SI{466.58}{\milli\volt}$。根据 $-3\text{dB}$ 定义，截止频率点对应的输出电压峰峰值为 $V_{opp, -3dB} \approx \SI{329.9}{\milli\volt}$。通过扫频测量，找到截止频率点，其示波器截图如图 \ref{fig:freq_response} 所示。
