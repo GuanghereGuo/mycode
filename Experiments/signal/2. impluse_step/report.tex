@@ -1,0 +1,249 @@
+\documentclass{ctexart}
+\usepackage{amsmath} % 用于数学公式
+\usepackage{graphicx} % 用于插入图片
+\usepackage{listings} % 用于插入代码
+\usepackage{float}    % 用于控制图表浮动位置
+
+\usepackage{booktabs} % 用于创建更美观的三线表
+\usepackage{siunitx}  % 用于标准地排版物理单位和数值
+\usepackage{amsmath}  % 用于数学公式环境
+\sisetup{per-mode=symbol} % 设置单位格式，例如 m/s
+
+\usepackage{fancyhdr}   % 用于自定义页眉页脚
+\usepackage{caption}   % 用于自定义图表标题
+\usepackage{subcaption} % 用于子图环境
+\usepackage{hyperref}  % 用于创建超链接
+
+\graphicspath{{./figures/}}
+
+\usepackage[left=2cm, right=2cm, top=2cm, bottom=2cm]{geometry}
+
+\setlength{\jot}{6pt} % 增加多行公式之间的行距
+
+\linespread{1.5}
+
+\pagestyle{fancy}
+
+\begin{document}
+
+% \maketitle
+\thispagestyle{empty}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=13cm]{./figures/logo1.png}
+\end{figure}
+
+\vspace*{\fill}
+    \begin{center}
+        \Huge\textbf{实验2：冲激响应和阶跃响应}
+    \end{center}
+\vspace*{\fill}
+
+\begin{table}[b]
+    \centering
+    \large
+    \begin{tabular}{ll}
+    \textbf{课程:} & 信号与系统实验 \\
+    \textbf{姓名:} & 郭浩然 \\
+    \textbf{学号:} & 2024303980 \\
+    \textbf{桌号:} & 18 \\
+    \textbf{班级:} & 10班 \\
+    \textbf{学院:} & 民航学院 \\
+    \textbf{专业:} & 飞行器控制与信息工程 \\
+    \textbf{时间:} & \today \\
+    \end{tabular}
+\end{table}
+
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{实验目的}
+\begin{enumerate}
+    \item 学习并理解线性时不变（LTI）系统阶跃响应和冲激响应的基本概念。
+    \item 观察二阶RLC串联电路在不同阻尼条件下（欠阻尼、临界阻尼、过阻尼）的阶跃响应波形。
+    \item 掌握在欠阻尼状态下，测量系统阶跃响应动态性能指标的方法，如上升时间($t_r$)、峰值时间($t_p$)、调节时间($t_s$)和最大超调量($\delta_p$)。
+    \item 观察电路的冲激响应波形，并探究其与阶跃响应之间的关系。
+\end{enumerate}
+
+\section{实验器材}
+本实验所使用的主要器材与模块清单如下：
+\begin{itemize}
+    \item 信号源及频率计模块 S2 \quad 1 块
+    \item 一阶网络模块 S5 \quad 1 块
+    \item 数字万用表 \quad 1 台
+    \item 双踪示波器 \quad 1 台
+\end{itemize}
+
+其中，核心的信号源模块与网络模块如下图 \ref{fig:modules} 所示。
+
+\begin{figure}[htbp]
+    \centering % 整体居中
+    
+    % 第一个子图
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{s2.jpg} % 图片宽度充满子图宽度
+        \caption{信号源及频率计模块 S2}
+        \label{fig:s2_sub}
+    \end{subfigure}
+    \hfill % 在两个子图之间添加弹性空白，使其左右散开
+    % 第二个子图
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{s5.jpg}
+        \caption{一阶网络模块 S5}
+        \label{fig:s5_sub}
+    \end{subfigure}
+    
+    \caption{实验核心模块} % 整个图的总标题
+    \label{fig:modules}
+\end{figure}
+
+\section{实验原理}
+
+\subsection{基本概念}
+对于一个线性时不变（LTI）系统，其动态特性可以通过系统对特定输入信号的响应来描述。其中，最基本的两种响应是单位冲激响应和单位阶跃响应。
+
+\begin{itemize}
+    \item \textbf{单位冲激响应}: 当输入信号为单位冲激函数 $\delta(t)$ 时，系统产生的零状态响应称为单位冲激响应，记为 $h(t)$。如图 \ref{fig:impulse_response} 所示。
+    \item \textbf{单位阶跃响应}: 当输入信号为单位阶跃函数 $u(t)$ 时，系统产生的零状态响应称为单位阶跃响应，记为 $g(t)$。如图 \ref{fig:step_response} 所示。
+\end{itemize}
+
+冲激响应与阶跃响应之间存在密切的微积分关系：阶跃响应是冲激响应的积分，而冲激响应是阶跃响应的导数。
+\[ g(t) = \int_{0}^{t} h(\tau) d\tau \quad \Leftrightarrow \quad h(t) = \frac{d g(t)}{dt} \]
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig_impulse_response.png}
+        \caption{冲激响应示意图}
+        \label{fig:impulse_response}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig_step_response.png}
+        \caption{阶跃响应示意图}
+        \label{fig:step_response}
+    \end{subfigure}
+    \caption{LTI 系统的基本响应}
+    \label{fig:lti_responses}
+\end{figure}
+
+
+\subsection{RLC 串联电路的响应分析}
+本实验研究的对象是二阶 RLC 串联电路，其阶跃响应与冲激响应的电路连接如图 \ref{fig:rlc_circuits} 所示。根据电阻 $R$、电感 $L$ 和电容 $C$ 的取值不同，系统的响应会呈现出三种不同的状态：
+\begin{enumerate}
+    \item \textbf{过阻尼状态}: 当 $R > 2\sqrt{\frac{L}{C}}$ 时，响应曲线无振荡，缓慢上升至稳态值。
+    \item \textbf{临界阻尼状态}: 当 $R = 2\sqrt{\frac{L}{C}}$ 时，响应以最快的速度到达稳态值且无超调。
+    \item \textbf{欠阻尼状态}: 当 $R < 2\sqrt{\frac{L}{C}}$ 时，响应曲线将出现振荡和超调现象。
+\end{enumerate}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{fig_rlc_circuits.png}
+    \caption{RLC 串联电路连接示意图}
+    \label{fig:rlc_circuits}
+\end{figure}
+
+
+\subsection{动态性能指标}
+对于欠阻尼二阶系统的阶跃响应，通常使用一系列动态性能指标来衡量其响应的快速性和稳定性，如图 \ref{fig:indicators} 所示。
+\begin{description}
+    \item[上升时间 ($t_r$)] 响应从稳态值的 10\% 上升到 90\% 所需的时间（或从0首次到达稳态值的时间）。
+    \item[峰值时间 ($t_p$)] 响应从开始上升到第一个峰值点所需的时间。
+    \item[调节时间 ($t_s$)] 响应进入并保持在稳态值的 $\pm 5\%$ (或 $\pm 2\%$) 误差带内所需的最短时间。
+    \item[最大超调量 ($\delta_p$)] 响应的最大峰值 $y_{\max}$ 超出其稳态值 $y(\infty)$ 的百分比，计算公式为：
+    \[ \delta_p = \frac{y_{\max} - y(\infty)}{y(\infty)} \times 100\% \]
+\end{description}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{fig_indicators.png}
+    \caption{欠阻尼响应动态性能指标示意图}
+    \label{fig:indicators}
+\end{figure}
+
+
+\section{实验步骤}
+
+\subsection{任务一：阶跃响应实验波形观察与参数测量}
+\begin{enumerate}
+    \item \textbf{设置激励信号与连线：}
+    \begin{enumerate}
+        \item 在信号源及频率计模块 S2 上，将激励信号源设置为方波。通过调节频率调节旋钮 ROL1，使频率计示数为 \SI{500}{\hertz}。
+        \item 按照图 \ref{fig:rlc_circuits} (a) 所示，使用导线将模块 S2 的方波信号输出端 P2 连接至模块 S5 的输入端 P12。
+    \end{enumerate}
+    
+    \item \textbf{观察与测量：}
+    \begin{enumerate}
+        \item 将示波器探头 CH1 连接至模块 S5 的输出测试点 TP14，用于观察响应波形。
+        \item 将示波器探头 CH2 连接至模块 S5 的输入测试点 TP12，用于观察输入方波，方便与输出波形进行对比。
+        \item 调节模块 S5 上的可变电阻 W1，使电路分别工作于\textbf{欠阻尼}、\textbf{临界阻尼}和\textbf{过阻尼}三种状态。观察并记录示波器上 CH1 显示的输出波形。
+        \item 对于每一种状态，\textbf{断开电源}，使用数字万用表测量并记录 P12 和 P13 两点间的电阻值。将测量结果和波形特征填入表 \ref{tab:step_response_data} 中。
+    \end{enumerate}
+\end{enumerate}
+
+\begin{table}[htbp]
+    \centering
+    \caption{阶跃响应参数测量记录表}
+    \label{tab:step_response_data}
+    \begin{tabular}{l|ccc}
+        \toprule
+        \textbf{状态} & \textbf{欠阻尼状态} & \textbf{临界状态} & \textbf{过阻尼状态} \\
+        \textbf{参数测量} & $R < 2\sqrt{\frac{L}{C}}$ & $R = 2\sqrt{\frac{L}{C}}$ & $R > 2\sqrt{\frac{L}{C}}$ \\
+        \midrule
+        电阻测量值 R= & (待填充) & (待填充) & (待填充) \\
+        TP12 激励波形 & (待填充) & (待填充) & (待填充) \\
+        TP14 响应波形 & (待填充) & (待填充) & (待填充) \\
+        \bottomrule
+    \end{tabular}
+    \begin{flushleft}
+        \footnotesize \quad \textit{注：绘制波形时要使三种状态的 X 轴坐标（扫描时间）一致。}
+    \end{flushleft}
+\end{table}
+
+
+\subsection{任务二：冲激响应的波形观察}
+冲激信号在物理上难以实现，但由于其与阶跃信号的微分关系，可以通过将阶跃信号输入一个微分电路来近似获得。
+\begin{enumerate}
+    \item \textbf{电路连接：} 按照图 \ref{fig:rlc_circuits} (b) 所示连接电路。将模块 S2 输出的 \SI{500}{\hertz} 方波信号接入模块 S5 的 P10 输入端。
+    \item \textbf{波形观察：} 将示波器探头 CH1 连接至测试点 TP11，观察电路的冲激响应波形。同时可将 CH2 接至 TP10 观察输入信号。
+\end{enumerate}
+
+\newpage
+
+
+\section{信号的 Matlab 仿真与分析}
+
+本章节展示了使用 Matlab 对一系列信号进行仿真和变换的结果。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{T1.eps}
+    \caption{题目 1：连续时间信号波形}
+    \label{fig:T1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{T2.eps}
+    \caption{题目 2：信号 f(t) 的基本变换}
+    \label{fig:T2}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{T3.eps}
+    \caption{题目 3：复信号 $f(t) = 2e^{j(t+\pi/4)}$ 的各分量}
+    \label{fig:T3}
+\end{figure}
+
+
+\section{实验总结}
+..
+
+\end{document}

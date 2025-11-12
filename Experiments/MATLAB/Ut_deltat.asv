@@ -1,0 +1,17 @@
+% t = -4:0.01:4;
+% ut = stepfun(t, 0);
+% plot(t, ut);
+% axis([-1, 4, -0.5, 1.5])
+
+% gt = stepfun(t, -2) - stepfun(t, 2);
+% plot(t, gt)
+% axis([-4, 4, -0.5, 1.5])
+
+t = -5:0.01:5;
+s = sign(t);
+u = 0.5 + 0.5 * s
+subplot(2, 1, 1);
+plot()
+
+
+
