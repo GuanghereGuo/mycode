@@ -1,4 +1,4 @@
-\documentclass{ctexart}
+\documentclass[12pt]{ctexart}
 \usepackage{amsmath} % 用于数学公式
 \usepackage{graphicx} % 用于插入图片
 \usepackage{listings} % 用于插入代码
@@ -13,10 +13,13 @@
 \usepackage{caption}   % 用于自定义图表标题
 \usepackage{subcaption} % 用于子图环境
 \usepackage{hyperref}  % 用于创建超链接
+\usepackage{makecell}  
+
+% \pdfcompresslevel=9
 
 \graphicspath{{./figures/}}
 
-\usepackage[left=2cm, right=2cm, top=2cm, bottom=2cm]{geometry}
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
 
 \setlength{\jot}{6pt} % 增加多行公式之间的行距
 
@@ -40,7 +43,7 @@
     \end{center}
 \vspace*{\fill}
 
-\begin{table}[b]
+\begin{table}[H]
     \centering
     \large
     \begin{tabular}{ll}
@@ -168,55 +171,112 @@
     \label{fig:indicators}
 \end{figure}
 
+\section{实验数据与分析}
 
-\section{实验步骤}
+\subsection{波形观察与记录}
+实验中，通过示波器观察并记录了阶跃响应和冲激响应在不同阻尼状态下的输入与输出波形，具体如下图所示。
 
-\subsection{任务一：阶跃响应实验波形观察与参数测量}
-\begin{enumerate}
-    \item \textbf{设置激励信号与连线：}
-    \begin{enumerate}
-        \item 在信号源及频率计模块 S2 上，将激励信号源设置为方波。通过调节频率调节旋钮 ROL1，使频率计示数为 \SI{500}{\hertz}。
-        \item 按照图 \ref{fig:rlc_circuits} (a) 所示，使用导线将模块 S2 的方波信号输出端 P2 连接至模块 S5 的输入端 P12。
-    \end{enumerate}
-    
-    \item \textbf{观察与测量：}
-    \begin{enumerate}
-        \item 将示波器探头 CH1 连接至模块 S5 的输出测试点 TP14，用于观察响应波形。
-        \item 将示波器探头 CH2 连接至模块 S5 的输入测试点 TP12，用于观察输入方波，方便与输出波形进行对比。
-        \item 调节模块 S5 上的可变电阻 W1，使电路分别工作于\textbf{欠阻尼}、\textbf{临界阻尼}和\textbf{过阻尼}三种状态。观察并记录示波器上 CH1 显示的输出波形。
-        \item 对于每一种状态，\textbf{断开电源}，使用数字万用表测量并记录 P12 和 P13 两点间的电阻值。将测量结果和波形特征填入表 \ref{tab:step_response_data} 中。
-    \end{enumerate}
-\end{enumerate}
+% --- 阶跃响应波形图 ---
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.32\textwidth}
+        \includegraphics[width=\linewidth]{step_underdamped.jpg}
+        \caption{欠阻尼状态}
+        \label{fig:step_under}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \includegraphics[width=\linewidth]{step_critical.jpg}
+        \caption{临界阻尼状态}
+        \label{fig:step_critical}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \includegraphics[width=\linewidth]{step_overdamped.jpg}
+        \caption{过阻尼状态}
+        \label{fig:step_over}
+    \end{subfigure}
+    \caption{阶跃响应在不同阻尼状态下的示波器波形}
+    \label{fig:step_waveforms}
+\end{figure}
 
+% --- 冲激响应波形图 ---
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.32\textwidth}
+        \includegraphics[width=\linewidth]{impulse_underdamped.jpg}
+        \caption{欠阻尼状态}
+        \label{fig:impulse_under}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \includegraphics[width=\linewidth]{impulse_critical.jpg}
+        \caption{临界阻尼状态}
+        \label{fig:impulse_critical}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \includegraphics[width=\linewidth]{impulse_overdamped.jpg}
+        \caption{过阻尼状态}
+        \label{fig:impulse_over}
+    \end{subfigure}
+    \caption{冲激响应在不同阻尼状态下的示波器波形}
+    \label{fig:impulse_waveforms}
+\end{figure}
+
+
+\subsection{参数测量数据}
+在观察波形的同时，对各状态下的关键参数进行了测量，详细数据记录在表 \ref{tab:step_data} 和表 \ref{tab:impulse_data} 中。
+
+% --- 阶跃响应数据表 (代码与之前相同) ---
 \begin{table}[htbp]
     \centering
-    \caption{阶跃响应参数测量记录表}
-    \label{tab:step_response_data}
-    \begin{tabular}{l|ccc}
+    \caption{阶跃响应参数测量数据}
+    \label{tab:step_data}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{l c c c}
         \toprule
-        \textbf{状态} & \textbf{欠阻尼状态} & \textbf{临界状态} & \textbf{过阻尼状态} \\
-        \textbf{参数测量} & $R < 2\sqrt{\frac{L}{C}}$ & $R = 2\sqrt{\frac{L}{C}}$ & $R > 2\sqrt{\frac{L}{C}}$ \\
+        \textbf{测量项目} & \textbf{欠阻尼状态} & \textbf{临界阻尼状态} & \textbf{过阻尼状态} \\
         \midrule
-        电阻测量值 R= & (待填充) & (待填充) & (待填充) \\
-        TP12 激励波形 & (待填充) & (待填充) & (待填充) \\
-        TP14 响应波形 & (待填充) & (待填充) & (待填充) \\
+        电阻测量值 R & \SI{11.6}{\ohm} & \SI{484}{\ohm} & \SI{1109}{\ohm} \\
+        \addlinespace
+        TP12 激励波形 & \makecell{A = \SI{975}{\milli\volt} \\ T = \SI{2}{\milli\second} \\ $T_1$ = \SI{1}{\milli\second}} & \makecell{A = \SI{975}{\milli\volt} \\ T = \SI{2}{\milli\second} \\ $T_1$ = \SI{1}{\milli\second}} & \makecell{A = \SI{975}{\milli\volt} \\ T = \SI{2}{\milli\second} \\ $T_1$ = \SI{1}{\milli\second}} \\
+        \addlinespace
+        TP14 响应波形 & \makecell{A = \SI{969}{\milli\volt} \\ T = \SI{2}{\milli\second} \\ $T_1$ = \SI{1}{\milli\second} \\ $\tau$ = \SI{34}{\micro\second}} & \makecell{A = \SI{962}{\milli\volt} \\ T = \SI{2}{\milli\second} \\ $T_1$ = \SI{1}{\milli\second} \\ $\tau$ = \SI{70}{\micro\second}} & \makecell{A = \SI{940}{\milli\volt} \\ T = \SI{2}{\milli\second} \\ $T_1$ = \SI{1}{\milli\second} \\ $\tau$ = \SI{286}{\micro\second}} \\
         \bottomrule
     \end{tabular}
-    \begin{flushleft}
-        \footnotesize \quad \textit{注：绘制波形时要使三种状态的 X 轴坐标（扫描时间）一致。}
-    \end{flushleft}
+\end{table}
+
+% --- 冲激响应数据表 (代码与之前相同) ---
+\begin{table}[htbp]
+    \centering
+    \caption{冲激响应参数测量数据}
+    \label{tab:impulse_data}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{l c c c}
+        \toprule
+        \textbf{测量项目} & \textbf{欠阻尼状态} & \textbf{临界阻尼状态} & \textbf{过阻尼状态} \\
+        \midrule
+        电阻测量值 R & \SI{3.0}{\ohm} & \SI{287}{\ohm} & \SI{1100}{\ohm} \\
+        \addlinespace
+        TP12 激励波形 & \makecell{A = \SI{1.988}{\volt} \\ T = \SI{2}{\milli\second} \\ $T_1$ = \SI{1}{\milli\second}} & \makecell{A = \SI{1.988}{\volt} \\ T = \SI{2}{\milli\second} \\ $T_1$ = \SI{1}{\milli\second}} & \makecell{A = \SI{1.988}{\volt} \\ T = \SI{2}{\milli\second} \\ $T_1$ = \SI{1}{\milli\second}} \\
+        \addlinespace
+        TP14 响应波形 & \makecell{A = \SI{820}{\milli\volt} \\ T = \SI{2}{\milli\second} \\ $T_1$ = \SI{1}{\milli\second} \\ $\tau$ = \SI{20}{\micro\second}} & \makecell{A = \SI{270}{\milli\volt} \\ T = \SI{2}{\milli\second} \\ $T_1$ = \SI{1}{\milli\second} \\ $\tau$ = \SI{90}{\micro\second}} & \makecell{A = \SI{220}{\milli\volt} \\ T = \SI{2}{\milli\second} \\ $T_1$ = \SI{1}{\milli\second} \\ $\tau$ = \SI{120}{\micro\second}} \\
+        \bottomrule
+    \end{tabular}
 \end{table}
 
 
-\subsection{任务二：冲激响应的波形观察}
-冲激信号在物理上难以实现，但由于其与阶跃信号的微分关系，可以通过将阶跃信号输入一个微分电路来近似获得。
+\subsection{综合分析}
+结合图 \ref{fig:step_waveforms}、\ref{fig:impulse_waveforms} 所示的波形和表 \ref{tab:step_data}、\ref{tab:impulse_data} 的数据可以看出：
 \begin{enumerate}
-    \item \textbf{电路连接：} 按照图 \ref{fig:rlc_circuits} (b) 所示连接电路。将模块 S2 输出的 \SI{500}{\hertz} 方波信号接入模块 S5 的 P10 输入端。
-    \item \textbf{波形观察：} 将示波器探头 CH1 连接至测试点 TP11，观察电路的冲激响应波形。同时可将 CH2 接至 TP10 观察输入信号。
+    \item \textbf{电阻与阻尼状态的关系：} 实验测得的电阻值 R 随着系统从欠阻尼、临界阻尼到过阻尼状态转变而显著增大。这与实验原理中 $R$ 与 $2\sqrt{L/C}$ 的大小关系完全吻合，验证了电阻是影响本 RLC 电路阻尼状态的关键参数。
+    \item \textbf{阶跃响应分析：} 如图 \ref{fig:step_waveforms} 所示，在欠阻尼状态下，响应波形出现了明显的过冲和振荡；在临界阻尼状态下，波形最快达到稳定且无过冲；在过阻尼状态下，响应非常平缓，无过冲但上升时间最长。这与表 \ref{tab:step_data} 中响应时间常数 $\tau$ 从 \SI{34}{\micro\second} 增加到 \SI{286}{\micro\second} 的趋势一致。
+    \item \textbf{冲激响应分析：} 如图 \ref{fig:impulse_waveforms} 所示，阻尼对冲激响应的峰值影响剧烈。随着阻尼增加，响应峰值迅速衰减，恢复到零的时间也相应变化。这说明阻尼越大，系统对瞬时冲击的能量耗散越快，抑制作用越强，与表 \ref{tab:impulse_data} 中峰值幅度从 \SI{820}{\milli\volt} 锐减至 \SI{220}{\milli\volt} 的数据相符。
 \end{enumerate}
+综上所述，实验波形和测量数据清晰地展示了二阶 RLC 电路在不同阻尼条件下对阶跃和冲激信号的响应特性，与理论预期高度一致。
 
 \newpage
-
 
 \section{信号的 Matlab 仿真与分析}
 
@@ -237,13 +297,29 @@
 \end{figure}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{T3.eps}
+    \includegraphics[width=0.8\textwidth]{T3.eps}
     \caption{题目 3：复信号 $f(t) = 2e^{j(t+\pi/4)}$ 的各分量}
     \label{fig:T3}
 \end{figure}
 
 
-\section{实验总结}
-..
+\section{结论}
+本次实验通过搭建 RLC 串联电路，成功观察并测量了二阶系统在不同阻尼条件下的阶跃响应与冲激响应，得出以下结论：
+
+\begin{enumerate}
+    \item \textbf{验证了阻尼理论：} 实验结果清晰地表明，电路的阻尼状态由电阻 R 的值决定。通过改变 R 值，可以使电路呈现出欠阻尼、临界阻尼和过阻尼三种不同的响应特性，这与 $R$ 和 $2\sqrt{L/C}$ 的理论关系完全一致。
+
+    \item \textbf{掌握了响应特性：}
+    \begin{itemize}
+        \item \textbf{阶跃响应：} 欠阻尼状态响应速度快但伴有超调和振荡；临界阻尼状态响应速度最快且无超调，是理想的快速响应状态；过阻尼状态响应平稳无超调，但响应时间最长。
+        \item \textbf{冲激响应：} 阻尼越大，系统对瞬时冲击的抑制能力越强，响应峰值越低，能量耗散越快。
+    \end{itemize}
+
+    \item \textbf{探究了响应关系：} 实验中通过将方波（近似阶跃信号）输入微分电路来获得冲激响应波形，直观地验证了冲激响应是阶跃响应的微分这一基本理论关系。
+
+    \item \textbf{提升了测量技能：} 通过本次实验，熟练掌握了使用示波器观察动态波形、测量上升时间、峰值等动态性能指标的方法，并对二阶系统的时域分析有了更深刻的物理认识。
+\end{enumerate}
+
+综上所述，本实验成功达成了预定的实验目的，加深了对二阶系统动态特性的理解。
 
 \end{document}
