@@ -17,7 +17,12 @@
 \usepackage{float}           % 增强浮动体控制, 提供 [H] 选项
 
 % --- 文档功能宏包 ---
-\usepackage{hyperref}        % 创建内部链接 (目录、引用) 和外部链接，建议始终使用
+\usepackage[
+    colorlinks=true, % 启用颜色链接
+    linkcolor=black, % 目录、图表目录、引用的链接颜色
+    urlcolor=black,  % URL 链接的颜色
+    citecolor=black  % 引用 (citation) 的链接颜色
+]{hyperref}    % 创建内部链接 (目录、引用) 和外部链接，建议始终使用
 
 \graphicspath{{./figures/}} % 设置图片路径
 
@@ -47,15 +52,6 @@
 \fancyfoot[C]{\thepage} % 在中间添加页码
 \renewcommand{\headrulewidth}{0.4pt} % 添加页眉分割线
 \renewcommand{\footrulewidth}{0pt}   % 去掉页脚分割线
-
-% hyperref 链接颜色设置
-\hypersetup{
-    colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,      
-    urlcolor=cyan,
-}
-
 % 列表环境全局设置 (减少列表项间距，使版面更紧凑)
 \setlist{nosep}
 
@@ -698,6 +694,182 @@ OP07 是一款具有极低输入失调电压的高精度单运算放大器。它
     \item \textbf{实验总结：} 通过本次实验，我们不仅验证了芯片规格书中的关键参数，还通过实际操作加深了对输入失调电压、共模输入范围和幅频特性等核心概念的理解。实验结果符合理论预期，证明了实验方案的有效性。
 \end{enumerate}
 
+
+
+
+\chapter{运算放大器线性应用}
+\label{chap:exp4}
+
+\section{实验目的}
+
+\begin{enumerate}
+    \item 加深对集成运算放大器（LM324）基本应用电路和性能参数的理解。
+    \item 掌握由集成运算放大器组成的减法电路、反相积分电路的设计方法与测试技术。
+    \item 验证运算放大器在线性区域内的运算关系。
+\end{enumerate}
+
+\section{设计电路结构和参数}
+\label{sec:design_param}
+
+根据实验任务要求，本实验主要设计并搭建减法电路与反相积分电路。
+
+\subsection{减法电路设计}
+
+减法电路利用运放的“虚短”和“虚断”特性，实现两个输入信号的差值放大。电路结构如图~\ref{fig:subtractor_circuit} 所示。
+
+\begin{figure}[htbp]
+    \centering
+    % 注意：这里去掉了文件名中的 ./ 前缀，保持风格统一
+    \includegraphics[width=0.6\textwidth]{3_Amp_apl/fig_03_sub_circuit.png} 
+    \caption{减法电路设计原理图}
+    \label{fig:subtractor_circuit} % 修正：去掉了末尾的 2，与文中引用保持一致
+\end{figure}
+
+\textbf{参数设计：}
+\begin{itemize}
+    \item \textbf{电路参数}：取 $R_{1} = R_{2} = \SI{10}{\kilo\ohm}$，$R_{3} = R_{f} = \SI{100}{\kilo\ohm}$。
+    \item \textbf{理论计算}：
+    根据理想运放传输特性，当 $R_1=R_2$ 且 $R_3=R_f$ 时，输出电压 $V_o$ 与输入电压 $V_{i1}$（反相端）、$V_{i2}$（同相端）的关系为：
+    \begin{equation}
+        V_{o} = \frac{R_{f}}{R_{1}}(V_{i2} - V_{i1})
+    \end{equation}
+    代入电阻参数，理论闭环电压增益为：
+    \begin{equation}
+        A_v = \frac{V_o}{V_{i2} - V_{i1}} = \frac{\SI{100}{\kilo\ohm}}{\SI{10}{\kilo\ohm}} = 10
+    \end{equation}
+\end{itemize}
+
+\subsection{反相积分电路设计}
+
+反相积分电路能够实现输出电压对输入电压的时间积分。电路结构如图~\ref{fig:integrator_circuit} 所示。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{3_Amp_apl/fig_03_int_circuit.png}
+    \caption{反相积分电路设计原理图}
+    \label{fig:integrator_circuit} % 修正：去掉了末尾的 2
+\end{figure}
+
+\textbf{参数设计：}
+\begin{itemize}
+    \item \textbf{电路参数}：取 $R_{1} = \SI{10}{\kilo\ohm}$，积分电容 $C = \SI{0.01}{\micro\farad}$，平衡电阻 $R_2 = R_1 = \SI{10}{\kilo\ohm}$。
+    \item \textbf{理论计算}：
+    输出电压 $V_o(t)$ 与输入电压 $V_i(t)$ 的关系为：
+    \begin{equation}
+        V_{o}(t) = -\frac{1}{R_{1} C} \int V_{i} \, dt + V_{C}(0)
+    \end{equation}
+    时间常数 $\tau = R_1 C = \SI{10e3}{} \times \SI{0.01e-6}{} = \SI{0.1}{\milli\second}$。
+    当输入为方波时，输出应为三角波。
+\end{itemize}
+
+\section{测试方案与测试结果}
+\label{sec:test_results}
+
+\subsection{测试仪器}
+\begin{itemize}
+    \item \textbf{核心器件}：LM324 四运放芯片
+    \item \textbf{信号源}：函数信号发生器（产生正弦波、方波）
+    \item \textbf{测量设备}：双踪示波器（用于观测输入输出波形及测量峰峰值）
+    \item \textbf{电源}：直流稳压电源（提供 $\pm \SI{12}{\volt}$ 供电）
+\end{itemize}
+
+\subsection{减法电路测试}
+
+\subsubsection{测试方案}
+% 修正：将 Markdown 列表转换为 LaTeX enumerate 环境
+\begin{enumerate}
+    \item 按照图~\ref{fig:subtractor_circuit} 搭建电路。
+    \item \textbf{信号输入}：
+       \begin{itemize}
+           \item 同相端 ($V_{i2}$)：输入频率 $f=\SI{800}{\hertz}$，峰峰值约为 $\SI{260}{\milli\volt}$ 的正弦波（对应题目要求的 $\SI{250}{\milli\volt}$ 峰值附近）。
+           \item 反相端 ($V_{i1}$)：输入频率 $f=\SI{800}{\hertz}$，峰峰值约为 $\SI{100}{\milli\volt}$ 的正弦波。
+       \end{itemize}
+    \item \textbf{观测节点}：使用示波器 CH1、CH2 分别监测输入信号 $V_{i1}, V_{i2}$ 与输出信号 $V_o$，记录波形并测量峰峰值。
+    \item \textbf{改变幅度}：调整输入信号幅度，进行第二组数据测量，验证电路线性度。
+\end{enumerate}
+
+\subsubsection{测试结果与分析}
+
+实验测得的波形如图~\ref{fig:sub_wave} 所示。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{3_Amp_apl/fig_03_sub_wave.jpg}
+    \caption{减法电路输出波形}
+    \label{fig:sub_wave}
+\end{figure}
+
+根据示波器读数，整理实验数据及增益计算如下表所示。
+
+\begin{table}[htbp]
+    \centering
+    \caption{减法电路测试数据与增益分析}
+    \label{tab:subtractor_data}
+    \begin{tabular}{@{}l S[table-format=3.2] S[table-format=3.2] @{}}
+        \toprule
+        \textbf{参数项目} & {\textbf{第一组数据}} & {\textbf{第二组数据}} \\
+        \midrule
+        反相输入 $V_{i1\_pp}$ (\unit{\milli\volt}) & 102.78 & 150.20 \\
+        同相输入 $V_{i2\_pp}$ (\unit{\milli\volt}) & 263.10 & 424.80 \\
+        输出电压 $V_{o\_pp}$ (\unit{\milli\volt})  & 1505.00 & 2719.00 \\
+        \midrule
+        \textbf{差模增益 $A_v$} & & \\
+        \quad 理论值 & 10.00 & 10.00 \\
+        \quad Multisim 仿真值 & 10.02 & 10.00 \\
+        \quad \textbf{实测值} & \textbf{9.38} & \textbf{9.90} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+\textbf{数据计算（第一组）：}
+\begin{equation}
+    A_{V(\text{meas})} = \frac{V_{o\_pp}}{V_{i2\_pp} - V_{i1\_pp}} = \frac{\SI{1505}{\milli\volt}}{(263.1 - 102.78)\si{\milli\volt}} \approx 9.387
+\end{equation}
+
+\textbf{数据计算（第二组）：}
+\begin{equation}
+    A_{V(\text{meas})} = \frac{V_{o\_pp}}{V_{i2\_pp} - V_{i1\_pp}} = \frac{\SI{2719.00}{\milli\volt}}{(424.80 - 150.20)\si{\milli\volt}} = \frac{2719.00}{274.60} \approx 9.90
+\end{equation}
+
+\textbf{结果分析：}
+由表~\ref{tab:subtractor_data} 可知，两组实验测得的电压放大倍数分别为 9.38 和 9.90，与理论值 10 非常接近。输出波形清晰无失真，且满足 $V_o \propto (V_{i2} - V_{i1})$ 的关系，成功验证了减法电路的功能。误差主要来源于示波器光标读数误差及电阻本身的标称误差。
+
+\subsection{反相积分电路测试}
+
+\subsubsection{测试方案}
+\begin{enumerate}
+    \item 按照图~\ref{fig:integrator_circuit} 搭建电路。
+    \item \textbf{信号输入}：输入频率 $f=\SI{1}{\kilo\hertz}$ 的方波信号，高电平 $\SI{1}{\volt}$，低电平 $\SI{-1}{\volt}$，占空比 $50\%$。
+    \item \textbf{观测节点}：同时测试输入信号 $V_i$ 和输出信号 $V_o$ 的波形，观察相位与波形变换关系。
+\end{enumerate}
+
+\subsubsection{测试结果与分析}
+
+实验波形如图~\ref{fig:int_wave} 所示
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{3_Amp_apl/fig_03_int_wave.jpg}
+    \caption{反相积分电路输入输出波形（方波输入-三角波输出）}
+    \label{fig:int_wave}
+\end{figure}
+
+\textbf{波形分析：}
+\begin{enumerate}
+    \item \textbf{波形变换}：当输入 $V_i$ 为方波时，输出 $V_o$ 呈现为三角波。这是因为方波对应常数电压分段，常数的积分为一次函数，符合积分运算规律。
+    \item \textbf{相位关系}：观察图示可知，当输入为正半周时，输出电压线性下降；当输入为负半周时，输出电压线性上升。这体现了电路的“反相”积分特性。
+    \item \textbf{线性度}：输出三角波的斜边平直，说明在测试范围内运放工作在线性区，电容充放电平稳。
+\end{enumerate}
+
+\section{结论}
+
+本实验通过实际搭建与测试，得出以下结论：
+\begin{enumerate}
+    \item \textbf{减法电路}：实测差模电压增益与理论设计值 $R_f/R_1 = 10$ 基本吻合，相对误差在允许范围内（$<7\%$），电路能够准确实现两路信号的减法运算。
+    \item \textbf{积分电路}：在方波激励下，电路输出了标准的三角波，且相位关系正确，验证了 $V_o = -\frac{1}{RC}\int V_i dt$ 的积分关系。
+    \item \textbf{误差来源}：实验中存在的微小误差主要受限于信号发生器输出波形的毛刺（噪声）以及示波器自动测量的精度。在后续实验中，可通过增大输入信号幅度（提高信噪比）或使用更高精度的电阻来进一步减小误差。
+\end{enumerate}
 
 
 
