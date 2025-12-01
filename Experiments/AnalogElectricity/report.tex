@@ -48,7 +48,7 @@
 
 % 页眉页脚设置 (采纳您的设置)
 \pagestyle{fancy}
-\fancyhf{} % 清空所有页眉页脚
+% \fancyhf{} % 清空所有页眉页脚
 \fancyhead[C]{模拟电子技术基础实验}
 \fancyfoot[C]{\thepage} % 在中间添加页码
 \renewcommand{\headrulewidth}{0.4pt} % 添加页眉分割线
@@ -994,16 +994,16 @@ RC桥式振荡电路由放大电路和选频网络组成，如图 \ref{fig:circu
         \toprule
         参数 & 临界起振 & \shortstack{振幅最大\\且不失真} & 临界失真 \\
         \midrule
-        可变电阻 $R_p$ (\unit{\kilo\ohm}) & 4.749 & 8.792 & 9.203 \\
-        反馈电压 $V_{fp}$ (\unit{\volt}) & 0.616 & 6.639 & 7.546 \\
-        输出电压 $V_{op}$ (\unit{\volt}) & 1.777 & 19.968 & 22.749 \\
+        可变电阻 $R_p$ (\unit{\kilo\ohm}) & 3.823 & 9.158 & 9.423 \\
+        反馈电压 $V_{fp}$ (\unit{\volt}) & 0.950 & 7.523 & 7.740 \\
+        输出电压 $V_{op}$ (\unit{\volt}) & 2.380 & 21.833 & 22.120 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-\textbf{3. 不同电容值下的输出波形 ($R_p = \qty{8.643}{\kilo\ohm}$)}
+\textbf{3. 不同电容值下的输出波形 ($R_p = \qty{9.158}{\kilo\ohm}$)}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
@@ -1026,26 +1026,26 @@ RC桥式振荡电路由放大电路和选频网络组成，如图 \ref{fig:circu
 
 \begin{table}[H]
     \centering
-    \caption{不同电容值下的理论与实测数据对比 ($R_p = \qty{8.643}{\kilo\ohm}$)}
+    \caption{不同电容值下的理论与实测数据对比 ($R_p = \qty{9.158}{\kilo\ohm}$)}
     \label{tab:cap_data_4}
-    \resizebox{\textwidth}{!}{% 自动缩放表格以适应页面宽度
+    % \resizebox{\textwidth}{!}{% 自动缩放表格以适应页面宽度
     \begin{tabular}{lcccccc}
         \toprule
-        \multirow{2}{*}{电容条件} & \multicolumn{3}{c}{理论值} & \multicolumn{3}{c}{实测值} \\
-        \cmidrule(lr){2-4} \cmidrule(lr){5-7}
-         & $V_{op}$ (\unit{\volt}) & $f$ (\unit{\Hz}) & $V_f$ (\unit{\volt}) & $V_{op}$ (\unit{\volt}) & $f$ (\unit{\Hz}) & $V_f$ (\unit{\volt}) \\
+        \multirow{2}{*}{电容条件} & \multicolumn{3}{c}{实测值} \\
+        \cmidrule(lr){2-4}
+        & $V_{op}$ (\unit{\volt}) & $f$ (\unit{\Hz}) & $V_f$ (\unit{\volt}) \\
         \midrule
-        $C=\qty{0.01}{\micro\farad}$ & 17.432 & 1.5915k & 5.634 & 17.237 & 1.5413k & 5.773 \\
-        $C=\qty{0.02}{\micro\farad}$ & 18.125 & 795.77 & 6.183 & 18.218 & 776.63 & 6.0842 \\
+        $C=\qty{0.01}{\micro\farad}$ & 21.833 & 1.4075k & 7.5833 \\
+        $C=\qty{0.02}{\micro\farad}$ & 20.226 & 720.20 & 6.9273 \\
         \bottomrule
     \end{tabular}
-    }
+    % }
 \end{table}
 
 \section{结论与分析} \label{subsec:conclusion_4}
 
 \begin{enumerate}
-    \item \textbf{数据分析}：由表 \ref{tab:three_states_4} 可知，当 $R_p = \qty{8.792}{\kilo\ohm}$ 时，输出波形振幅最大且不失真，此时 $V_{fp} = \qty{6.639}{\volt}$，$V_{op} = \qty{19.968}{\volt}$。由表 \ref{tab:cap_data_4} 可知，在 $R_p = \qty{8.643}{\kilo\ohm}$ 时，输出电压、频率及反馈电压的实测值与理论值误差较小。
+    \item \textbf{数据分析}：由表 \ref{tab:three_states_4} 可知，当 $R_p = \qty{9.158}{\kilo\ohm}$ 时，输出波形振幅最大且不失真，此时 $V_{fp} = \qty{7.523}{\volt}$，$V_{op} = \qty{21.833}{\volt}$。由表 \ref{tab:cap_data_4} 可知，在 $R_p = \qty{9.158}{\kilo\ohm}$ 时，输出电压、频率及反馈电压的实测值与理论值误差较小。
     \item \textbf{实验结论}：实验结果表明，RC桥式振荡电路的起振与稳幅符合理论计算，实测数据与理论值吻合度较高。
     \item \textbf{误差讨论}：手动调节示波器捕捉临界失真状态时存在主观判断误差，导致测量的输出电压可能偏离理论临界点。在实际操作中，应多次微调 $R_p$ 以寻找最佳波形观测点。
 \end{enumerate}
