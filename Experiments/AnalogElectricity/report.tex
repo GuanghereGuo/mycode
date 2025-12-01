@@ -15,6 +15,7 @@
 \usepackage[labelsep=space]{caption} % 自定义图表标题样式
 \usepackage{listings}        % 插入代码
 \usepackage{float}           % 增强浮动体控制, 提供 [H] 选项
+\usepackage{multirow}
 
 % --- 文档功能宏包 ---
 \usepackage[
@@ -871,6 +872,183 @@ OP07 是一款具有极低输入失调电压的高精度单运算放大器。它
     \item \textbf{误差来源}：实验中存在的微小误差主要受限于信号发生器输出波形的毛刺（噪声）以及示波器自动测量的精度。在后续实验中，可通过增大输入信号幅度（提高信噪比）或使用更高精度的电阻来进一步减小误差。
 \end{enumerate}
 
+
+
+
+% ===================================================================
+
+\chapter{正弦波振荡电路} \label{sec:exp5_title_4}
+
+\section{实验目的} \label{subsec:purpose_4}
+\begin{enumerate}
+    \item 了解RC正弦波振荡器的工作原理；
+    \item 学习正弦波振荡器的电路元件参数选择；
+    \item 学习使用示波器单次触发功能（Single）。
+\end{enumerate}
+
+\section{实验原理} \label{subsec:principle_4}
+
+\subsection{选频网络的振荡电路}
+振荡电路的振荡频率 $f_0$ 由相位平衡条件（正反馈的电压与输出电压同相位）决定。一个正弦波振荡电路只在一个频率下满足相位平衡条件，这个频率就是 $f_0$。这就要求在环路中包含一个具有选频特性的网络。
+
+RC振荡电路（文氏电桥振荡电路）一般用来产生 \qtyrange{1}{1e6}{\Hz} 范围内的低频信号；而LC振荡电路一般用来产生 \qty{1}{\MHz} 以上的高频信号。
+
+当放大电路中引入正反馈时，若满足振幅条件和相位条件，电路会产生自激振荡。起振后，受非线性元件限制，振荡幅度趋于稳态平衡，此时电压放大倍数 $A_v = 3$。
+
+\subsection{RC桥式振荡电路}
+RC桥式振荡电路由放大电路和选频网络组成，如图 \ref{fig:circuit_sim_4} 所示。
+\begin{itemize}
+    \item $R_3, R_4, R_p$ 构成负反馈支路。调节 $R_p$ 可改变负反馈深度，以满足振幅条件。
+    \item $R_1, R_2, C_1, C_2$ 构成正反馈支路并兼作选频网络。
+    \item 二极管 $D_1, D_2$ 利用非线性特性实现稳幅。
+\end{itemize}
+
+\subsection{示波器单次触发使用步骤}
+\begin{enumerate}
+    \item 设置触发（Trigger）：通道选择、触发模式为自动、边沿为上升沿。
+    \item 设置时基和幅度，调整触发电平。
+    \item 电路停振后按 Single 键，使电路起振，捕捉波形。
+    \item 若波形不完整，调整参数后重复步骤。
+\end{enumerate}
+
+\section{实验内容} \label{subsec:content_4}
+\begin{enumerate}
+    \item 调节 $R_p$，观察临界起振、正弦波输出及临界失真三种情况，记录波形和数据（表 \ref{tab:three_states_4}）。
+    \item 保持其他参数不变，在 $C_1 = C_2 = \qty{0.01}{\micro\farad}$ 和 $\qty{0.02}{\micro\farad}$ 两种情况下，测量 $V_o$、$V_f$ 和频率 $f$。
+\end{enumerate}
+
+\section{实验电路方案} \label{subsec:circuit_4}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{4_RC/circuit_sim.png}
+        \caption{理论仿真电路}
+        \label{fig:circuit_sim_4}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{4_RC/circuit_real.jpg}
+        \caption{实际连接电路图}
+        \label{fig:circuit_real_4}
+    \end{subfigure}
+    \caption{RC正弦波振荡电路图}
+    \label{fig:circuits_4}
+\end{figure}
+
+\section{测试与数据记录} \label{subsec:data_4}
+
+\subsection{测试仪器}
+面包板，示波器，741放大器，导线、电阻、二极管、电容若干。
+
+\subsection{实验步骤}
+\textbf{任务一：观察正弦波输出}
+\begin{enumerate}
+    \item 调节 $R_p$ 使波形从无到有直至不失真。
+    \item 记录三种状态下的 $R_p$ 值及输出电压 $V_o$。
+    \item 分析负反馈对起振和波形的影响。
+\end{enumerate}
+
+\textbf{任务二：测量输出电压}
+保持 $R_p$ 不变，改变电容值，测量 $V_o, V_f$ 及频率 $f$。
+
+\subsection{数据记录}
+
+\textbf{1. 三种情况下的测试波形}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{4_RC/wave_start.jpg}
+        \caption{临界起振}
+        \label{fig:wave_start_4}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{4_RC/wave_stable.jpg}
+        \caption{正弦波输出}
+        \label{fig:wave_stable_4}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{4_RC/wave_distort.jpg}
+        \caption{临界失真}
+        \label{fig:wave_distort_4}
+    \end{subfigure}
+    \caption{不同反馈深度下的输出波形}
+    \label{fig:three_waves_4}
+\end{figure}
+
+\textbf{2. 三种情况下的测试数据}
+
+\begin{table}[htbp]
+    \centering
+    \caption{不同振荡状态下的电路参数测试}
+    \label{tab:three_states_4}
+    \begin{tabular}{lccc}
+        \toprule
+        参数 & 临界起振 & \shortstack{振幅最大\\且不失真} & 临界失真 \\
+        \midrule
+        可变电阻 $R_p$ (\unit{\kilo\ohm}) & 4.749 & 8.792 & 9.203 \\
+        反馈电压 $V_{fp}$ (\unit{\volt}) & 0.616 & 6.639 & 7.546 \\
+        输出电压 $V_{op}$ (\unit{\volt}) & 1.777 & 19.968 & 22.749 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{3. 不同电容值下的输出波形 ($R_p = \qty{8.643}{\kilo\ohm}$)}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{4_RC/wave_stable.jpg}
+        \caption{$C_1 = C_2 = \qty{0.01}{\micro\farad}$}
+        \label{fig:wave_c01_4}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{4_RC/wave_stable_c02.jpg}
+        \caption{$C_1 = C_2 = \qty{0.02}{\micro\farad}$}
+        \label{fig:wave_c02_4}
+    \end{subfigure}
+    \caption{不同电容参数下的输出波形对比}
+    \label{fig:cap_waves_4}
+\end{figure}
+
+\textbf{4. 不同电容值下的测试数据对比}
+
+\begin{table}[H]
+    \centering
+    \caption{不同电容值下的理论与实测数据对比 ($R_p = \qty{8.643}{\kilo\ohm}$)}
+    \label{tab:cap_data_4}
+    \resizebox{\textwidth}{!}{% 自动缩放表格以适应页面宽度
+    \begin{tabular}{lcccccc}
+        \toprule
+        \multirow{2}{*}{电容条件} & \multicolumn{3}{c}{理论值} & \multicolumn{3}{c}{实测值} \\
+        \cmidrule(lr){2-4} \cmidrule(lr){5-7}
+         & $V_{op}$ (\unit{\volt}) & $f$ (\unit{\Hz}) & $V_f$ (\unit{\volt}) & $V_{op}$ (\unit{\volt}) & $f$ (\unit{\Hz}) & $V_f$ (\unit{\volt}) \\
+        \midrule
+        $C=\qty{0.01}{\micro\farad}$ & 17.432 & 1.5915k & 5.634 & 17.237 & 1.5413k & 5.773 \\
+        $C=\qty{0.02}{\micro\farad}$ & 18.125 & 795.77 & 6.183 & 18.218 & 776.63 & 6.0842 \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\section{结论与分析} \label{subsec:conclusion_4}
+
+\begin{enumerate}
+    \item \textbf{数据分析}：由表 \ref{tab:three_states_4} 可知，当 $R_p = \qty{8.792}{\kilo\ohm}$ 时，输出波形振幅最大且不失真，此时 $V_{fp} = \qty{6.639}{\volt}$，$V_{op} = \qty{19.968}{\volt}$。由表 \ref{tab:cap_data_4} 可知，在 $R_p = \qty{8.643}{\kilo\ohm}$ 时，输出电压、频率及反馈电压的实测值与理论值误差较小。
+    \item \textbf{实验结论}：实验结果表明，RC桥式振荡电路的起振与稳幅符合理论计算，实测数据与理论值吻合度较高。
+    \item \textbf{误差讨论}：手动调节示波器捕捉临界失真状态时存在主观判断误差，导致测量的输出电压可能偏离理论临界点。在实际操作中，应多次微调 $R_p$ 以寻找最佳波形观测点。
+\end{enumerate}
 
 
 \end{document}
