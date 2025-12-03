@@ -1,0 +1,9 @@
+t=-6:0.01:6;
+f=exp(-2*t).*stepfun(t,0);
+w=-10:0.01:10;
+F=0.01*f*exp(-1i*t'*w);
+subplot(2,1,1);
+plot(w,abs(F));
+phase=atan(imag(F)./real(F));angle(F)
+subplot(2,1,2);
+plot(w,phase)
