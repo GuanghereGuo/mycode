@@ -1,30 +1,22 @@
-\documentclass[a4paper,12pt]{ctexart}
+\documentclass[12pt]{ctexart}
+\usepackage{amsmath} % 用于数学公式
+\usepackage{graphicx} % 用于插入图片
+\usepackage{listings} % 用于插入代码
+\usepackage{float}    % 用于控制图表浮动位置
 
-% ================= 导言区 =================
-\usepackage{amsmath, amssymb} % 数学公式
-\usepackage[demo]{graphicx}   % 图片插入 (正式使用时请去掉 [demo])
-\usepackage{float}          % 浮动体控制
-\usepackage{booktabs}       % 三线表
-\usepackage{multirow}       % 表格多行合并
-\usepackage{caption}        % 图表标题设置
-\usepackage{subcaption}     % 子图设置
-\usepackage{siunitx}        % 物理单位排版
-\usepackage{fancyhdr}       % 页眉页脚
-\usepackage{listings}       % 代码块 (用于MATLAB)
-\usepackage{xcolor}         % 颜色支持
+\usepackage{booktabs} % 用于创建更美观的三线表
+\usepackage{siunitx}  % 用于标准地排版物理单位和数值
+\usepackage{amsmath}  % 用于数学公式环境
+\sisetup{per-mode=symbol} % 设置单位格式，例如 m/s
 
-% 代码块样式设置
-\lstset{
-    language=Matlab,
-    basicstyle=\small\ttfamily,
-    keywordstyle=\color{blue},
-    commentstyle=\color{green!50!black},
-    stringstyle=\color{purple},
-    numbers=left,
-    numberstyle=\tiny,
-    frame=single,
-    breaklines=true
-}
+\usepackage{fancyhdr}   % 用于自定义页眉页脚
+\usepackage{caption}   % 用于自定义图表标题
+\usepackage{subcaption} % 用于子图环境
+\usepackage[colorlinks, linkcolor=black]{hyperref}  % 用于创建超链接
+\usepackage{makecell}
+\usepackage{multirow}  
+
+% \pdfcompresslevel=9
 
 \graphicspath{{./figures/}}
 
@@ -48,7 +40,7 @@
 
 \vspace*{\fill}
     \begin{center}
-        \Huge\textbf{实验4：有源、无源滤波器}
+        \Huge\textbf{实验4：抽样定理和信号的恢复}
     \end{center}
 \vspace*{\fill}
 
@@ -72,178 +64,299 @@
 \tableofcontents
 \newpage
 
+% ================= 第一部分：实验目的 =================
 \section{实验目的}
 \begin{enumerate}
-    \item 观察离散信号频谱，深入理解其频谱周期延拓的特点。
-    \item 验证抽样定理（奈奎斯特定理），掌握由抽样信号恢复原连续信号的方法。
-    \item 初步掌握 MATLAB 软件在信号处理中的基本使用方法。
+    \item 观察离散信号频谱，了解其频谱特点。
+    \item 验证抽样定理并恢复原信号。
+    \item 初步了解 MATLAB 软件的基本使用。
 \end{enumerate}
 
+% ================= 第二部分：实验器材 =================
 \section{实验器材}
-\begin{enumerate}
-    \item 双踪示波器 \quad 1台
-    \item 信号源及频率计模块 (S2) \quad 1块
-    \item 抽样定理及滤波器模块 (S3) \quad 1块
-\end{enumerate}
+\begin{itemize}
+    \item 双踪示波器 \hfill 1台
+    \item 信号源及频率计模块 (S2) \hfill 1块
+    \item 抽样定理及滤波器模块 (S3) \hfill 1块
+    \item 数字信号处理模块 (S4) \hfill 1块 % 根据PPT截图补充
+\end{itemize}
 
+% ================= 第三部分：实验原理  =================
 \section{实验原理}
-
-\subsection{抽样过程与频谱分析}
-离散信号可由连续信号 $F(t)$ 经周期性矩形窄脉冲 $S(t)$ 抽样获得。设抽样间隔为 $T_s$，抽样频率 $f_s = 1/T_s$，则抽样信号 $F_s(t)$ 可表示为：
+\subsection{信号的抽样}
+离散信号可以从对连续信号的抽样获得。抽样信号 $F_s(t)$ 可表示为连续信号 $F(t)$ 与周期性矩形窄脉冲 $S(t)$ 的乘积：
 \begin{equation}
     F_s(t) = F(t) \cdot S(t)
 \end{equation}
-
-在频域上，连续周期信号经抽样后的频谱 $F_s(j\omega)$ 是原信号频谱的周期性延拓：
-\begin{equation}
-    F_s(j\omega) = \frac{A\tau}{T} \sum_{m=-\infty}^{+\infty} \text{Sa}\left(\frac{m\omega_s\tau}{2}\right) F(\omega - m\omega_s)
-\end{equation}
-其中，频谱重复周期为 $f_s$，幅度受抽样脉冲的傅里叶系数加权。这意味着抽样信号的频谱包含了原信号频谱以及以 $f_s$ 为间隔的无限个复制分量。
-
+其中，$S(t)$ 的周期为 $T_s$（抽样间隔），抽样频率为 $f_s = 1/T_s$。抽样过程的波形如图 \ref{fig:sampling_process} 所示。
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{fig5-1.png} 
+    \caption{连续信号抽样过程波形图 ($F(t) \to S(t) \to F_s(t)$)}
+    \label{fig:sampling_process}
+\end{figure}
 \subsection{抽样定理与信号恢复}
-要从抽样信号中无失真地恢复出原信号，必须满足**香农抽样定理**：
+\textbf{抽样定理}指出：若要从抽样信号中无失真地恢复出原信号，抽样频率 $f_s$ 必须大于等于原信号最高频率分量 $f_m$ 的两倍，即满足奈奎斯特判据：
 \begin{equation}
-    f_s \geq 2B_f
+    f_s \geq 2B_f \quad (\text{其中 } B_f \text{ 为原信号带宽})
 \end{equation}
-其中 $B_f$ 为原信号的最高频率分量。
 \begin{itemize}
-    \item 若 $f_s \geq 2B_f$：频谱不发生混叠，通过截止频率 $f_c$ ($f_m \leq f_c \leq f_s - f_m$) 的低通滤波器即可恢复原信号。
-    \item 若 $f_s < 2B_f$：频谱发生混叠（Aliasing），无法通过低通滤波器恢复原信号。
+    \item 若 $f_s \geq 2B_f$，抽样信号的频谱是原信号频谱的周期性延拓，且各频谱分量不重叠。通过一个截止频率 $f_c$ 满足 $f_m \leq f_c \leq f_s - f_m$ 的低通滤波器，即可滤出原信号频谱，恢复原波形。
+    \item 若 $f_s < 2B_f$，频谱发生混叠（Aliasing），无法通过低通滤波器恢复原信号。
 \end{itemize}
-工程实际中，为减小滤波器非理想特性带来的失真，通常采用过采样，取 $f_s > 2.56 f_m$。
-
-\section{实验步骤}
+工程实际中，为了减小滤波器设计难度并减轻失真，通常采用过采样，即 $f_s > 2.56 f_m$。
+\subsection{S3 模块的抽样功能}
+本实验使用 S3 模块进行自然抽样及恢复，流程如图 \ref{fig:system_flow} 所示。模块提供两种抽样方式：
 \begin{enumerate}
-    \item \textbf{自然抽样及恢复（异步）}：使用 $500\,\text{Hz}$ 正弦波作为输入，调节模块 S3 的电位器 W1，使抽样频率分别为 $1\,\text{kHz}, 2\,\text{kHz}, 4\,\text{kHz}, 8\,\text{kHz}$，观察并记录波形。
-    \item \textbf{自然抽样及恢复（同步）}：连接时钟输出 P5 与开关信号输入 P18，设置同步抽样，重复上述频率观察步骤。
-    \item \textbf{信号恢复验证}：将输入信号频率调至 $1.7\,\text{kHz}$，改变抽样频率，观察经过低通滤波器后的恢复信号 TP22，验证欠采样与过采样对恢复信号的影响。
+    \item \textbf{同步抽样}：抽样时钟与连续信号由同一晶振源产生，时钟严格对齐，便于观察稳定的抽样波形。
+    \item \textbf{异步抽样}：连续信号与抽样时钟由不同源产生，模拟实际通信中收发端不同步的情况。
+\end{enumerate}
+\begin{figure}[htbp]
+    \centering
+    % 请替换为实际图片文件名，例如 fig5-5.jpg
+    \includegraphics[width=0.5\textwidth]{fig5-5.png}
+    \caption{信号自然抽样及恢复实验流程图}
+    \label{fig:system_flow}
+\end{figure}
+
+% ================= 四、实验步骤 =================
+\section{实验步骤}
+
+\subsection{任务：自然抽样及恢复}
+
+\subsubsection{观察抽样信号波形 (异步)}
+\begin{enumerate}
+    \item 将 S2 模块的扫频开关 S3 置为“OFF”。调节模拟信号源，使 P2 处输出频率为 \SI{500}{Hz}、幅度为 \SI{2}{V} 的正弦波。
+    \item 连接 S2 模块输出端 P2 与 S3 模块连续信号输入点 P17。
+    \item 将开关 S2 拨至“异步”。示波器 CH1 接原始信号 (TP2)，CH2 接抽样信号 (TP20)。
+    \item 调节电位器 W1，使抽样频率分别为 \SI{1}{kHz}, \SI{2}{kHz}, \SI{4}{kHz}, \SI{8}{kHz}。观察并记录波形。
+    \item \textbf{注意}：调节 W1 时，需用示波器测量 TP21 (开关信号) 的频率以确保准确。
 \end{enumerate}
 
+\subsubsection{观察抽样信号波形 (同步)}
+\begin{enumerate}
+    \item 保持 P2 与 P17 的连接。连接 S2 模块时钟输出 P5 与 S3 模块外部开关信号输入点 P18。
+    \item 将开关 S2 拨至“同步”。示波器 CH1 接原始信号 (TP2)，CH2 接抽样信号 (TP20)。
+    \item 调节 S2 模块的时钟频率设置按钮 S7，使抽样频率分别为 \SI{1}{kHz}, \SI{2}{kHz}, \SI{4}{kHz}, \SI{8}{kHz}。观察并记录波形。
+\end{enumerate}
+
+\subsubsection{验证抽样定理与信号恢复}
+\begin{enumerate}
+    \item 连接 S3 模块的 P20 和 P19 (将抽样信号送入低通滤波器)。
+    \item 示波器 CH1 接原始抽样信号 (TP17)，CH2 接恢复信号输出点 (TP22)。
+    \item 改变抽样时钟频率，对比观察信号恢复情况，验证奈奎斯特抽样定理。
+\end{enumerate}
+
+% ================= 五、实验数据与分析 =================
 \section{实验数据与分析}
 
 \subsection{信号的抽样波形记录}
 
-\subsubsection{同步抽样}
-输入信号：幅度 $2\,\text{V}$，频率 $500\,\text{Hz}$。
+\subsubsection{同步抽样波形}
+输入信号：正弦波，幅度 \SI{1.920}{V}，频率 \SI{1}{kHz}。
+不同抽样频率下的波形如图 \ref{fig:sync_sampling} 所示，数据记录如表 \ref{tab:sync_data}。
 
-\begin{table}[htbp]
+% --- 表格排版：三线表 ---
+\begin{table}[H]
     \centering
-    \caption{同步抽样波形记录}
-    \label{tab:sync_sampling}
-    \begin{tabular}{c c c c}
+    \caption{同步抽样实验数据记录}
+    \label{tab:sync_data}
+    \begin{tabular}{cccc}
         \toprule
-        \textbf{抽样频率} & \textbf{输入信号} & \textbf{抽样波形 (示意)} & \textbf{幅度 ($V_{pp}$)} \\
+        \textbf{输入信号} & \textbf{抽样频率 ($f_s$)} & \textbf{抽样信号峰峰值 ($V_{pp}$)} & \textbf{波形描述} \\
         \midrule
-        $1\,\text{kHz}$ & $2\,\text{V}, 500\,\text{Hz}$ & \raisebox{-0.8\height}{\includegraphics[width=3cm, height=2cm]{fig_sync_1k.jpg}} & $1.913\,\text{V}$ \\
-        \midrule
-        $2\,\text{kHz}$ & $2\,\text{V}, 500\,\text{Hz}$ & \raisebox{-0.8\height}{\includegraphics[width=3cm, height=2cm]{fig_sync_2k.jpg}} & $1.913\,\text{V}$ \\
-        \midrule
-        $4\,\text{kHz}$ & $2\,\text{V}, 500\,\text{Hz}$ & \raisebox{-0.8\height}{\includegraphics[width=3cm, height=2cm]{fig_sync_4k.jpg}} & $1.913\,\text{V}$ \\
-        \midrule
-        $8\,\text{kHz}$ & $2\,\text{V}, 500\,\text{Hz}$ & \raisebox{-0.8\height}{\includegraphics[width=3cm, height=2cm]{fig_sync_8k.jpg}} & $2.520\,\text{V}$ \\
+        \multirow{4}{*}{\shortstack{1.920V \\ 1kHz}} 
+        & \SI{1}{kHz} & \SI{1.610}{V} & 临界采样，波形失真较大 \\
+        & \SI{2}{kHz} & \SI{2.040}{V} & 过采样，波形包络清晰 \\
+        & \SI{4}{kHz} & \SI{2.094}{V} & 抽样点密集，拟合度高 \\
+        & \SI{8}{kHz} & \SI{2.155}{V} & 抽样点极密，接近原波形 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-\subsubsection{异步抽样}
-输入信号：幅度 $2\,\text{V}$，频率 $500\,\text{Hz}$。
-
-\begin{table}[htbp]
-    \centering
-    \caption{异步抽样波形记录}
-    \label{tab:async_sampling}
-    \begin{tabular}{c c c c}
-        \toprule
-        \textbf{抽样频率} & \textbf{输入信号} & \textbf{抽样波形 (示意)} & \textbf{幅度 ($V_{pp}$)} \\
-        \midrule
-        $1\,\text{kHz}$ & $2\,\text{V}, 500\,\text{Hz}$ & \raisebox{-0.8\height}{\includegraphics[width=3cm, height=2cm]{fig_async_1k.jpg}} & $1.989\,\text{V}$ \\
-        \midrule
-        $2\,\text{kHz}$ & $2\,\text{V}, 500\,\text{Hz}$ & \raisebox{-0.8\height}{\includegraphics[width=3cm, height=2cm]{fig_async_2k.jpg}} & $2.235\,\text{V}$ \\
-        \midrule
-        $4\,\text{kHz}$ & $2\,\text{V}, 500\,\text{Hz}$ & \raisebox{-0.8\height}{\includegraphics[width=3cm, height=2cm]{fig_async_4k.jpg}} & $2.260\,\text{V}$ \\
-        \midrule
-        $8\,\text{kHz}$ & $2\,\text{V}, 500\,\text{Hz}$ & \raisebox{-0.8\height}{\includegraphics[width=3cm, height=2cm]{fig_async_8k.jpg}} & $2.920\,\text{V}$ \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-\subsection{信号的恢复效果}
-
-实验设置：输入信号频率提高至 $1.7\,\text{kHz}$，幅度 $2\,\text{V}$。
-
+% --- 图片排版：2x2 网格 ---
 \begin{figure}[htbp]
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{fig_recover_fail.jpg}
-        \caption{欠采样恢复 ($f_s < 2f_m$)}
-        \label{fig:recover_fail}
+        % 请替换为你的图片: sync_1k.jpg
+        \includegraphics[width=\textwidth]{同步1k.jpg} 
+        \caption{$f_s = \SI{1}{kHz}$}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{fig_recover_success.jpg}
-        \caption{过采样恢复 ($f_s = 8\,\text{kHz}$)}
-        \label{fig:recover_success}
+        % 请替换为你的图片: sync_2k.jpg
+        \includegraphics[width=\textwidth]{同步2k.jpg}
+        \caption{$f_s = \SI{2}{kHz}$}
     \end{subfigure}
-    \caption{不同抽样频率下的信号恢复对比}
+    
+    \vspace{0.5cm} % 上下两行间距
+    
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        % 请替换为你的图片: sync_4k.jpg
+        \includegraphics[width=\textwidth]{同步4k.jpg}
+        \caption{$f_s = \SI{4}{kHz}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        % 请替换为你的图片: sync_8k.jpg
+        \includegraphics[width=\textwidth]{同步8k.jpg}
+        \caption{$f_s = \SI{8}{kHz}$}
+    \end{subfigure}
+    \caption{同步抽样波形观测 (蓝色：抽样信号，黄色：输入信号)}
+    \label{fig:sync_sampling}
 \end{figure}
 
-\begin{itemize}
-    \item 当 $f_s = 1\,\text{kHz}$ 或 $2\,\text{kHz}$ 时（$f_s < 2 \times 1.7\,\text{kHz}$），不满足抽样定理，恢复出的波形严重失真，频率发生混叠。
-    \item 当 $f_s = 8\,\text{kHz}$ 时（$f_s > 2 \times 1.7\,\text{kHz}$），满足抽样定理，且留有足够的保护带，恢复出的正弦波波形平滑、失真小。
-\end{itemize}
 
+\subsubsection{异步抽样波形}
+输入信号同上。不同抽样频率下的波形如图 \ref{fig:async_sampling} 所示，数据记录如表 \ref{tab:async_data}。
+
+% --- 图片排版：2x2 网格 ---
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{异步.jpg}
+    \caption{异步抽样波形观测}
+    \label{fig:async_sampling}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \caption{异步抽样实验数据记录}
+    \label{tab:async_data}
+    \begin{tabular}{ccc}
+        \toprule
+        \textbf{输入信号} & \textbf{抽样频率 ($f_s$)} & \textbf{抽样信号峰峰值 ($V_{pp}$)} \\
+        \midrule
+        \multirow{1}{*}{2.305V 1kHz} 
+        & \SI{8}{kHz} & \SI{2.206}{V} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{信号恢复实验}
+输入信号频率为 \SI{1}{kHz}，验证抽样定理。恢复波形如图 \ref{fig:recovery} 所示。
+
+
+\begin{table}[H]
+    \centering
+    \caption{信号恢复实验结果分析 ($f_{in} = \SI{1.7}{kHz}$)}
+    \label{tab:recovery_data}
+    \begin{tabular}{cccl}
+        \toprule
+        \textbf{抽样频率} & \textbf{理论判据 ($2f_{in}$)} & \textbf{状态} & \textbf{恢复结果 (TP22)} \\
+        \midrule
+        \SI{1}{kHz} & \multirow{4}{*}{\SI{2}{kHz}} & $f_s < 2f_{in}$ & 严重失真，混叠 \\
+        \SI{2}{kHz} & & $f_s = 2f_{in}$ & 恰好恢复 \\
+        \SI{4}{kHz} & & $f_s > 2f_{in}$ & 能够恢复正弦波 \\
+        \SI{8}{kHz} & & $f_s \gg 2f_{in}$ & 完美恢复，波形光滑 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% --- 图片排版：2x2 网格 ---
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        % 请替换为你的图片: sync_1k.jpg
+        \includegraphics[width=\textwidth]{恢复1k.jpg} 
+        \caption{$f_s = \SI{1}{kHz}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        % 请替换为你的图片: sync_2k.jpg
+        \includegraphics[width=\textwidth]{恢复2k.jpg}
+        \caption{$f_s = \SI{2}{kHz}$}
+    \end{subfigure}
+    
+    \vspace{0.5cm} % 上下两行间距
+    
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        % 请替换为你的图片: sync_4k.jpg
+        \includegraphics[width=\textwidth]{恢复4k.jpg}
+        \caption{$f_s = \SI{4}{kHz}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        % 请替换为你的图片: sync_8k.jpg
+        \includegraphics[width=\textwidth]{恢复8k.jpg}
+        \caption{$f_s = \SI{8}{kHz}$}
+    \end{subfigure}
+    \caption{恢复信号波形观测 (蓝色：恢复信号，黄色：输入信号)}
+    \label{fig:recovery}
+\end{figure}
+
+
+% ================= 六、实验结论 =================
 \section{实验结论}
-
-\subsection{同步采样与异步采样的特点}
+\subsection{同步抽样与异步抽样的特点对比}
+通过观察示波器波形，我们可以总结出同步抽样与异步抽样的主要区别：
+\begin{itemize}
+    \item \textbf{同步抽样}：抽样时钟与信号源由同一晶振产生，时间严格对齐。
+    \begin{itemize}
+        \item \textbf{优点}：波形稳定，无相位漂移，便于观察和分析。
+        \item \textbf{适用场景}：适合周期性信号处理及理论验证实验。
+    \end{itemize}
+    \item \textbf{异步抽样}：抽样时钟与信号源独立，存在频率和相位的微小差异。
+    \begin{itemize}
+        \item \textbf{特点}：示波器上观察到的波形存在相位抖动（漂移），难以锁定。
+        \item \textbf{意义}：更符合实际通信系统中收发端时钟不完全同步的真实情况。
+    \end{itemize}
+\end{itemize}
+\subsection{系统参数对信号恢复的影响}
 \begin{enumerate}
-    \item \textbf{同步采样}：采样时钟与信号源同源，时间间隔严格固定。其优点是便于后续处理，适合周期性信号，能有效避免非相干采样带来的频谱泄漏；缺点是系统对时钟同步要求高。
-    \item \textbf{异步采样}：采样时钟与信号源不同源。其灵活性高，适用于信号变化快或不规则的场景；但由于采样点相对于信号周期的位置不固定，容易引入额外的相位噪声，且在重建时处理较为复杂。
+    \item \textbf{抽样率 ($f_s$) 的影响}：
+    实验验证了奈奎斯特抽样定理。
+    \begin{itemize}
+        \item 当 $f_s < 2f_m$ (如 \SI{1}{kHz} 抽样 \SI{1.7}{kHz} 信号) 时，发生频谱混叠，恢复出的信号严重失真。
+        \item 当 $f_s \gg 2f_m$ (如 \SI{8}{kHz} 抽样) 时，频谱延拓分量间隔大，低通滤波器能轻松滤出原信号，恢复波形光滑且幅度准确。
+    \end{itemize}
+    
+    \item \textbf{滤波器 ($f_c$) 的影响}：
+    低通滤波器是信号恢复的关键。其截止频率 $f_c$ 必须满足 $f_m < f_c < f_s - f_m$。
+    \begin{itemize}
+        \item 若滤波器阶数不够或截止特性不陡峭，可能会残留部分高频延拓分量，导致恢复信号中含有高频噪声（锯齿状波纹）。
+        \item 本实验采用的 8 阶有源低通滤波器具有较好的带外衰减特性，有效保证了过采样时的信号恢复质量。
+    \end{itemize}
 \end{enumerate}
-
-\subsection{抽样率与滤波器的影响}
-\begin{enumerate}
-    \item \textbf{抽样率}：直接决定了信号是否发生混叠。实验验证了当 $f_s < 2f_m$ 时，高频成分折叠到低频段，造成不可逆的失真；提高抽样率（过采样）能降低对滤波器陡峭度的要求，提升恢复质量。
-    \item \textbf{滤波器}：低通滤波器用于滤除抽样产生的高频延拓分量。滤波器的截止频率必须介于 $f_m$ 和 $f_s - f_m$ 之间。实际滤波器的过渡带非理想特性要求我们在工程上采用 $f_s > 2.56 f_m$ 的过采样策略。
-\end{enumerate}
-
+% ================= 七、MATLAB 课后作业 =================
 \section{MATLAB 课后作业}
 
-\textit{（注：此处请补充具体的 MATLAB 题目要求。以下为示例代码框架，你可以替换为实际作业内容。）}
+\subsection{任务一：$Sa(t)$ 信号的抽样与重构}
+\textbf{题目要求}：结合抽样定理，利用 MATLAB 编程实现 $Sa(t)$ 信号经过冲激脉冲抽样后得到的抽样信号 $f_s(t)$ 及其频谱，并利用 $f_s(t)$ 构建 $Sa(t)$ 信号，计算重建信号与原信号的误差。
 
-\textbf{题目}：利用 MATLAB 仿真验证抽样定理。产生一个频率为 $100\,\text{Hz}$ 的正弦信号，分别用 $150\,\text{Hz}$（欠采样）和 $500\,\text{Hz}$（过采样）进行抽样，并观察恢复效果。
+得到的波形及误差分析如图 \ref{fig:hw_sa} 所示。
 
-\begin{lstlisting}[caption={抽样定理验证 MATLAB 代码}]
-% 参数设置
-fm = 100;           % 信号频率 100Hz
-T = 0.1;            % 信号持续时间
-t = 0:0.0001:T;     % 模拟连续时间轴
-xt = sin(2*pi*fm*t); % 原始信号
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{sample2.png}
+    \caption{$Sa(t)$ 信号的抽样、重构与误差分析}
+    \label{fig:hw_sa}
+\end{figure}
 
-% 1. 欠采样 (fs = 150Hz < 2*fm)
-fs1 = 150;
-ts1 = 0:1/fs1:T;
-xn1 = sin(2*pi*fm*ts1);
+\subsection{任务二：升余弦信号的抽样与重构}
+\textbf{题目要求}：结合抽样定理，利用 MATLAB 编程实现升余弦信号：
+\begin{equation}
+    f(t) = \frac{E}{2} \left( 1 + \cos\frac{\pi t}{\tau} \right), \quad |t| \le \tau
+\end{equation}
+其中 $E=1, \tau=\pi$。经过冲激脉冲抽样后得到抽样信号 $f_s(t)$ 及其频谱，利用 $f_s(t)$ 构建升余弦信号，并计算误差。
 
-% 2. 过采样 (fs = 500Hz > 2*fm)
-fs2 = 500;
-ts2 = 0:1/fs2:T;
-xn2 = sin(2*pi*fm*ts2);
 
-% 绘图对比
-figure;
-subplot(2,1,1);
-plot(t, xt, 'b'); hold on;
-stem(ts1, xn1, 'r');
-title('欠采样 fs=150Hz (混叠)');
-legend('原信号', '抽样点');
+得到的波形及误差分析如图 \ref{fig:hw_cos} 所示。
 
-subplot(2,1,2);
-plot(t, xt, 'b'); hold on;
-stem(ts2, xn2, 'r');
-title('过采样 fs=500Hz (无失真)');
-legend('原信号', '抽样点');
-\end{lstlisting}
+\begin{figure}[H]
+    \centering
+    
+    \includegraphics[width=\textwidth]{sample.png}
+    \caption{升余弦信号的抽样、重构与误差分析}
+    \label{fig:hw_cos}
+\end{figure}
+
 
 \end{document}
