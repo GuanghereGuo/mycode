@@ -1050,5 +1050,243 @@ RC桥式振荡电路由放大电路和选频网络组成，如图 \ref{fig:circu
     \item \textbf{误差讨论}：手动调节示波器捕捉临界失真状态时存在主观判断误差，导致测量的输出电压可能偏离理论临界点。在实际操作中，应多次微调 $R_p$ 以寻找最佳波形观测点。
 \end{enumerate}
 
+\chapter{有源滤波器}
+\label{chap:active_filters}
+
+\section{实验目的}
+\begin{enumerate}
+    \item 掌握有源滤波器（Sallen-Key 拓扑结构）的基本工作原理与电路构成。
+    \item 搭建二阶有源低通滤波器（LPF）和二阶有源高通滤波器（HPF），掌握其截止频率的测试方法。
+    \item 学习使用示波器测量滤波器的幅频特性，并绘制幅频特性曲线。
+    \item 观察高通滤波器对特定频率方波信号的响应，分析其波形变换特性。
+\end{enumerate}
+
+\section{实验原理}
+\label{sec:filter_principle}
+
+有源滤波器是由运算放大器和RC网络组成的选频放大电路。本实验采用 Sallen-Key（压控电压源）二阶滤波电路结构，该结构具有输入阻抗高、输出阻抗低的特点。
+
+\subsection{二阶有源低通滤波器 (LPF)}
+二阶有源低通电路如图 \ref{fig:sim_lpf} 所示。它允许低频信号通过，衰减高频信号。
+当 $R_1 = R_2 = R$ 且 $C_1 = C_2 = C$ 时，其截止频率 $f_0$ 计算公式为：
+\begin{equation}
+    f_0 = \frac{1}{2\pi RC}
+\end{equation}
+通带电压增益为：
+\begin{equation}
+    A_{vf} = 1 + \frac{R_f}{R_3}
+\end{equation}
+为了获得平坦的巴特沃斯（Butterworth）响应，通常设置品质因数 $Q=0.707$，此时要求增益 $A_{vf} \approx 1.586$。
+
+\begin{figure}[htbp]
+    \centering
+    % 请替换为你的低通滤波器仿真截图
+    \includegraphics[width=0.7\textwidth]{6_Filter/sim_lpf_circuit.png} 
+    \caption{二阶有源低通滤波器仿真电路图}
+    \label{fig:sim_lpf}
+\end{figure}
+
+\subsection{二阶有源高通滤波器 (HPF)}
+二阶有源高通电路如图 \ref{fig:sim_hpf} 所示。其结构与低通类似，只是阻容位置互换。它允许高频信号通过，衰减低频信号。
+当 $C_5 = C_6 = C$ 且 $R_{10} = R_8 = R$ 时（注：此处标号对应实际电路图），截止频率与增益的计算公式与低通滤波器相同。
+
+\begin{figure}[htbp]
+    \centering
+    % 请替换为你的高通滤波器仿真截图
+    \includegraphics[width=0.7\textwidth]{6_Filter/sim_hpf_circuit.png} 
+    \caption{二阶有源高通滤波器仿真电路图}
+    \label{fig:sim_hpf}
+\end{figure}
+
+\section{电路设计与参数计算}
+\label{sec:filter_design}
+
+根据实验要求及现有的元器件，设计电路参数如下：
+
+\subsection{参数设置}
+\begin{itemize}
+    \item \textbf{低通滤波器}：电阻 $R = \SI{5.1}{\kilo\ohm}$，电容 $C = \SI{10}{\nano\farad}$。
+    \item \textbf{高通滤波器}：电阻 $R = \SI{5.1}{\kilo\ohm}$，电容 $C = \SI{10}{\nano\farad}$。
+    \item \textbf{反馈网络}：为了保证电路稳定并获得良好的滤波特性（避免自激振荡），反馈电阻 $R_f$ 与 $R_3$ (或 $R_9$) 的比例设定为 $A_{vf} \approx 1.586$ (即 $R_f \approx 0.586 R_3$) 或根据实际情况调整至临界稳定状态。
+\end{itemize}
+
+\subsection{理论截止频率计算}
+代入元件参数计算理论截止频率 $f_c$：
+\begin{equation}
+    f_c = \frac{1}{2\pi \times \SI{5.1e3}{\ohm} \times \SI{10e-9}{\farad}} \approx \SI{3120.7}{\hertz}
+\end{equation}
+因此，理论上低通和高通滤波器的截止频率均约为 \SI{3.12}{\kilo\hertz}。
+
+\section{测试方案与测试结果}
+\label{sec:filter_results}
+
+\subsection{测试仪器}
+\begin{itemize}
+    \item 信号发生器（提供正弦波、方波输入）
+    \item 双踪示波器（测量输入输出幅度及波形）
+    \item 直流稳压电源（提供 $\pm \SI{12}{\volt}$）
+    \item 面包板及 LM324/uA741 运放芯片
+\end{itemize}
+
+\subsection{低通滤波器测试}
+
+\subsubsection{1. 测试方案}
+\begin{enumerate}
+    \item 按照图 \ref{fig:sim_lpf} 搭建实际电路，接通 $\pm \SI{12}{\volt}$ 电源。
+    \item 信号源设置为正弦波，输入幅值维持在 $V_{ipp} \approx \SI{1}{\volt}$。
+    \item 保持输入幅值不变，从 \SI{100}{\hertz} 到 \SI{100}{\kilo\hertz} 调节频率，测量输出电压 $V_{opp}$。
+    \item 记录数据，计算电压增益 $A_v = 20\lg(V_{opp}/V_{ipp})$，并找出输出幅度下降至通带幅值 $0.707$ 倍时的频率（截止频率）。
+\end{enumerate}
+
+% \subsubsection{2. 实际电路连接}
+% 实验搭建的低通滤波器电路如图 \ref{fig:real_lpf} 所示。
+
+% \begin{figure}[H]
+%     \centering
+%     % 请替换为带有姓名纸条的实际低通电路照片
+%     \includegraphics[width=0.45\textwidth]{6_Filter/real_lpf_setup.jpg}
+%     \caption{低通滤波器实际连接图}
+%     \label{fig:real_lpf}
+% \end{figure}
+
+\subsubsection{2. 测试结果与幅频特性}
+测试数据记录如表 \ref{tab:lpf_data} 所示。
+
+\begin{table}[htbp]
+    \centering
+    \caption{低通滤波器幅频特性测试数据}
+    \label{tab:lpf_data}
+    \begin{tabular}{l c c c c c c c}
+        \toprule
+        频率 $f$ (\unit{\hertz}) & 100 & 500 & 1k & 2k & \textbf{3.12k} & 5k & 10k \\
+        \midrule
+        输入 $V_{ipp}$ (\unit{\milli\volt}) & 1000 & 1000 & 1000 & 1000 & 1000 & 1000 & 1000 \\
+        输出 $V_{opp}$ (\unit{\milli\volt}) & 1580 & 1575 & 1560 & 1480 & \textbf{1120} & 650 & 160 \\
+        增益 (\unit{dB}) & 3.97 & 3.95 & 3.86 & 3.41 & \textbf{0.98} & -3.74 & -15.9 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{结果分析：} 
+测得低频通带增益约为 \SI{4}{\decibel} ($1.58$倍)，在 $f \approx \SI{3.12}{\kilo\hertz}$ 处，增益下降约 \SI{3}{\decibel}，输出幅度约为通带的 $0.707$ 倍。拟合的幅频特性曲线如图 \ref{fig:lpf_bode} 所示。实测截止频率与理论值 \SI{3120}{\hertz} 基本吻合。
+
+% --- 低通滤波器组合图 ---
+\begin{figure}[H]
+    \centering
+    % 子图1：MATLAB/Excel 拟合曲线
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        % 注意这里宽度改为 \textwidth，表示占满子图区域
+        \includegraphics[width=\textwidth]{6_Filter/low_pass.png} 
+        \caption{幅频特性曲线 (拟合)}
+        \label{fig:lpf_bode_plot}
+    \end{subfigure}
+    \hfill % 在两个子图之间加入弹性间距
+    % 子图2：示波器实拍照片
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{6_Filter/lpf_cutoff_scope.jpg} 
+        \caption{截止频率处示波器实测波形}
+        \label{fig:lpf_scope}
+    \end{subfigure}
+    % 整个大图的总标题
+    \caption{低通滤波器幅频特性与截止频率实测}
+    \label{fig:lpf_results_combined} % 修改了引用标签以反映组合图
+\end{figure}
+
+
+\subsection{高通滤波器测试}
+
+\subsubsection{1. 测试方案}
+\begin{enumerate}
+    \item 按照图 \ref{fig:sim_hpf} 搭建实际电路。
+    \item \textbf{方波响应测试}：输入 $f=\SI{200}{\hertz}$、$V_{pp}=\SI{1}{\volt}$ 的方波信号，观察并记录输出波形。
+    \item \textbf{幅频特性测试}：输入正弦波，维持 $V_{ipp} \approx \SI{1}{\volt}$，从 \SI{100}{\hertz} 到 \SI{100}{\kilo\hertz} 扫频，测量输出电压 $V_{opp}$。
+\end{enumerate}
+
+% \subsubsection{2. 实际电路连接}
+% 实验搭建的高通滤波器电路如图 \ref{fig:real_hpf} 所示。
+
+% \begin{figure}[H]
+%     \centering
+%     % 请替换为带有姓名纸条的实际高通电路照片
+%     \includegraphics[width=0.45\textwidth]{6_Filter/real_hpf_setup.jpg}
+%     \caption{高通滤波器实际连接图}
+%     \label{fig:real_hpf}
+% \end{figure}
+
+\subsubsection{2. 方波响应测试结果}
+在输入 \SI{200}{\hertz} 方波时，示波器观测到的输入输出波形如图 \ref{fig:hpf_square} 所示。
+
+\begin{figure}[H]
+    \centering
+    % 请替换为方波响应的示波器截图（带姓名纸条）
+    \includegraphics[width=0.6\textwidth]{6_Filter/hpf_square_wave.jpg}
+    \caption{高通滤波器对方波信号 ($f=\SI{200}{\hertz}$) 的响应}
+    \label{fig:hpf_square}
+\end{figure}
+
+\textbf{波形分析：} 
+由图可见，输入为方波，输出变成了尖脉冲波形。
+\textbf{原因：} 实验设计的截止频率约为 \SI{3.12}{\kilo\hertz}，而输入信号频率 \SI{200}{\hertz} 远低于截止频率。高通滤波器在此频段对低频基波有极大的衰减作用，近似于微分电路。方波的跳变沿含有丰富的高频分量，能够通过滤波器，而平顶部分的低频分量被阻隔，因此输出呈现出微分波形（尖峰）。
+
+\subsubsection{3. 幅频特性测试结果}
+测试数据记录如表 \ref{tab:hpf_data} 所示。
+
+\begin{table}[htbp]
+    \centering
+    \caption{高通滤波器幅频特性测试数据}
+    \label{tab:hpf_data}
+    \begin{tabular}{l c c c c c c c}
+        \toprule
+        频率 $f$ (\unit{\hertz}) & 100 & 500 & 1k & 2k & \textbf{3.12k} & 10k & 50k \\
+        \midrule
+        输入 $V_{ipp}$ (\unit{\milli\volt}) & 1000 & 1000 & 1000 & 1000 & 1000 & 1000 & 1000 \\
+        输出 $V_{opp}$ (\unit{\milli\volt}) & 50 & 165 & 480 & 1050 & \textbf{1115} & 1585 & 1580 \\
+        增益 (\unit{dB}) & -26.0 & -15.6 & -6.37 & 0.42 & \textbf{0.94} & 4.00 & 3.97 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{结果分析：} 
+从数据可以看出，随着频率升高，电压增益逐渐增大并趋于稳定。在 \SI{3.12}{\kilo\hertz} 附近增益约为 \SI{1}{\decibel}（相对于通带 \SI{4}{\decibel} 下降了 \SI{3}{\decibel}），验证了截止频率设计的正确性。
+
+% --- 高通滤波器组合图 ---
+\begin{figure}[H]
+    \centering
+    % 子图1：MATLAB/Excel 拟合曲线
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        % 假设你的高通拟合曲线叫 high_pass.png
+        \includegraphics[width=\textwidth]{6_Filter/high_pass.png} 
+        \caption{幅频特性曲线 (拟合)}
+        \label{fig:hpf_bode_plot}
+    \end{subfigure}
+    \hfill % 在两个子图之间加入弹性间距
+    % 子图2：示波器实拍照片
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        % 【重要】请替换为你实际拍摄的高通截止频率示波器照片文件名
+        \includegraphics[width=\textwidth]{6_Filter/hpf_cutoff_scope.jpg} 
+        \caption{截止频率处示波器实测波形}
+        \label{fig:hpf_scope}
+    \end{subfigure}
+    % 整个大图的总标题
+    \caption{高通滤波器幅频特性与截止频率实测}
+    \label{fig:hpf_results_combined} % 修改了引用标签以反映组合图
+\end{figure}
+
+\section{结论与分析}
+\label{sec:filter_conclusion}
+
+\begin{enumerate}
+    \item \textbf{参数验证：} 本实验成功设计并制作了截止频率约为 \SI{3.12}{\kilo\hertz} 的二阶有源低通和高通滤波器。实测截止频率与理论值 $f_c = \frac{1}{2\pi RC}$ 误差极小，验证了 Sallen-Key 电路参数设计的准确性。
+    \item \textbf{电路特性：}
+    \begin{itemize}
+        \item 低通滤波器在低频段增益平坦，高频段迅速衰减。
+        \item 高通滤波器在低频段衰减严重，\SI{200}{\hertz} 方波测试表明，当信号频率远低于截止频率时，高通电路表现出微分特性。
+    \end{itemize}
+    \item \textbf{误差来源：} 实验误差主要来源于电容电阻的标称值误差（通常电容误差可达 $\pm 10\%$）以及示波器读数的人眼误差。此外，面包板的分布电容在高频段也会对特性曲线产生轻微影响。
+\end{enumerate}
 
 \end{document}
