@@ -764,7 +764,7 @@ OP07 是一款具有极低输入失调电压的高精度单运算放大器。它
 \end{itemize}
 
 \section{测试方案与测试结果}
-\label{sec:test_results}
+\label{sec:test_results1}
 
 \subsection{测试仪器}
 \begin{itemize}
@@ -1168,7 +1168,7 @@ RC桥式振荡电路由放大电路和选频网络组成，如图 \ref{fig:circu
 \end{table}
 
 \textbf{结果分析：} 
-测得低频通带增益约为 \SI{4}{\decibel} ($1.58$倍)，在 $f \approx \SI{3.12}{\kilo\hertz}$ 处，增益下降约 \SI{3}{\decibel}，输出幅度约为通带的 $0.707$ 倍。拟合的幅频特性曲线如图 \ref{fig:lpf_bode} 所示。实测截止频率与理论值 \SI{3120}{\hertz} 基本吻合。
+测得低频通带增益约为 \SI{4}{\decibel} ($1.58$倍)，在 $f \approx \SI{3.12}{\kilo\hertz}$ 处，增益下降约 \SI{3}{\decibel}，输出幅度约为通带的 $0.707$ 倍。拟合的幅频特性曲线如图 \ref{fig:lpf_bode_plot} 所示。实测截止频率与理论值 \SI{3120}{\hertz} 基本吻合。
 
 % --- 低通滤波器组合图 ---
 \begin{figure}[H]
@@ -1287,6 +1287,122 @@ RC桥式振荡电路由放大电路和选频网络组成，如图 \ref{fig:circu
         \item 高通滤波器在低频段衰减严重，\SI{200}{\hertz} 方波测试表明，当信号频率远低于截止频率时，高通电路表现出微分特性。
     \end{itemize}
     \item \textbf{误差来源：} 实验误差主要来源于电容电阻的标称值误差（通常电容误差可达 $\pm 10\%$）以及示波器读数的人眼误差。此外，面包板的分布电容在高频段也会对特性曲线产生轻微影响。
+\end{enumerate}
+\chapter{全波整流滤波电路} \label{sec:exp7_title_6}
+
+\section{实验目的} \label{subsec:purpose_6}
+\begin{enumerate}
+    \item 了解全波整流滤波电路的构成及工作原理，理解整流二极管的单向导电性；
+    \item 学习单相全波整流滤波电路的调试方法；
+    \item 学习使用示波器的数学运算功能（Math）。
+\end{enumerate}
+
+\section{实验原理} \label{subsec:principle_6}
+\subsection{桥式整流电路}
+桥式整流器是利用二极管的单向导通性进行整流的最常用的电路，常用来将交流电转变为直流电。
+
+桥式整流器利用四个二极管，两两对接。输入正弦波的正半部分是两只管导通，得到正的输出；输入正弦波的负半部分时，另两只管导通，由于这两只管是反接的，所以输出还是得到正弦波的正半部分。其效率比半波整流高一倍。
+
+\subsection{示波器数学运算功能使用步骤}
+\begin{enumerate}
+    \item 连接信号：将待测信号通过探头连接至示波器输入通道（如 CH1、CH2）。
+    \item 打开数学运算功能：按下前面板或触摸屏上的 ``Math'' 功能按键。
+    \item 选择运算类型：在数学运算菜单中选择所需运算类型，例如：
+        \begin{itemize}
+            \item 加法 ($A+B$)
+            \item 减法 ($A-B$)
+            \item 乘法 ($A \times B$)
+            \item 除法 ($A \div B$)
+            \item 积分 ($\int$)
+            \item 微分 ($\mathrm{d}/\mathrm{d}t$)
+            \item FFT（频谱分析）
+        \end{itemize}
+    \item 设置运算源：选择参与运算的通道或参考波形，例如将 CH1 和 CH2 相加。
+    \item 调整运算参数：根据运算类型设置相应参数。
+    \item 观察运算结果：数学运算波形通常以单独颜色显示在屏幕上，可调整其垂直刻度和位置以便观察。
+\end{enumerate}
+
+\section{实验内容} \label{subsec:content_6}
+\begin{enumerate}
+    \item 如图 \ref{fig:circuit_sim_6} 电路中，去掉 $C_1$ 电容。使用信号源产生全波整流的输入信号 $V_{\text{IN}}$，其为正弦波，频率为 \qty{1}{kHz}，\qty{2}{V} 峰峰值，偏移电压 \qty{0}{V}。用示波器两个通道分别测试 $V_{o+}$ 对地波形以及 $V_{o-}$ 对地波形，并用示波器的 Math 功能，用 $V_{o+}$ 减去 $V_{o-}$，观察得到的全波整流输出波形。
+    \item 接上 $C_1$ 电容，变为完整的全波整流和滤波电路，同样方法用示波器的 Math 功能，用 $V_{o+}$ 减去 $V_{o-}$，得到差值即为全波整流和滤波的波形。
+\end{enumerate}
+
+\section{实验电路方案} \label{subsec:circuits_6}
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        % 这里的路径我保留了你原来的写法
+        \includegraphics[width=\textwidth]{6_Rectification/circuit_sim.png}
+        \caption{电路原理图}
+        \label{fig:circuit_sim_6}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{6_Rectification/circuit_real.jpg}
+        \caption{实际连接电路图}
+        \label{fig:circuit_real_6}
+    \end{subfigure}
+    \caption{全波整流滤波电路图}
+    \label{fig:circuits_6}
+\end{figure}
+
+\section{测试方案与数据记录}\label{sec:test_results}
+\subsection{测试仪器}
+面包板，示波器，信号源，二极管4个，\SI{100}{\kilo\ohm} 电阻，\qty{10}{\micro\farad} 电容，导线若干。
+
+\subsection{实验步骤}
+\begin{enumerate}
+    \item 按图 \ref{fig:circuit_sim_6} 搭建电路。
+    \item 去掉 $C_1$ 电容。使用信号源产生正弦信号，用示波器两个通道分别测试 $V_{o+}$ 对地波形以及 $V_{o-}$ 对地波形，并用示波器的 Math 功能，用 $V_{o+}$ 减去 $V_{o-}$，得到全波整流输出波形。
+\end{enumerate}
+
+\subsection{数据记录}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{6_Rectification/rectified_output.jpg}
+    \caption{全波整流输出波形}
+    \label{fig:wave_6}
+\end{figure}
+
+可以看到全波整流输出电压的峰峰值为约为 \qty{238}{mV}，平均值约为 \qty{179}{mV}，其输出波形的周期约为输入信号的一半。
+
+\section{结论与分析}\label{sec:opamp_conclusion1}
+
+\subsection{实验结论}
+
+\begin{enumerate}
+    \item \textbf{整流功能验证}：
+    输入信号为正弦交流电，输出信号为单向脉动电压。输入波形的负半周被完整翻转至正半周，证明桥式整流电路工作正常，成功实现了将交流电转换为直流电。
+    
+    \item \textbf{波形与负载特性}：
+    由于实验中未接入滤波电容，负载为纯电阻性质（$R=\qty{100}{k\Omega}$）。输出波形呈现出典型的全波整流特征，无平滑滤波效果，纹波系数较大，符合纯电阻负载下的理论预期。
+    
+    \item \textbf{频率倍增关系}：
+    观察示波器可知，输入正弦波每变化一个周期，输出波形呈现两个脉动波峰。输出信号的频率为输入信号频率的2倍（$f_{\text{out}} = 2f_{\text{in}}$），符合全波整流电路的频率特性。
+\end{enumerate}
+
+\subsection{误差分析}
+
+本实验中，输出波形峰值与理论计算值存在偏差，主要误差来源分析如下：
+
+\begin{enumerate}
+    \item \textbf{二极管导通压降}：
+    \begin{itemize}
+        \item \textbf{原理}：理论模型通常将二极管视为理想开关，但实际使用的硅二极管存在约 \qty{0.7}{V} 的导通压降。
+        \item \textbf{分析}：桥式整流电路在任意时刻均有两个二极管串联导通。因此，输出电压的峰值 $V_{o(\text{peak})}$ 理论上应比输入电压峰值 $V_{i(\text{peak})}$ 低约 \qty{1.4}{V}。示波器观察到的幅度衰减主要源于此物理特性。
+    \end{itemize}
+    
+    \item \textbf{过零点交越失真}：
+    在输入电压接近零点（小于二极管开启电压）的区域，二极管处于截止状态，导致输出波形在波谷处出现一段极短的“死区”，这使得实际输出波形并非完美的绝对值正弦波。
+    
+    \item \textbf{测量噪声与读数误差}：
+    示波器显示的输出波形叠加了一定的高频毛刺，这可能是由于面包板接线较长引入了工频干扰或环境电磁噪声。此外，通过示波器光标手动读取峰值电压时，存在人为的对准误差。
+    
+    \item \textbf{元器件参数偏差}：
+    实验所用电阻 $R_1$ 存在标称容差，虽然纯电阻负载主要影响电流大小，但在结合二极管非线性特性的情况下，也会对特定点的工作电压产生微小影响。
 \end{enumerate}
 
 \end{document}
