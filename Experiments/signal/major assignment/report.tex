@@ -1,0 +1,224 @@
+\documentclass[12pt]{ctexart}
+\usepackage{amsmath} % 用于数学公式
+\usepackage{graphicx} % 用于插入图片
+\usepackage{listings} % 用于插入代码
+\usepackage{float}    % 用于控制图表浮动位置
+
+\usepackage{booktabs} % 用于创建更美观的三线表
+\usepackage{siunitx}  % 用于标准地排版物理单位和数值
+\usepackage{amsmath}  % 用于数学公式环境
+\sisetup{per-mode=symbol} % 设置单位格式，例如 m/s
+
+\usepackage{fancyhdr}   % 用于自定义页眉页脚
+\usepackage{caption}   % 用于自定义图表标题
+\usepackage{subcaption} % 用于子图环境
+\usepackage[colorlinks, linkcolor=black]{hyperref}  % 用于创建超链接
+\usepackage{makecell}
+\usepackage{multirow}  
+
+% \pdfcompresslevel=9
+
+\graphicspath{{./figures/}}
+
+\usepackage[left=2.5cm, right=2.5cm, top=2cm, bottom=2cm]{geometry}
+
+\setlength{\jot}{6pt} % 增加多行公式之间的行距
+
+\linespread{1.5}
+
+\pagestyle{fancy}
+% \fancyhead[C]{信号与系统实验大作业}
+
+\begin{document}
+
+% \maketitle
+\thispagestyle{empty}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=13cm]{./figures/logo1.png}
+\end{figure}
+
+\vspace*{\fill}
+    \begin{center}
+        \Huge\textbf{信号与系统实验大作业报告}
+    \end{center}
+\vspace*{\fill}
+
+\begin{table}[H]
+    \centering
+    \large
+    \begin{tabular}{ll}
+    \textbf{课程:} & 信号与系统实验 \\
+    \textbf{姓名:} & 郭浩然 \\
+    \textbf{学号:} & 2024303980 \\
+    \textbf{桌号:} & 18 \\
+    \textbf{班级:} & 10班 \\
+    \textbf{学院:} & 民航学院 \\
+    \textbf{专业:} & 飞行器控制与信息工程 \\
+    \textbf{时间:} & \today \\
+    \end{tabular}
+\end{table}
+
+\newpage
+
+\tableofcontents
+\newpage
+
+% 接在你的 \tableofcontents \newpage 之后
+
+% =========================================================
+% 正文开始
+% =========================================================
+
+\section{实验概述与设计目标}
+
+\subsection{实验背景}
+语音信号处理是数字信号处理（DSP）领域的重要应用方向之一。在实际的通信与音频处理系统中，信号往往会受到环境噪声的干扰，或者需要根据特定的应用场景对语音进行变调、变速等特殊处理。本次实验旨在综合运用《信号与系统》课程中的核心理论，包括采样定理、离散时间傅里叶变换（DTFT）、Z变换以及数字滤波器设计原理，解决实际的音频处理问题。
+
+\subsection{实验任务要求}
+本次大作业包含四个核心任务，涵盖了从噪声抑制到语音特效处理的全过程：
+\begin{enumerate}
+    \item \textbf{特定频率噪声抑制}：针对叠加了 \SI{1800}{\hertz} 单频正弦噪声的语音信号，设计高精度的数字滤波器进行滤除，同时尽可能保留原语音的频谱特征。
+    \item \textbf{变调不变速处理}：基于短时傅里叶变换（STFT）或相关算法，实现男声与女声的相互转换，要求音调改变但语速保持不变。
+    \item \textbf{变速不变调处理}：实现语音的快放与慢放，要求语速改变但音调（基频）保持不变。
+    \item \textbf{语音倒放处理}：实现音频的时域翻转，并分析其时频特性。
+\end{enumerate}
+
+本报告将详细阐述上述任务的数学原理、算法设计思路、具体实现步骤以及实验结果分析。
+
+\newpage
+
+% =========================================================
+% 任务一：特定频率噪声抑制
+% =========================================================
+
+\section{任务一：特定频率噪声抑制系统设计}
+
+\subsection{问题分析}
+本任务要求去除叠加在语音信号上的 \SI{1800}{\hertz} 正弦噪声 $n(t) = \sin(2\pi \cdot 1800 t)$。
+人声的频率范围通常在 \SI{300}{\hertz} 至 \SI{3400}{\hertz} 之间，而 \SI{1800}{\hertz} 恰好位于人声能量集中的核心频段。如果采用简单带阻滤波器，势必会切除大量有效的人声频率成分，导致语音清晰度严重下降或音色沉闷。
+
+因此，我们需要设计一个具有极窄阻带的带阻滤波器。该滤波器仅对 \SI{1800}{\hertz} 附近的频率产生极大的衰减，而对其他频率成分保持单位增益，从而最大程度地保留原始语音信息。
+
+\subsection{基于零极点配置法的陷波器设计原理}
+为了获得理想的陷波效果，我们采用基于Z平面零极点配置的方法设计二阶 IIR 滤波器。
+
+\subsubsection{数字频率的确定}
+设采样频率为 $F_s$（实验中由 `audioread` 获取，通常为 \SI{44100}{\hertz} 或 \SI{48000}{\hertz}），噪声频率 $f_0 = \SI{1800}{\hertz}$。则需滤除的数字角频率 $\omega_0$ 为：
+\begin{equation}
+    \omega_0 = 2\pi \frac{f_0}{F_s}
+\end{equation}
+
+\subsubsection{零点与极点的配置}
+滤波器的系统函数 $H(z)$ 由零点和极点共同决定。
+\begin{itemize}
+    \item \textbf{零点设计（Zeros）}：为了完全消除频率 $\omega_0$，我们需要在 Z 平面的单位圆上角度为 $\pm \omega_0$ 处设置一对共轭零点 $z_1, z_2$。此时，系统在 $\omega_0$ 处的频率响应为 0。
+    \begin{equation}
+        z_1 = e^{j\omega_0}, \quad z_2 = e^{-j\omega_0}
+    \end{equation}
+    
+    \item \textbf{极点设计（Poles）}：为了防止滤波器阻带过宽影响临近的语音频率，我们需要在零点附近放置一对共轭极点 $p_1, p_2$。极点应位于单位圆内以保证系统稳定，且极径 $r$ 应十分接近 1（如 $r=0.98$ 或 $r=0.99$），以获得极窄的3dB带宽。
+    \begin{equation}
+        p_1 = r e^{j\omega_0}, \quad p_2 = r e^{-j\omega_0} \quad (0 < r < 1)
+    \end{equation}
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./task1/zplane.png} 
+    % \fbox{\parbox[c][8cm][c]{10cm}{\centering [此处插入MATLAB生成的零极点分布图 (zplane)] \\ 展示单位圆上的零点和极点位置}}
+    \caption{设计的1800Hz陷波器零极点分布示意图}
+    \label{fig:pole_zero}
+\end{figure}
+
+\subsection{系统函数与差分方程推导}
+根据上述零极点，二阶陷波器的系统传递函数 $H(z)$ 可表示为：
+\begin{equation}
+    H(z) = b_0 \frac{(z - z_1)(z - z_2)}{(z - p_1)(z - p_2)}
+\end{equation}
+其中 $b_0$ 为归一化增益系数，通常选取使得直流分量（$\omega=0$）或奈奎斯特频率处增益为1。
+
+展开分子和分母：
+\begin{align}
+    \text{分子} &= z^2 - (z_1 + z_2)z + z_1 z_2 = z^2 - 2\cos(\omega_0)z + 1 \\
+    \text{分母} &= z^2 - (p_1 + p_2)z + p_1 p_2 = z^2 - 2r\cos(\omega_0)z + r^2
+\end{align}
+
+因此，系统函数 $H(z)$ 的标准形式为：
+\begin{equation}
+    H(z) = b_0 \frac{1 - 2\cos(\omega_0)z^{-1} + z^{-2}}{1 - 2r\cos(\omega_0)z^{-1} + r^2 z^{-2}}
+\end{equation}
+
+令 $Y(z) = H(z)X(z)$，利用Z变换的时移性质，可推导出该系统的线性常系数差分方程，用于计算机编程实现：
+\begin{equation}
+    y[n] = b_0 \left( x[n] - 2\cos(\omega_0)x[n-1] + x[n-2] \right) + 2r\cos(\omega_0)y[n-1] - r^2 y[n-2]
+\end{equation}
+
+\subsection{幅度频率响应分析}
+为了验证设计的滤波器性能，我们分析其幅频响应 $|H(e^{j\omega})|$。
+理论上，当 $\omega = \omega_0$ 时，分子为0，增益为 $-\infty$ dB；当 $\omega$ 远离 $\omega_0$ 时，零点和极点的影响相互抵消，增益趋近于 1（\SI{0}{\decibel}）。极径 $r$ 越接近 1，过渡带越陡峭，频率选择性越好。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./task1/freqz.png}
+    % \fbox{\parbox[c][8cm][c]{12cm}{\centering [此处插入MATLAB生成的幅频响应和相频响应图 (freqz)] \\ 重点展示1800Hz处的深坑}}
+    \caption{设计的陷波器幅频响应特性曲线}
+    \label{fig:freq_response}
+\end{figure}
+
+\subsection{实验结果与分析}
+
+通过对信号进行快速傅里叶变换（FFT），我们得到了处理前后的频谱图（图 \ref{fig:task1_spectrum}）。
+\begin{itemize}
+    \item \textbf{加噪信号}：在 \SI{1800}{\hertz} 处存在一个极高能量的尖峰（冲激分量）。
+    \item \textbf{滤波信号}：\SI{1800}{\hertz} 处的尖峰完全消失，且周围的语音频谱成分（如 \SI{1000}{\hertz} 至 \SI{3000}{\hertz} 的共振峰）得到了完好的保留。
+\end{itemize}
+这一结果验证了利用 IIR 陷波器进行单频噪声抑制的高效性和准确性。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./task1/spectrum.png}
+    % \fbox{\parbox[c][10cm][c]{14cm}{\centering [此处插入频谱对比图] \\ 必须清晰展示1800Hz处的尖峰及其消除情况}}
+    \caption{噪声抑制前后的频谱对比分析}
+    \label{fig:task1_spectrum}
+\end{figure}
+
+\newpage
+
+% =========================================================
+% 任务四：语音倒放处理
+% =========================================================
+
+\section{任务四：语音倒放处理}
+
+\subsection{原理分析}
+语音倒放是指将数字音频信号序列在时间轴上进行翻转。设原始语音信号为 $x[n]$，长度为 $N$ ($0 \le n \le N-1$)，则倒放后的信号 $y[n]$ 可表示为：
+\begin{equation}
+    y[n] = x[N - 1 - n], \quad 0 \le n \le N-1
+\end{equation}
+
+从时域角度看，这仅仅是数据读取顺序的改变。然而，从频域角度分析，倒放操作具有特殊的性质。
+根据离散时间傅里叶变换（DTFT）的性质，若 $x[n] \leftrightarrow X(e^{j\omega})$，则时间反转序列 $x[-n]$ 对应的频域变换为 $X(e^{-j\omega})$。
+对于实数序列语音信号，其频谱具有共轭对称性，即 $|X(e^{j\omega})| = |X(e^{-j\omega})|$。
+
+这意味着：**语音倒放操作不会改变信号的幅度谱，只会改变其相位谱。** 听觉上，我们依然能听到相同的音高和音色，但是语音的时序结构（如音节的起承转合、辅音与元音的先后顺序）被完全颠倒，导致语义完全无法理解，产生一种“外星语”的听感。
+
+\subsection{实现步骤}
+1. 录制包含数字“1”到“9”的语音信号 $x[n]$。
+2. 利用 MATLAB 内置函数对数组进行翻转操作。对于列向量音频数据，使用 \texttt{flipud()}；对于行向量，使用 \texttt{fliplr()}。
+3. 调用 \texttt{audiowrite()} 将结果保存。
+
+\subsection{实验结果}
+图 \ref{fig:task4_spectrogram} 展示了正放与倒放语音的语谱图（Spectrogram）。
+可以清晰地观察到，倒放信号的语谱图在时间轴上与原信号互为镜像。例如，在正向计数中，数字“1”（yī）的能量通常呈现“起音平稳-收音渐弱”的特征，而在倒放后，变成了“起音渐强-突然截断”的特征。这解释了为何倒放的声音听起来具有特殊的吸气感和突兀感。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{./task4/spectrogram.png}
+    % \fbox{\parbox[c][10cm][c]{14cm}{\centering [此处插入正放和倒放的语谱图对比] \\ 能够看出时间轴上的镜像对称关系}}
+    \caption{正放与倒放语音的语谱图对比}
+    \label{fig:task4_spectrogram}
+\end{figure}
+
+\end{document}
