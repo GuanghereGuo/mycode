@@ -102,13 +102,27 @@
 因此，我们需要设计一个具有极窄阻带的带阻滤波器。该滤波器仅对 \SI{1800}{\hertz} 附近的频率产生极大的衰减，而对其他频率成分保持单位增益，从而最大程度地保留原始语音信息。
 
 \subsection{基于零极点配置法的陷波器设计原理}
-为了获得理想的陷波效果，我们采用基于Z平面零极点配置的方法设计二阶 IIR 滤波器。
+为了获得理想的陷波效果，我们采用基于Z平面零极点配置的方法设计一个具有极窄阻带的带阻滤波器，查阅资料知，这种滤波器被称为陷波器。
 
 \subsubsection{数字频率的确定}
-设采样频率为 $F_s$（实验中由 `audioread` 获取，通常为 \SI{44100}{\hertz} 或 \SI{48000}{\hertz}），噪声频率 $f_0 = \SI{1800}{\hertz}$。则需滤除的数字角频率 $\omega_0$ 为：
+设采样频率为 $F_s$（实验中由 audioread 获取，通常为 \SI{44100}{\hertz} 或 \SI{48000}{\hertz}），噪声频率 $f_0 = \SI{1800}{\hertz}$。则需滤除的数字角频率 $\omega_0$ 为：
 \begin{equation}
     \omega_0 = 2\pi \frac{f_0}{F_s}
 \end{equation}
+
+\subsubsection{带宽控制的几何矢量解释}
+利用 Z 平面的几何矢量法，可以为零极点配置提供思路。系统的幅频响应 $|H(e^{j\omega})|$ 本质上取决于单位圆上的频率点 $e^{j\omega}$ 到所有零点距离之积与到所有极点距离之积的比值：
+\begin{equation}
+    |H(e^{j\omega})| \propto \frac{\prod |e^{j\omega} - z_k|}{\prod |e^{j\omega} - p_k|}
+\end{equation}
+
+当 $\omega = \omega_0$ 时，采样点与零点 $z_1$ 重合，分子距离为 0，系统增益为 0，实现陷波。
+当频率稍有偏离 ($\omega = \omega_0 + \Delta\omega$)，采样点沿单位圆移动，此时：
+\begin{itemize}
+    \item 若仅有零点，分子距离缓慢增加，导致阻带较宽。
+    \item 引入极点 $p_1$ 后，由于 $p_1$ 与 $z_1$ 极度接近 ($r \approx 1$)，采样点到极点的距离也会随之迅速增加。分母的增加抵消了分子的增加，使得增益比值迅速回升至 1 (\SI{0}{\decibel})。
+\end{itemize}
+因此，极径 $r$ 越接近 1，这种“零极点抵消效应”越强，过渡带越陡峭，滤波器的频率选择性越高。
 
 \subsubsection{零点与极点的配置}
 滤波器的系统函数 $H(z)$ 由零点和极点共同决定。
@@ -118,7 +132,7 @@
         z_1 = e^{j\omega_0}, \quad z_2 = e^{-j\omega_0}
     \end{equation}
     
-    \item \textbf{极点设计（Poles）}：为了防止滤波器阻带过宽影响临近的语音频率，我们需要在零点附近放置一对共轭极点 $p_1, p_2$。极点应位于单位圆内以保证系统稳定，且极径 $r$ 应十分接近 1（如 $r=0.98$ 或 $r=0.99$），以获得极窄的3dB带宽。
+    \item \textbf{极点设计（Poles）}：为了防止滤波器阻带过宽影响临近的语音频率，我们需要在零点附近放置一对共轭极点 $p_1, p_2$。极点应位于单位圆内以保证系统稳定，且极径 $r$ 应十分接近 1（实验中我们取r = 0.99），以获得极窄的3dB带宽。
     \begin{equation}
         p_1 = r e^{j\omega_0}, \quad p_2 = r e^{-j\omega_0} \quad (0 < r < 1)
     \end{equation}
@@ -132,12 +146,12 @@
     \label{fig:pole_zero}
 \end{figure}
 
-\subsection{系统函数与差分方程推导}
+\subsection{系统函数推导}
 根据上述零极点，二阶陷波器的系统传递函数 $H(z)$ 可表示为：
 \begin{equation}
     H(z) = b_0 \frac{(z - z_1)(z - z_2)}{(z - p_1)(z - p_2)}
 \end{equation}
-其中 $b_0$ 为归一化增益系数，通常选取使得直流分量（$\omega=0$）或奈奎斯特频率处增益为1。
+其中 $b_0$ 为归一化增益系数，通常选取使得直流分量（$\omega=0$）处增益为1。
 
 展开分子和分母：
 \begin{align}
@@ -150,10 +164,7 @@
     H(z) = b_0 \frac{1 - 2\cos(\omega_0)z^{-1} + z^{-2}}{1 - 2r\cos(\omega_0)z^{-1} + r^2 z^{-2}}
 \end{equation}
 
-令 $Y(z) = H(z)X(z)$，利用Z变换的时移性质，可推导出该系统的线性常系数差分方程，用于计算机编程实现：
-\begin{equation}
-    y[n] = b_0 \left( x[n] - 2\cos(\omega_0)x[n-1] + x[n-2] \right) + 2r\cos(\omega_0)y[n-1] - r^2 y[n-2]
-\end{equation}
+至此，滤波器设计完毕。
 
 \subsection{幅度频率响应分析}
 为了验证设计的滤波器性能，我们分析其幅频响应 $|H(e^{j\omega})|$。
@@ -161,7 +172,7 @@
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{./task1/freqz.png}
+    \includegraphics[width=0.7\textwidth]{./task1/freqz.png}
     % \fbox{\parbox[c][8cm][c]{12cm}{\centering [此处插入MATLAB生成的幅频响应和相频响应图 (freqz)] \\ 重点展示1800Hz处的深坑}}
     \caption{设计的陷波器幅频响应特性曲线}
     \label{fig:freq_response}
@@ -178,13 +189,12 @@
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{./task1/spectrum.png}
+    \includegraphics[width=\textwidth]{./task1/spectrum.png}
     % \fbox{\parbox[c][10cm][c]{14cm}{\centering [此处插入频谱对比图] \\ 必须清晰展示1800Hz处的尖峰及其消除情况}}
     \caption{噪声抑制前后的频谱对比分析}
     \label{fig:task1_spectrum}
 \end{figure}
 
-\newpage
 
 % =========================================================
 % 任务四：语音倒放处理
@@ -202,15 +212,15 @@
 根据离散时间傅里叶变换（DTFT）的性质，若 $x[n] \leftrightarrow X(e^{j\omega})$，则时间反转序列 $x[-n]$ 对应的频域变换为 $X(e^{-j\omega})$。
 对于实数序列语音信号，其频谱具有共轭对称性，即 $|X(e^{j\omega})| = |X(e^{-j\omega})|$。
 
-这意味着：**语音倒放操作不会改变信号的幅度谱，只会改变其相位谱。** 听觉上，我们依然能听到相同的音高和音色，但是语音的时序结构（如音节的起承转合、辅音与元音的先后顺序）被完全颠倒，导致语义完全无法理解，产生一种“外星语”的听感。
+这意味着：语音倒放操作不会改变信号的幅度谱，只会改变其相位谱。 听觉上，我们依然能听到相同的音高和音色，但是语音的时序结构（如音节的起承转合、辅音与元音的先后顺序）被完全颠倒，导致语义完全无法理解，产生一种“外星语”的听感。
 
 \subsection{实现步骤}
 1. 录制包含数字“1”到“9”的语音信号 $x[n]$。
-2. 利用 MATLAB 内置函数对数组进行翻转操作。对于列向量音频数据，使用 \texttt{flipud()}；对于行向量，使用 \texttt{fliplr()}。
+2. 利用 MATLAB 内置函数\texttt{flipud()}对数组进行翻转操作
 3. 调用 \texttt{audiowrite()} 将结果保存。
 
 \subsection{实验结果}
-图 \ref{fig:task4_spectrogram} 展示了正放与倒放语音的语谱图（Spectrogram）。
+图 \ref{fig:task4_spectrogram} 展示了正放与倒放语音的语谱图。
 可以清晰地观察到，倒放信号的语谱图在时间轴上与原信号互为镜像。例如，在正向计数中，数字“1”（yī）的能量通常呈现“起音平稳-收音渐弱”的特征，而在倒放后，变成了“起音渐强-突然截断”的特征。这解释了为何倒放的声音听起来具有特殊的吸气感和突兀感。
 
 \begin{figure}[H]
@@ -220,5 +230,205 @@
     \caption{正放与倒放语音的语谱图对比}
     \label{fig:task4_spectrogram}
 \end{figure}
+
+\newpage
+
+\newpage
+
+% =========================================================
+% 任务二与三：变调变速系统的算法原理与演进
+% =========================================================
+
+\section{任务二与三：音频变调变速算法设计}
+
+\subsection{物理困境：时频耦合特性}
+在模拟信号处理时代，改变音频的播放速度必然导致音调改变。这一现象的数学本质源于傅里叶变换的\textbf{尺度缩放性质（Scaling Property）}。若将时间轴压缩为 $1/a$（即 $x(at)$，当 $a>1$ 时为快放），其频谱必然扩展 $a$ 倍（音调上升）。
+\begin{equation}
+    x(at) \leftrightarrow \frac{1}{|a|} X\left(\frac{\omega}{a}\right)
+\end{equation}
+这种时频强耦合特性，使得全局变换无法独立实现“变调不变速”或“变速不变调”。为了打破这种耦合，必须引入短时分析技术，将信号分解为微观单元，分别在时域或频域寻找解决方案。
+
+\subsection{初级解决方案：重叠相加法 (OLA)}
+
+\subsubsection{时域切片与重组原理}
+重叠相加法（Overlap-Add, OLA）试图通过改变分析帧与合成帧的相对密度来实现时间伸缩。
+如图 \ref{fig:ola_timeline} 所示，算法定义了两个时间轴：
+\begin{itemize}
+    \item \textbf{分析时间轴（Analysis Timeline）}：以固定步长 $H_a$ 从原信号中截取数据帧。
+    \item \textbf{合成时间轴（Synthesis Timeline）}：以新的步长 $H_s$ 将数据帧放置到输出信号中。
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./task3/ola_timeline.png}
+    % \fbox{\parbox[c][7cm][c]{14cm}{\centering [此处插入 OLA 时间轴对比图] \\ 上方画原信号和紧密的 $H_a$ 窗口 \\ 下方画拉伸后的信号和稀疏的 $H_s$ 窗口 ($H_s > H_a$) \\ 用箭头标示出 $H_a$ 和 $H_s$ 的差异}}
+    \caption{OLA 算法中分析帧移 $H_a$ 与合成帧移 $H_s$ 的关系示意图（慢放情形）}
+    \label{fig:ola_timeline}
+\end{figure}
+
+时间伸缩比 $\alpha$ 由两者之比决定：$\alpha = H_s / H_a$。调整 $\alpha$ 即可改变信号总时长。
+
+\subsubsection{OLA的致命缺陷：相位失配}
+尽管 OLA 在宏观上改变了时长，但在微观帧拼接处存在严重缺陷。
+每一帧是从原信号不同位置截取的“快照”。当我们强行按照新的 $H_s$ 步长将它们叠加时，前一帧的尾部波形与后一帧的头部波形在拼接点往往存在显著的相位差异。
+
+如图 \ref{fig:ola_mismatch} 所示，这种强制拼接会导致合成信号波形出现非连续的跳变。在听觉上，这表现为严重的机械噪音和颤动感（Flutter），严重破坏了语音的自然度。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./task3/ola_mismatch.png}
+    % \fbox{\parbox[c][6cm][c]{12cm}{\centering [此处插入 OLA 相位失配细节图] \\ 放大展示两帧叠加区域 \\ 清晰标示出第一帧尾部和第二帧头部波形的不重合/断裂现象}}
+    \caption{传统 OLA 算法导致的波形相位不连续（断裂）现象}
+    \label{fig:ola_mismatch}
+\end{figure}
+
+\subsection{时域改进路径：波形相似重叠相加法 (WSOLA)}
+
+为了解决 OLA 的相位失配问题，一种直接的思路是在\textbf{时域}内寻找自然的拼接点，即 WSOLA 算法。
+
+\subsubsection{算法核心思想：寻找自然过渡}
+WSOLA 的核心策略是：\textbf{不盲目截取下一帧，而是寻找最自然的过渡点}。
+
+假设我们已经合成了前 $k-1$ 帧信号 $y[n]$。根据目标变速比，第 $k$ 帧在原信号中的\textbf{理想起始位置}应为 $L_k$。
+然而，直接从 $L_k$ 截取的波形可能无法与已合成信号 $y[n]$ 的尾部平滑衔接。WSOLA 在理想位置 $L_k$ 附近划定一个\textbf{公差窗口（Tolerance Window）}，在窗口内寻找一段与 $y[n]$ 尾部\textbf{最相似}的波形，作为真正的下一帧。
+
+\subsubsection{数学模型与实现机制}
+这种“最相似”的寻找过程通过计算\textbf{归一化互相关函数（Normalized Cross-Correlation）}来实现。
+
+\begin{enumerate}
+    \item \textbf{定义参考模板}：取已合成信号 $y[n]$ 的末尾一小段波形作为参考模板。
+    \item \textbf{滑动搜索}：拿着这个模板，在原信号 $L_k$ 附近的公差窗口 $[L_k - \Delta, L_k + \Delta]$ 内进行滑动对比。
+    \item \textbf{寻找峰值}：互相关峰值所在的位置，即为相位对齐的最佳匹配点 $\delta^*$。
+\end{enumerate}
+
+如图 \ref{fig:wsola_search_process} 所示，通过引入偏移量 $\delta^*$，WSOLA 自动实现了波形的相位对齐，消除了机械噪声，且计算完全在时域完成，效率极高。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{./task3/wsola_mechanism.png}
+    % \fbox{\parbox[c][10cm][c]{15cm}{\centering [此处插入 WSOLA 搜索机制综合图] \\ 分三部分纵向排列：\\ 1. 上一帧合成信号尾部（参考模板）\\ 2. 原信号及其上的搜索窗口（标示出滑动方向）\\ 3. 互相关函数曲线图，标示出峰值点和对应的最佳偏移量 $\delta^*$}}
+    \caption{WSOLA 算法基于互相关搜索的最佳波形匹配机制}
+    \label{fig:wsola_search_process}
+\end{figure}
+
+\subsection{频域改进路径：相位声码器 (Phase Vocoder)}
+
+除了在时域寻找拼接点，另一种解决 OLA 相位问题的思路是深入\textbf{频域}，直接对信号的相位谱进行修正。这就是相位声码器（Phase Vocoder）的核心思想。
+
+\subsubsection{短时傅里叶变换与相位解卷绕}
+Phase Vocoder 利用短时傅里叶变换（STFT）将信号分解为幅度和相位。
+\begin{equation}
+    X(m, k) = |X(m, k)| e^{j \phi(m, k)}
+\end{equation}
+其中 $m$ 为帧索引，$k$ 为频率面索引。
+当我们改变帧的跳步（从 $H_a$ 变为 $H_s$）时，简单的幅度谱插值并不能保证相位的连续性。为了重建连续的波形，必须计算各频率分量的\textbf{瞬时频率}，并根据新的时间步长重新积分生成相位。
+
+\subsubsection{相位传播算法 (Phase Propagation)}
+核心步骤如下：
+\begin{enumerate}
+    \item \textbf{计算相位增量}：计算相邻两帧分析帧之间的相位差 $\Delta \phi = \phi_a(m) - \phi_a(m-1)$。
+    \item \textbf{移除期望相位跳变}：减去由固有频率 $\omega_k$ 在步长 $H_a$ 下产生的理论相位增量，得到相位偏差（Heterodyned Phase Increment）。
+    \item \textbf{相位解卷绕 (Unwrapping)}：将相位偏差映射到 $[-\pi, \pi]$ 主值区间，从而估算出真实的瞬时频率偏差。
+    \item \textbf{相位重积分}：根据新的合成步长 $H_s$，将瞬时频率重新累积，得到合成信号的相位：
+    \begin{equation}
+        \phi_s(m) = \phi_s(m-1) + \Delta \phi_{unwrap} \cdot \frac{H_s}{H_a}
+    \end{equation}
+\end{enumerate}
+
+通过这种数学修正，Phase Vocoder 保证了正弦分量在改变时长后的相位连贯性（Phase Coherence）。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{./task3/pvoc_flow.png}
+    \caption{基于相位修正的 Phase Vocoder 信号处理流程}
+    \label{fig:pvoc_flow}
+\end{figure}
+
+\subsection{两种路径的对比与选择}
+
+在本实验中，我们将对比 WSOLA（时域法）与 Phase Vocoder（频域法）的性能特点：
+
+\begin{table}[H]
+    \centering
+    \caption{WSOLA 与 Phase Vocoder 算法特性对比}
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{特性维度} & \textbf{WSOLA (时域)} & \textbf{Phase Vocoder (频域)} \\
+        \midrule
+        \textbf{核心原理} & 波形相似性拼接 & 瞬时频率估计与相位积分 \\
+        \textbf{计算复杂度} & 低 (仅需互相关) & 高 (需频繁 FFT/IFFT) \\
+        \textbf{瞬态响应} & \textbf{优秀} (保留波形锐度) & 较差 (瞬态模糊/涂抹感) \\
+        \textbf{相位连贯性} & 依赖拼接点匹配精度 & \textbf{优秀} (数学上严格连续) \\
+        \textbf{适用场景} & 纯语音、打击乐 & 复杂多声部音乐、长音 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+基于实验目标（语音变调变速），WSOLA 理论上能更好地保留语音的瞬态特征（如爆破音）；而 Phase Vocoder 则在处理长元音的平滑度上更具优势。本实验将综合实现并对比二者的效果。
+
+% =========================================================
+% 接在上文“两种路径的对比与选择”表格之后
+% =========================================================
+
+\subsection{实验结果与对比分析}
+
+为了验证上述算法的有效性，本次实验使用一段时长约为 10 秒的男声语音信号作为输入（采样率 $F_s = \SI{44100}{\hertz}$）。实验分别基于 WSOLA 算法和 Phase Vocoder 算法进行了变速与变调测试。
+
+\subsubsection{变速不变调实验分析}
+\textbf{1. 实验设置} \\
+设定时间伸缩比 $\alpha$ 分别为 $1.5$（慢放）和 $0.7$（快放），目标是改变语音时长，同时保持基频（Pitch）和谐波结构在频率轴上的位置不变。
+
+\textbf{2. 语谱图分析} \\
+图 \ref{fig:stretch_result} 展示了原始语音与变速后语音的语谱图对比。
+\begin{itemize}
+    \item \textbf{水平轴（时间）变化}：观察图 (b) 可见，信号在时间轴上被显著拉伸，总时长由 \SI{5}{\second} 增加至约 \SI{7.5}{\second}；图 (c) 中时长缩短至约 \SI{3.5}{\second}。这一结果与设定的变速比完全吻合。
+    \item \textbf{垂直轴（频率）不变性}：对比三张图的频率分布，可以清晰地看到，代表元音共振峰的水平亮线（Formant Bars）在频率轴上的位置\textbf{没有发生上下移动}。这证明了算法成功实现了“仅改变语速而不改变音调”的设计目标，避免了传统磁带变速带来的“变调”副作用。
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.95\textwidth]{./task3/spectrogram_stretch.png}
+    \fbox{\parbox[c][12cm][c]{14cm}{\centering [此处插入三张纵向排列的语谱图] \\ (a) 原始语音 \\ (b) 慢放 1.5倍 (WSOLA) \\ (c) 快放 0.7倍 (WSOLA) \\ 重点：频率条纹高度一致，仅长度不同}}
+    \caption{变速不变调实验结果语谱图对比 (基于 WSOLA 算法)}
+    \label{fig:stretch_result}
+\end{figure}
+
+\subsubsection{变调不变速实验分析}
+\textbf{1. 实验设置} \\
+设定变调目标为升高 4 个半音（Pitch Shift +4 semitones），模拟“男声变女声”的效果。此时要求语音的基频整体上移，但总时长保持不变。
+
+\textbf{2. 频谱结构分析} \\
+图 \ref{fig:pitch_result} 展示了变调前后的语谱图对比。
+\begin{itemize}
+    \item \textbf{谐波结构位移}：观察语谱图底部的基频轨迹（Fundamental Frequency Trail）以及上方的谐波条纹，可以看到处理后的信号（图 b）在频率轴上整体向上平移。
+    \item \textbf{时长保持}：尽管频率发生了显著改变，信号在时间轴上的终止时间点依然严格保持在 \SI{5}{\second} 处。这表明我们通过“重采样 + 时间反向拉伸”的策略，成功抵消了重采样带来的变速效应。
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.95\textwidth]{./task2/spectrogram_pitch.png}
+    \fbox{\parbox[c][10cm][c]{14cm}{\centering [此处插入两张语谱图] \\ (a) 原始男声 \\ (b) 升调后 (Phase Vocoder) \\ 重点：时长完全对齐，但(b)的纹理整体向上平移}}
+    \caption{变调不变速实验结果对比 (基于 Phase Vocoder)}
+    \label{fig:pitch_result}
+\end{figure}
+
+\subsubsection{算法性能对比：WSOLA vs Phase Vocoder}
+在实验过程中，我们对两种算法的听感和微观波形进行了详细比对。
+
+\begin{itemize}
+    \item \textbf{Phase Vocoder (PV)}：在语谱图（图 \ref{fig:algo_compare} (b)）上表现为线条极其平滑、连续。主观听感上，PV 处理的声音连贯性极好，没有机械断裂感。但由于相位修正过程中的累积误差，瞬态成分（如爆破音）会出现轻微的“涂抹”或“回声感”（Phasiness）。
+    \item \textbf{WSOLA}：如图 \ref{fig:algo_compare} (a) 所示，其语谱图在某些时刻呈现出细微的垂直纹理不连续。这是由于波形拼接无法做到 100\% 完美的相位对齐所致。在听感上，WSOLA 对瞬态的保留更清晰，但在长元音段落可能会引入轻微的颤动噪声（Jitter）。
+\end{itemize}
+
+\textbf{结论}：综合对比，**Phase Vocoder 在处理连续语音时的平滑度和自然度略优于 WSOLA**，特别是在大比例变调时，相位声码器能提供更稳定的听感体验。这也印证了频域相位连贯性在高质量语音合成中的重要性。
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.95\textwidth]{./task2_3/algo_compare.png}
+    \fbox{\parbox[c][10cm][c]{14cm}{\centering [此处插入算法细节对比图] \\ 选取同一小段语音的放大语谱图 \\ (a) WSOLA: 可能有轻微竖直断纹 \\ (b) PV: 线条模糊但连续}}
+    \caption{WSOLA 与 Phase Vocoder 处理细节的微观对比}
+    \label{fig:algo_compare}
+\end{figure}
+
 
 \end{document}

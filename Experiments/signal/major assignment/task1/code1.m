@@ -7,7 +7,7 @@ x_noisy = x + noise;
 
 f0 = 1800;
 w0 = 2*pi*f0/fs;
-r = 0.999;
+r = 0.99;
 
 b = [1, -2*cos(w0), 1];
 a = [1, -2*r*cos(w0), r^2];
@@ -15,7 +15,7 @@ k = sum(a) / sum(b);
 b = b * k;
 
 y_clean = filter(b, a, x_noisy);
-y_clean(1:10000) = 0;
+% y_clean(1:10000) = 0;
 
 disp(length(x_noisy));
 
