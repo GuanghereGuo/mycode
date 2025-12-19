@@ -248,6 +248,8 @@
 \end{equation}
 这种时频强耦合特性，使得全局变换无法独立实现“变调不变速”或“变速不变调”。为了打破这种耦合，必须引入短时分析技术，将信号分解为微观单元，分别在时域或频域寻找解决方案。
 
+考虑两个问题是可以互相归约的，因为变调不变速可以通过重采样（变调）+ 变速不变调来实现，反之亦然。因此，我们将重点讨论变速不变调的算法设计，变调不变速的实现则在此基础上进行重采样得到。
+
 \subsection{初级解决方案：重叠相加法 (OLA)}
 
 \subsubsection{时域切片与重组原理}
@@ -293,7 +295,7 @@ WSOLA 的核心策略是：\textbf{不盲目截取下一帧，而是寻找最自
 然而，直接从 $L_k$ 截取的波形可能无法与已合成信号 $y[n]$ 的尾部平滑衔接。WSOLA 在理想位置 $L_k$ 附近划定一个\textbf{公差窗口（Tolerance Window）}，在窗口内寻找一段与 $y[n]$ 尾部\textbf{最相似}的波形，作为真正的下一帧。
 
 \subsubsection{数学模型与实现机制}
-这种“最相似”的寻找过程通过计算\textbf{归一化互相关函数（Normalized Cross-Correlation）}来实现。
+这种“最相似”的寻找过程通过计算归一化互相关函数（Normalized Cross-Correlation）来实现。
 
 \begin{enumerate}
     \item \textbf{定义参考模板}：取已合成信号 $y[n]$ 的末尾一小段波形作为参考模板。
@@ -335,7 +337,7 @@ Phase Vocoder 利用短时傅里叶变换（STFT）将信号分解为幅度和�
     \end{equation}
 \end{enumerate}
 
-通过这种数学修正，Phase Vocoder 保证了正弦分量在改变时长后的相位连贯性（Phase Coherence）。
+通过这种数学修正，Phase Vocoder 保证了正弦分量在改变时长后的相位连贯性。
 
 \begin{figure}[H]
     \centering
@@ -364,71 +366,110 @@ Phase Vocoder 利用短时傅里叶变换（STFT）将信号分解为幅度和�
     \end{tabular}
 \end{table}
 
-基于实验目标（语音变调变速），WSOLA 理论上能更好地保留语音的瞬态特征（如爆破音）；而 Phase Vocoder 则在处理长元音的平滑度上更具优势。本实验将综合实现并对比二者的效果。
+基于实验目标，WSOLA 理论上能更好地保留语音的瞬态特征（如爆破音）；而 Phase Vocoder 则在处理长元音的平滑度上更具优势。本实验将综合实现并对比二者的效果。
+
 
 % =========================================================
-% 接在上文“两种路径的对比与选择”表格之后
+% 实验结果与对比分析 (修正版 - WSOLA 优于 PV)
 % =========================================================
 
 \subsection{实验结果与对比分析}
 
-为了验证上述算法的有效性，本次实验使用一段时长约为 10 秒的男声语音信号作为输入（采样率 $F_s = \SI{44100}{\hertz}$）。实验分别基于 WSOLA 算法和 Phase Vocoder 算法进行了变速与变调测试。
+为了全面评估不同算法的性能，本次实验选取一段男声语音信号作为输入。我们分别在“变速不变调（快放）”和“变调不变速（升调）”两个核心场景下，对 WSOLA 和 Phase Vocoder (PV) 两种算法进行了横向对比测试。
 
-\subsubsection{变速不变调实验分析}
+\subsubsection{场景一：变速不变调实验（快放）}
 \textbf{1. 实验设置} \\
-设定时间伸缩比 $\alpha$ 分别为 $1.5$（慢放）和 $0.7$（快放），目标是改变语音时长，同时保持基频（Pitch）和谐波结构在频率轴上的位置不变。
+设定时间伸缩比 $\alpha = 0.7$，即将语音总时长压缩为原来的 70\%，同时保持音调不变。
 
-\textbf{2. 语谱图分析} \\
-图 \ref{fig:stretch_result} 展示了原始语音与变速后语音的语谱图对比。
+\textbf{2. 结果对比分析} \\
+图 \ref{fig:speed_compare} 展示了原始语音与两种算法处理后的语谱图对比。
 \begin{itemize}
-    \item \textbf{水平轴（时间）变化}：观察图 (b) 可见，信号在时间轴上被显著拉伸，总时长由 \SI{5}{\second} 增加至约 \SI{7.5}{\second}；图 (c) 中时长缩短至约 \SI{3.5}{\second}。这一结果与设定的变速比完全吻合。
-    \item \textbf{垂直轴（频率）不变性}：对比三张图的频率分布，可以清晰地看到，代表元音共振峰的水平亮线（Formant Bars）在频率轴上的位置\textbf{没有发生上下移动}。这证明了算法成功实现了“仅改变语速而不改变音调”的设计目标，避免了传统磁带变速带来的“变调”副作用。
+    \item \textbf{时长控制}：两种算法均成功将信号时长从约 \SI{7}{\second} 压缩至 \SI{5}{\second}。观察语谱图中代表\textbf{主要能量分布的水平亮纹}（对应语音的基频和谐波），其在频率轴上的位置未发生偏移，验证了变速操作未改变音调。
+    \item \textbf{细节差异与听感}：
+    \begin{itemize}
+        \item \textbf{WSOLA (图 b)}：语谱图保留了丰富的纹理细节。在听感上，WSOLA 处理后的语音清晰度极高，特别是辅音的爆发力（瞬态特征）得到了完美保留，声音紧实、贴耳，几乎听不出处理痕迹。
+        \item \textbf{Phase Vocoder (图 c)}：虽然语谱图看起来线条极为平滑，但这在听觉上对应的是一种“涂抹感”。由于频域相位修正的平滑效应，语音的瞬态冲击力被削弱，导致咬字略显模糊，不够干脆。
+    \end{itemize}
 \end{itemize}
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.95\textwidth]{./task3/spectrogram_stretch.png}
-    \fbox{\parbox[c][12cm][c]{14cm}{\centering [此处插入三张纵向排列的语谱图] \\ (a) 原始语音 \\ (b) 慢放 1.5倍 (WSOLA) \\ (c) 快放 0.7倍 (WSOLA) \\ 重点：频率条纹高度一致，仅长度不同}}
-    \caption{变速不变调实验结果语谱图对比 (基于 WSOLA 算法)}
-    \label{fig:stretch_result}
+    \includegraphics[width=\textwidth]{./task3/speedup.png}
+    % \fbox{\parbox[c][12cm][c]{14cm}{\centering [此处插入三张语谱图 - 纵向排列] \\ (a) 原始语音 \\ (b) WSOLA 快放 0.7x \\ (c) Phase Vocoder 快放 0.7x \\ 重点：(b)纹理锐利，(c)纹理过于平滑导致模糊}}
+    \caption{变速不变调（快放）实验结果对比：WSOLA vs Phase Vocoder}
+    \label{fig:speed_compare}
 \end{figure}
 
-\subsubsection{变调不变速实验分析}
+\subsubsection{场景二：变调不变速实验（升调）}
 \textbf{1. 实验设置} \\
-设定变调目标为升高 4 个半音（Pitch Shift +4 semitones），模拟“男声变女声”的效果。此时要求语音的基频整体上移，但总时长保持不变。
+设定变调目标为升高 4 个半音，模拟男声变女声效果，同时保持语音时长不变。
 
-\textbf{2. 频谱结构分析} \\
-图 \ref{fig:pitch_result} 展示了变调前后的语谱图对比。
+\textbf{2. 结果对比分析} \\
+图 \ref{fig:pitch_compare} 展示了两种算法在变调任务中的表现。
 \begin{itemize}
-    \item \textbf{谐波结构位移}：观察语谱图底部的基频轨迹（Fundamental Frequency Trail）以及上方的谐波条纹，可以看到处理后的信号（图 b）在频率轴上整体向上平移。
-    \item \textbf{时长保持}：尽管频率发生了显著改变，信号在时间轴上的终止时间点依然严格保持在 \SI{5}{\second} 处。这表明我们通过“重采样 + 时间反向拉伸”的策略，成功抵消了重采样带来的变速效应。
+    \item \textbf{频率位移}：观察图 (b) 和 (c)，可见所有的能量亮纹均整体向上平移，符合升调预期。
+    \item \textbf{音质缺陷分析}：
+    \begin{itemize}
+        \item \textbf{WSOLA (图 b)}：由于采用“重采样+时间拉伸”策略，WSOLA 有效保留了波形内部的微观结构。听感上，声音非常纯粹、自然，就像是一个人真实地改变了说话音高，没有任何“电音”滤镜感。
+        \item \textbf{Phase Vocoder (图 c)}：PV 的弊端在此场景下彻底暴露。虽然它解决了水平方向的相位连续性，但破坏了各个频率分量之间的垂直相位同步。这导致听感上出现明显的“机械金属感”和“空间疏离感”，声音听起来像是在远处的管子里发出的，缺乏真实人声的实体感。
+    \end{itemize}
 \end{itemize}
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=0.95\textwidth]{./task2/spectrogram_pitch.png}
-    \fbox{\parbox[c][10cm][c]{14cm}{\centering [此处插入两张语谱图] \\ (a) 原始男声 \\ (b) 升调后 (Phase Vocoder) \\ 重点：时长完全对齐，但(b)的纹理整体向上平移}}
-    \caption{变调不变速实验结果对比 (基于 Phase Vocoder)}
-    \label{fig:pitch_result}
+    \includegraphics[width=\textwidth]{./task3/pitchup.png}
+    % \fbox{\parbox[c][12cm][c]{14cm}{\centering [此处插入三张语谱图 - 纵向排列] \\ (a) 原始语音 \\ (b) WSOLA 升调 +4st \\ (c) Phase Vocoder 升调 +4st \\ 重点：(b)结构清晰，(c)虽然平滑但伴随相位失真}}
+    \caption{变调不变速（升调）实验结果对比：WSOLA vs Phase Vocoder}
+    \label{fig:pitch_compare}
 \end{figure}
 
-\subsubsection{算法性能对比：WSOLA vs Phase Vocoder}
-在实验过程中，我们对两种算法的听感和微观波形进行了详细比对。
+\subsubsection{综合结论}
+通过上述两组对比实验，可得出与理论预期截然不同的结论：
+\begin{enumerate}
+    \item \textbf{频域算法 (Phase Vocoder)} 虽然在语谱图视觉上极其平滑，但这种过度平滑是以牺牲瞬态清晰度和垂直相位同步为代价的。它引入了明显的金属音和空间失真，导致听感不自然、不贴耳。
+    \item \textbf{时域算法 (WSOLA)} 凭借对原始波形片段的直接复用，最大程度地保留了语音的微观时域结构和谐波相位关系。因此，在单声道的语音变调变速任务中，\textbf{WSOLA 的听感清晰度、真实度和自然度均显著优于 Phase Vocoder}。
+\end{enumerate}
+这一结论证明了在语音信号处理中，保持时域波形的完整性往往比单纯追求频域相位的数学连续性更为重要。
 
+\newpage
+
+% =========================================================
+% 实验总结与心得
+% =========================================================
+
+\section{实验总结与心得}
+
+本次《信号与系统》实验大作业历时数周，涵盖了从基础的数字滤波器设计到复杂的语音变速变调算法实现的完整流程。通过理论推导、MATLAB 编程仿真以及详细的对比分析，不仅巩固了课程核心知识，更在工程实践中获得了深刻的认知。
+
+\subsection{核心结论回顾}
+本次实验最显著的成果在于对不同音频处理算法的深度对比：
+\begin{enumerate}
+    \item \textbf{时频耦合的物理极限}：通过任务二与三的实践，深刻验证了傅里叶变换的尺度缩放性质。简单的时间/频率线性变换无法满足复杂的语音处理需求，必须引入短时分析（STFT）或时域拼接（OLA）技术来实现“时频解耦”。
+    \item \textbf{算法优劣的反直觉发现}：在实验初期，我们曾假设数学上更为严谨的频域算法（Phase Vocoder）会带来更好的音质。然而，实验结果表明：
+    \begin{itemize}
+        \item \textbf{Phase Vocoder} 虽然解决了水平方向的相位连续性，消除了明显的断裂音，但破坏了信号在垂直方向上的相位同步（Vertical Phase Coherence）。这导致了明显的“空间疏离感”和“机械金属音”，使得语音听起来不贴耳、不真实。
+        \item \textbf{WSOLA} 虽然原理看似简单（基于波形相似性的剪切拼接），但它通过保留原始波形的微观片段，完美维持了谐波间的相对相位关系和瞬态特征。因此，在单声道语音处理中，WSOLA 呈现出远超 Phase Vocoder 的纯净度和自然度。
+    \end{itemize}
+    这一结论纠正了“算法越复杂效果越好”的误区，证明了在语音合成领域，保留时域微观结构的重要性。
+\end{enumerate}
+
+\subsection{心得与收获}
 \begin{itemize}
-    \item \textbf{Phase Vocoder (PV)}：在语谱图（图 \ref{fig:algo_compare} (b)）上表现为线条极其平滑、连续。主观听感上，PV 处理的声音连贯性极好，没有机械断裂感。但由于相位修正过程中的累积误差，瞬态成分（如爆破音）会出现轻微的“涂抹”或“回声感”（Phasiness）。
-    \item \textbf{WSOLA}：如图 \ref{fig:algo_compare} (a) 所示，其语谱图在某些时刻呈现出细微的垂直纹理不连续。这是由于波形拼接无法做到 100\% 完美的相位对齐所致。在听感上，WSOLA 对瞬态的保留更清晰，但在长元音段落可能会引入轻微的颤动噪声（Jitter）。
+    \item \textbf{从公式到代码的跨越}：在实现 1800Hz 陷波器时，通过手动推导零极点位置并将其映射到 Z 平面，我直观地理解了系统函数 $H(z)$ 与频率响应之间的几何关系。这种从抽象数学公式到具体滤波器系数的转化过程，让我对 Z 变换的物理意义有了顿悟般的理解。
+    \item \textbf{多维数据分析能力}：在实验分析阶段，我不再局限于简单的时域波形观察，而是学会了使用 3D 语谱图（Waterfall Plot）来分析信号的时频特性。通过调整视角、对比能量纹理，我能够从视觉上捕捉到人耳难以分辨的细微失真，这是进行科学实验必不可少的分析手段。
+    \item \textbf{工程调试的耐心}：在编写 WSOLA 算法时，曾遇到波形拼接处爆音和数组越界的问题。通过逐帧打印索引、绘制中间变量波形，我逐步定位了重叠区（Overlap Region）的加窗逻辑错误。这一过程极大地锻炼了我的逻辑思维和代码调试能力。
 \end{itemize}
 
-\textbf{结论}：综合对比，**Phase Vocoder 在处理连续语音时的平滑度和自然度略优于 WSOLA**，特别是在大比例变调时，相位声码器能提供更稳定的听感体验。这也印证了频域相位连贯性在高质量语音合成中的重要性。
+\subsection{不足与展望}
+尽管本次实验成功实现了基本的变速变调，但也暴露了传统 DSP 算法的局限性：无论是 WSOLA 还是 Phase Vocoder，在进行跨性别变声（如男变女）时，仅改变了基频（Pitch），而未能自适应地调整声道共振峰（Formants）。这导致变声后的声音虽然音调变高，但音色依然保留了男性的声道特征，听感上类似“假声”或“花栗鼠”。
 
-\begin{figure}[H]
-    \centering
-    % \includegraphics[width=0.95\textwidth]{./task2_3/algo_compare.png}
-    \fbox{\parbox[c][10cm][c]{14cm}{\centering [此处插入算法细节对比图] \\ 选取同一小段语音的放大语谱图 \\ (a) WSOLA: 可能有轻微竖直断纹 \\ (b) PV: 线条模糊但连续}}
-    \caption{WSOLA 与 Phase Vocoder 处理细节的微观对比}
-    \label{fig:algo_compare}
-\end{figure}
+未来的改进方向可以尝试引入**源-滤波器模型（Source-Filter Model）**，在改变基频的同时对频谱包络进行非线性映射；或者尝试基于深度学习的端到端模型（如 RVC、Diff-SVC），以实现更加逼真、自然的音色转换。
 
+\vspace{2cm}
+
+\begin{flushright}
+    \textbf{报告人：} 郭浩然 \\
+    \textbf{日期：} \today
+\end{flushright}
 
 \end{document}

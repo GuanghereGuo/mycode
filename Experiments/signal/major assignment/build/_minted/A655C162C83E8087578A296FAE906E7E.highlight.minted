@@ -1,0 +1,116 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{function}\PYG{+w}{ }\PYG{n+nf}{draw\PYGZus{}results}\PYG{p}{(}\PYG{p}{)}
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{n}{file\PYGZus{}origin}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{origin.wav\PYGZsq{}}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{n}{file\PYGZus{}wsola\PYGZus{}speed}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{变速不变调wsola.wav\PYGZsq{}}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{file\PYGZus{}pv\PYGZus{}speed}\PYG{+w}{    }\PYG{p}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{变速不变调pv.wav\PYGZsq{}}\PYG{p}{;}\PYG{+w}{   }
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{n}{file\PYGZus{}wsola\PYGZus{}pitch}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{变调不变速wsola.wav\PYGZsq{}}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{file\PYGZus{}pv\PYGZus{}pitch}\PYG{+w}{    }\PYG{p}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{变调不变速pv.wav\PYGZsq{}}\PYG{p}{;}\PYG{+w}{    }
+\PYG{+w}{     }
+
+\PYG{+w}{    }\PYG{n}{close}\PYG{+w}{ }\PYG{l+s}{all}\PYG{p}{;}\PYG{+w}{  }
+
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{n+nb}{figure}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Name\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Speed Comparison 3D\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Color\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{w\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Position\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{[}\PYG{l+m+mi}{100}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{100}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1000}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{800}\PYG{p}{]}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{p}{[}\PYG{n}{x}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{]}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{read\PYGZus{}mono}\PYG{p}{(}\PYG{n}{file\PYGZus{}origin}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{subplot}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{plot\PYGZus{}3d\PYGZus{}spec}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{(a) Original Speech\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nb}{isfile}\PYG{p}{(}\PYG{n}{file\PYGZus{}wsola\PYGZus{}speed}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{[}\PYG{n}{y}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{]}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{read\PYGZus{}mono}\PYG{p}{(}\PYG{n}{file\PYGZus{}wsola\PYGZus{}speed}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n+nb}{subplot}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{plot\PYGZus{}3d\PYGZus{}spec}\PYG{p}{(}\PYG{n}{y}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{(b) WSOLA \PYGZhy{} Speed Up\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{else}
+\PYG{+w}{        }\PYG{n+nb}{subplot}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{n+nb}{title}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{文件未找到: 变速不变调wsola.wav\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{end}
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nb}{isfile}\PYG{p}{(}\PYG{n}{file\PYGZus{}pv\PYGZus{}speed}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{[}\PYG{n}{y}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{]}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{read\PYGZus{}mono}\PYG{p}{(}\PYG{n}{file\PYGZus{}pv\PYGZus{}speed}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n+nb}{subplot}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{3}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{plot\PYGZus{}3d\PYGZus{}spec}\PYG{p}{(}\PYG{n}{y}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{(c) Phase Vocoder \PYGZhy{} Speed Up\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{else}
+\PYG{+w}{        }\PYG{n+nb}{subplot}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{3}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{n+nb}{title}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{文件未找到: 变速不变调pv.wav\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{end}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n+nb}{sgtitle}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Comparison of Time\PYGZhy{}Stretching Algorithms\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{FontSize\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{16}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{n+nb}{figure}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Name\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Pitch Comparison 3D\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Color\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{w\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Position\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{[}\PYG{l+m+mi}{150}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{150}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1000}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{800}\PYG{p}{]}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{n+nb}{subplot}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{plot\PYGZus{}3d\PYGZus{}spec}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{(a) Original Speech\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{  }
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nb}{isfile}\PYG{p}{(}\PYG{n}{file\PYGZus{}wsola\PYGZus{}pitch}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{[}\PYG{n}{y}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{]}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{read\PYGZus{}mono}\PYG{p}{(}\PYG{n}{file\PYGZus{}wsola\PYGZus{}pitch}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n+nb}{subplot}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{plot\PYGZus{}3d\PYGZus{}spec}\PYG{p}{(}\PYG{n}{y}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{(b) WSOLA \PYGZhy{} Pitch Shift (+4st)\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{else}
+\PYG{+w}{        }\PYG{n+nb}{subplot}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{n+nb}{title}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{文件未找到: 变调不变速wsola.wav\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{end}
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nb}{isfile}\PYG{p}{(}\PYG{n}{file\PYGZus{}pv\PYGZus{}pitch}\PYG{p}{)}
+\PYG{+w}{        }\PYG{p}{[}\PYG{n}{y}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{]}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{read\PYGZus{}mono}\PYG{p}{(}\PYG{n}{file\PYGZus{}pv\PYGZus{}pitch}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n+nb}{subplot}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{3}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{plot\PYGZus{}3d\PYGZus{}spec}\PYG{p}{(}\PYG{n}{y}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{(c) Phase Vocoder \PYGZhy{} Pitch Shift (+4st)\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{else}
+\PYG{+w}{        }\PYG{n+nb}{subplot}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{3}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{n+nb}{title}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{文件未找到: 变调不变速pv.wav\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{end}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n+nb}{sgtitle}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Comparison of Pitch\PYGZhy{}Shifting Algorithms\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{FontSize\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{16}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n+nb}{disp}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{绘图完成！请手动旋转图形查看最佳 3D 视角。\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{k}{end}
+
+\PYG{+w}{ }
+\PYG{k}{function}\PYG{+w}{ }\PYG{n+nf}{[x, fs] = read\PYGZus{}mono}\PYG{p}{(}filename\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{[}\PYG{n}{x}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{]}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{audioread}\PYG{p}{(}\PYG{n}{filename}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nb}{size}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{1}
+\PYG{+w}{        }\PYG{n}{x}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{mean}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{  }
+\PYG{+w}{    }\PYG{k}{end}
+\PYG{k}{end}
+
+\PYG{+w}{ }
+\PYG{k}{function}\PYG{+w}{ }\PYG{n+nf}{plot\PYGZus{}3d\PYGZus{}spec}\PYG{p}{(}signal, fs, fig\PYGZus{}title\PYG{p}{)}
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{n}{win\PYGZus{}len}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{l+m+mi}{1024}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{overlap}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{l+m+mi}{512}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{nfft}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{l+m+mi}{1024}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{p}{[}\PYG{o}{\PYGZti{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{F}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{T}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{P}\PYG{p}{]}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{spectrogram}\PYG{p}{(}\PYG{n}{signal}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{win\PYGZus{}len}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{overlap}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{nfft}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{n}{P\PYGZus{}db}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{l+m+mi}{10}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{n+nb}{log10}\PYG{p}{(}\PYG{n+nb}{abs}\PYG{p}{(}\PYG{n}{P}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n+nb}{eps}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{n+nb}{surf}\PYG{p}{(}\PYG{n}{T}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{F}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{P\PYGZus{}db}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{n}{shading}\PYG{+w}{ }\PYG{l+s}{interp}\PYG{p}{;}\PYG{+w}{        }
+\PYG{+w}{    }\PYG{n}{axis}\PYG{+w}{ }\PYG{l+s}{tight}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{view}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{45}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{60}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{         }
+\PYG{+w}{    }\PYG{n}{colormap}\PYG{+w}{ }\PYG{l+s}{jet}\PYG{p}{;}\PYG{+w}{          }
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{n+nb}{ylim}\PYG{p}{(}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{5000}\PYG{p}{]}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{       }
+\PYG{+w}{    }\PYG{n+nb}{caxis}\PYG{p}{(}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{100}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{20}\PYG{p}{]}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{    }
+\PYG{+w}{    }
+\PYG{+w}{     }
+\PYG{+w}{    }\PYG{n+nb}{title}\PYG{p}{(}\PYG{n}{fig\PYGZus{}title}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{FontSize\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{12}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{FontWeight\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{bold\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{xlabel}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Time (s)\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{ylabel}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Freq (Hz)\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{zlabel}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Magnitude (dB)\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{grid}\PYG{+w}{ }\PYG{l+s}{on}\PYG{p}{;}
+\PYG{k}{end}
+\end{MintedVerbatim}

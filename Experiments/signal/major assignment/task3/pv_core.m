@@ -1,11 +1,11 @@
 function pv_core
-    % --- 参数配置 ---
+     
     filename = 'origin.wav'; 
-    % filename = '../test1.wav';
-    mode = 2;              % 1=变速不变调, 2=变调不变速
-    speed_ratio = 2;     % 模式1: 0.5=半速(变慢), 2.0=倍速(变快)
-    pitch_semitones = 4;   % 模式2: +4=升4个半音, -2=降2个半音
-    % ----------------
+     
+    mode = 2;               
+    speed_ratio = 1/0.7;      
+    pitch_semitones = 4;    
+     
     
     [x, fs] = audioread(filename);
     if size(x, 1) < size(x, 2), x = x'; end
@@ -54,7 +54,7 @@ function y = phase_vocoder(x, stretch_factor)
 
     [N, nCh] = size(x);
     
-    % STFT 参数
+     
     nFFT = 2048;
     hop_syn = nFFT / 4; 
     hop_ana = floor(hop_syn / stretch_factor);
