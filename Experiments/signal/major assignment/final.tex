@@ -301,23 +301,35 @@ OLA 虽然改变了时长，但在帧拼接处存在缺陷。
 \subsection{时域改进算法：WSOLA}
 
 \subsubsection{核心思想}
+
 WSOLA 算法的核心是不直接截取下一帧，而是在目标位置附近寻找最自然的过渡点。
+
 假设已合成前 $k-1$ 帧，第 $k$ 帧理想起始位置为 $L_k$。WSOLA 在 $L_k$ 附近的公差窗口内寻找一段与已合成信号尾部最相似的波形作为下一帧。
 
 \subsubsection{实现机制}
-通过计算归一化互相关函数来实现：
+这种“最相似”的寻找过程通过计算\textbf{归一化互相关函数（Normalized Cross-Correlation, NCC）}来实现。其数学本质等价于计算两个波形向量在高维空间中的\textbf{余弦相似度}，旨在消除信号幅度（音量）差异的影响，仅通过波形形状的几何相似性来确定最佳相位对齐点。
+
+设 $y[n]$ 为已合成信号的尾部模板，$x[n]$ 为原信号在搜索窗口内的候选片段，归一化互相关函数 $R(\delta)$ 定义为：
+
+\begin{equation}
+    R(\delta) = \frac{\sum_{m=0}^{L-1} y[m] \cdot x[L_k + \delta + m]}{\sqrt{\sum_{m=0}^{L-1} (y[m])^2} \cdot \sqrt{\sum_{m=0}^{L-1} (x[L_k + \delta + m])^2}}
+\end{equation}
+
+其中 $L$ 为匹配窗口长度。算法步骤如下：
 \begin{enumerate}
-    \item \textbf{参考模板}：取已合成信号尾部波形。
-    \item \textbf{滑动搜索}：在原信号 $L_k$ 附近的窗口 $[L_k - \Delta, L_k + \Delta]$ 内滑动对比。
-    \item \textbf{寻找峰值}：互相关峰值位置即为最佳匹配点 $\delta^*$。
+    \item \textbf{参考模板}：取已合成信号 $y$ 的末尾波形作为向量 $\vec{A}$。
+    \item \textbf{滑动搜索}：在原信号 $L_k$ 附近的公差窗口 $[L_k - \Delta, L_k + \Delta]$ 内滑动截取向量 $\vec{B}(\delta)$。
+    \item \textbf{寻找峰值}：计算所有 $\delta$ 对应的 $R(\delta)$，取最大值对应的偏移量 $\delta^*$：
+    \begin{equation}
+        \delta^* = \operatorname*{argmax}_{\delta \in [-\Delta, \Delta]} R(\delta)
+    \end{equation}
 \end{enumerate}
 
-如图 \ref{fig:wsola_search_process} 所示，WSOLA 通过引入偏移量 $\delta^*$ 实现了波形相位对齐。
+如图 \ref{fig:wsola_search_process} 所示，WSOLA 通过引入最佳偏移量 $\delta^*$，强制下一帧的起始相位与上一帧的结束相位保持“平行”（即余弦相似度最大），从而实现了平滑拼接。
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{./task3/wsola_mechanism.png}
-    % \fbox{\parbox[c][10cm][c]{15cm}{\centering [此处插入 WSOLA 搜索机制综合图] \\ 分三部分纵向排列：\\ 1. 上一帧合成信号尾部（参考模板）\\ 2. 原信号及其上的搜索窗口（标示出滑动方向）\\ 3. 互相关函数曲线图，标示出峰值点和对应的最佳偏移量 $\delta^*$}}
     \caption{WSOLA 算法基于互相关搜索的最佳波形匹配机制}
     \label{fig:wsola_search_process}
 \end{figure}
