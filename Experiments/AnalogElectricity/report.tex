@@ -76,8 +76,8 @@
     \begin{tabular}{ll}
     \toprule % 使用 booktabs 命令，更美观
     \textbf{课程:} & 模拟电子技术基础实验 \\
-    \textbf{姓名:} & 郭浩然 \\
-    \textbf{学号:} & 2024303980 \\
+    \textbf{小组成员:} & 郭浩然 (2024303980) \\
+                       & 季子豪 (2024303979) \\
     \textbf{桌号:} & 27 \\
     \textbf{班级:} & 01班 \\
     \textbf{学院:} & 民航学院 \\
@@ -1403,6 +1403,143 @@ RC桥式振荡电路由放大电路和选频网络组成，如图 \ref{fig:circu
     
     \item \textbf{元器件参数偏差}：
     实验所用电阻 $R_1$ 存在标称容差，虽然纯电阻负载主要影响电流大小，但在结合二极管非线性特性的情况下，也会对特定点的工作电压产生微小影响。
+\end{enumerate}
+
+
+
+\chapter{功率放大电路} \label{sec:exp8_title_7}
+\section{实验目的} \label{subsec:purpose_7}
+\begin{enumerate}
+    \item 了解功率放大器的工作原理及主要性能指标的意义；
+    \item 学会集成功率放大器的使用及主要性能指标测试。
+\end{enumerate}
+
+\section{实验原理}
+
+本次实验所构建的是二极管偏置的甲乙类（Class AB）互补对称功率放大电路。
+
+\subsection{电路结构与工作原理}
+电路主要由 NPN 型晶体管 Q2 (S8050) 和 PNP 型晶体管 Q3 (S8550) 组成互补推挽输出级。
+\begin{itemize}
+    \item \textbf{互补对称：} 利用 NPN 和 PNP 两种极性不同的晶体管，在输入信号的正半周和负半周轮流导通，分别向负载 $R_L$ 提供电流。
+    \item \textbf{甲乙类偏置：} 为了克服乙类（Class B）放大器在过零点存在的“交越失真”，电路中引入了由二极管 D1、D2 构成的偏置电路。
+    \item \textbf{消除交越失真：} 由于晶体管存在开启电压 $V_{BE(on)}$（约 0.6V-0.7V），若无偏置，当输入信号幅度较小时晶体管截止，输出出现死区。二极管 D1 和 D2 利用 $R_5$、$R_6$ 分压提供的电流产生压降，使得 Q2 和 Q3 的基极之间保持约 $2V_D$ 的电压差。这使得 Q2 和 Q3 在静态时处于微导通状态，从而消除了交越失真。
+\end{itemize}
+
+\subsection{关键参数计算}
+电路组态为射极跟随器（共集电极放大电路），其特点是：
+\begin{itemize}
+    \item \textbf{电压增益：} $A_v \approx 1$（实际略小于1）。
+    \item \textbf{输出功率：} 对于正弦波信号，输出功率 $P_o$ 计算公式为：
+    \begin{equation}
+        P_o = \frac{V_{o(rms)}^2}{R_L} = \frac{\left(\frac{V_{o(pp)}}{2\sqrt{2}}\right)^2}{R_L} = \frac{V_{o(pp)}^2}{8 R_L}
+    \end{equation}
+    其中 $V_{o(rms)}$ 为输出电压有效值，$V_{o(pp)}$ 为输出电压峰峰值，$R_L$ 为负载电阻。
+\end{itemize}
+
+\section{实验内容}
+\begin{enumerate}
+    \item 输入信号 $VIN$ 为$1kHz$正弦波，峰峰值 $1V$，偏移 $0V$，测试输出电压 $V_o$ 参数，并根据负载电阻 $R_L$ 值，计算输出功率。
+    \item 拿 $\SI{8}{\ohm}$ 的喇叭替换AB类功放电路的 $\SI{20}{\ohm}$ 负载电阻，输入信号为 $VIN$ 为正弦波，偏移 $0V$ ，分别调整正弦波频率 $1kH$ 到 $10kHz$ 之间，幅度 $1V$ 到 $2V$ 之间，听喇叭声音大小和音调，观察其与正弦波参数的关系。
+\end{enumerate}
+
+\section{实验电路方案} \label{subsec:circuits_7}
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{7_Amplifier/circuit_sim.png}
+        \caption{电路原理图}
+        \label{fig:circuit_sim_7}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{7_Amplifier/circuit_real.jpg}
+        \caption{实际连接电路图}
+        \label{fig:circuit_real_7}
+    \end{subfigure}
+    \caption{功率放大电路图}
+    \label{fig:circuits_7}
+\end{figure}
+
+\section{测试与数据记录}\label{sec:test_results2}
+\subsection{测试仪器}
+面包板，示波器，双路直流稳压电源，函数信号发生器，二极管1N4148，三极管S8050，S8550，导线、电阻若干。
+
+\subsection{实验步骤}
+\begin{enumerate}
+    \item 按照实验所示原理图，在面包板上搭建 AB 类功率放大电路。
+    \item 输入信号 $VIN$ 为 $1kHz$ 正弦波，峰峰值 $1V$，偏移 $0V$，测试输出电压 $V_o$ 参数，并根据负载电阻 $R_L$ 值，计算输出功率。
+\end{enumerate}
+
+\subsection{数据记录}
+\textbf{1. 不同负载下的波形记录}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{7_Amplifier/0_output.jpg}
+        \caption{负载电阻 $R_1 = \SI{0}{\ohm}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{7_Amplifier/8_output.jpg}
+        \caption{负载电阻 $R_1 = \SI{8}{\ohm}$}
+    \end{subfigure}
+    \caption{不同负载电阻下的输出电压波形对比}
+\end{figure}
+
+\textbf{2. 不同负载下的数据记录}
+\begin{table}[htbp]
+    \centering
+    \caption{不同负载与频率下的输出电压数据}
+    \label{tab:test_data}
+    \renewcommand{\arraystretch}{1.4} % 调整行高
+    \begin{tabular}{@{} c c c c @{}}
+        \toprule
+        \textbf{负载电阻} $R_L$ & \textbf{输入频率} $f$ & \textbf{输入幅度} $V_{\mathrm{in}(pp)}$ & \textbf{实测输出} $V_{o(pp)}$ \\
+        \midrule
+        % 第一行数据：对应任务1 (此处修正为PDF中的20欧，如确实是0欧请手动修改)
+        $\infty\,\Omega$   & $1\,\text{kHz}$ & $1.0\,\text{V}$ & $0.90\,\text{V}$ \\
+        
+        % 第二行数据：对应任务2 (8欧喇叭)
+        $8\,\Omega$    & $5\,\text{kHz}$ & $1.0\,\text{V}$ & $0.86\,\text{V}$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+根据实测的输出电压峰峰值 $V_{o(pp)} = 0.86\,\text{V}$，代入功率公式计算：
+
+\begin{equation}
+    P_o = \frac{V_{o(pp)}^2}{8 R_L} = \frac{0.86^2}{8 \times 8} = 0.012\,\text{W}
+\end{equation}
+
+\section{结论与分析}\label{sec:opamp_conclusion2}
+
+\subsection{实验结论}
+\begin{enumerate}
+    \item 实验电路成功实现了电压跟随功能，输出波形 $V_o$ 与输入波形 $V_{in}$ 同相，且幅度基本一致（略小于输入幅度）。
+    \item 通过观察示波器波形，输出正弦波在过零点处平滑连接，无明显的交越失真，验证了二极管偏置电路在 AB 类功放中消除交越失真的有效性。
+\end{enumerate}
+
+\subsection{误差分析}
+
+本次实验结果可能存在以下误差，分析如下：
+
+\begin{enumerate}
+    \item \textbf{ $V_{BE}$ 压降带来的增益损耗：}
+    理论上射极跟随器的电压增益接近 1，但实际上 $V_o = V_{in} - V_{BE}$。虽然二极管偏置提供了一定的补偿，但如果二极管的导通电压 $V_D$ 与晶体管的开启电压 $V_{BE}$ 不完全匹配（即 $2V_D \neq V_{BE(NPN)} + |V_{BE(PNP)}|$），输出幅度仍会略低于输入幅度，导致计算出的功率偏小。
+    
+    \item \textbf{带负载能力的影响：}
+    负载电阻 $R_L = 20\Omega$ 较小，这要求前级驱动电路提供较大的电流。如果输入信号源的内阻较大，或者三极管的 $\beta$ 值不够大，可能会导致带载后的输出电压幅度下降，产生测量误差。
+    
+    \item \textbf{元器件参数离散性：}
+    实验中使用的 S8050 和 S8550 虽然是互补对管，但实际参数（如放大倍数 $\beta$、饱和压降等）很难完全一致，可能导致正负半周放大的对称性存在细微差异。
+    
+    \item \textbf{读数与仪器误差：}
+    示波器光标读数存在人为视觉误差和量化误差，可能导致 $V_{o(pp)}$ 的测量值不够精确，进而影响功率 $P_o$ 的计算结果。
 \end{enumerate}
 
 \end{document}
