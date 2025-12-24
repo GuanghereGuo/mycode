@@ -214,45 +214,96 @@
     \label{fig:task1_spectrum}
 \end{figure}
 
+\newpage
 
+% % =========================================================
+% % 任务四：语音倒放处理
+% % =========================================================
+
+% \section{任务四：语音倒放处理}
+
+% \subsection{原理分析}
+% 语音倒放是将数字音频信号序列在时间轴上翻转。设原始语音信号为 $x[n]$，长度为 $N$，倒放后信号 $y[n]$ 为：
+% \begin{equation}
+%     y[n] = x[N - 1 - n], \quad 0 \le n \le N-1
+% \end{equation}
+
+% 从频域分析，根据DTFT性质，若 $x[n] \leftrightarrow X(e^{j\omega})$，则 $x[-n]$ 对应 $X(e^{-j\omega})$。
+% 对于实数语音信号，频谱具有共轭对称性，即 $|X(e^{j\omega})| = |X(e^{-j\omega})|$。
+
+% 这意味着语音倒放不改变幅度谱，只改变相位谱。听觉上音高和音色基本不变，但语音时序结构（音节顺序、元音辅音位置）颠倒，导致语义无法辨识。
+
+% \subsection{实现步骤}
+% 1. 录制包含数字“1”到“9”的语音信号 $x[n]$。
+% 2. 利用 MATLAB 函数\texttt{flipud()}对数组翻转。
+% 3. 调用 \texttt{audiowrite()} 保存结果。
+
+% \subsection{实验结果}
+% 图 \ref{fig:task4_spectrogram} 为正放与倒放语音的语谱图。
+% 可以看出倒放信号的语谱图在时间轴上与原信号互为镜像。例如数字“1”，正向时呈现“起音平稳-收音渐弱”，倒放后变为“起音渐强-突然截断”。这造成了倒放声音中特殊的吸气感和突兀感。
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=\textwidth]{./task4/spectrogram.png}
+%     % \fbox{\parbox[c][10cm][c]{14cm}{\centering [此处插入正放和倒放的语谱图对比] \\ 能够看出时间轴上的镜像对称关系}}
+%     \caption{正放与倒放语音的语谱图对比}
+%     \label{fig:task4_spectrogram}
+% \end{figure}
+
+% \newpage
+
+% \newpage
 % =========================================================
-% 任务四：语音倒放处理
+% 进阶任务：语义倒序
 % =========================================================
 
-\section{任务四：语音倒放处理}
+\section{任务四：语音信号的语义倒序}
 
-\subsection{原理分析}
-语音倒放是将数字音频信号序列在时间轴上翻转。设原始语音信号为 $x[n]$，长度为 $N$，倒放后信号 $y[n]$ 为：
-\begin{equation}
-    y[n] = x[N - 1 - n], \quad 0 \le n \le N-1
-\end{equation}
+\subsection{问题定义：物理倒放 vs 语义倒序}
 
-从频域分析，根据DTFT性质，若 $x[n] \leftrightarrow X(e^{j\omega})$，则 $x[-n]$ 对应 $X(e^{-j\omega})$。
-对于实数语音信号，频谱具有共轭对称性，即 $|X(e^{j\omega})| = |X(e^{-j\omega})|$。
+本探究旨在实现“语义倒序”：即保持每个数字内部的音素顺序不变（听起来依然是“九”），但将数字出现的宏观顺序从“1 $\to$ 9”重排为“9 $\to$ 1”。这实质上是一个语音分割与重组问题。
 
-这意味着语音倒放不改变幅度谱，只改变相位谱。听觉上音高和音色基本不变，但语音时序结构（音节顺序、元音辅音位置）颠倒，导致语义无法辨识。
+\subsection{连读效应与自动分割的局限性}
+在实验初期，我们尝试了基于短时能量的双门限自动检测算法。然而，由于录音时语速较快，产生了显著的连读效应：
+\begin{itemize}
+    \item \textbf{能量不归零}：前一个字的韵母与后一个字的声母紧密衔接，字与字之间的能量谷值并未下降到背景噪声水平。
+    \item \textbf{频谱混叠}：如“七”（qī）的尾音与“八”（bā）的头音在时频图上存在交叠。
+\end{itemize}
+这导致自动算法常将“7”和“8”误判为同一个长音节，分割失败。
 
-\subsection{实现步骤}
-1. 录制包含数字“1”到“9”的语音信号 $x[n]$。
-2. 利用 MATLAB 函数\texttt{flipud()}对数组翻转。
-3. 调用 \texttt{audiowrite()} 保存结果。
+\subsection{基于交互式分割的重组方案}
+为了精确提取连读语音中的独立数字，本实验提出了一种“人机交互式手动分割”方案。
+
+\textbf{1. 算法流程}
+\begin{enumerate}
+    \item \textbf{交互式标注}：通过 GUI 界面显示原始波形，操作者在每两个数字的能量极小值处（波谷）手动标记分割点 $T_k (k=1, 2, \dots, 8)$。
+    \item \textbf{防爆音加窗}：由于手动分割点可能位于非零交叉点，直接截断会产生吉布斯效应导致的宽频爆音。因此，对每个切片 $S_i$ 的首尾施加 \SI{10}{\milli\second} 的线性淡入淡出窗：
+    \begin{equation}
+        w[n] = \begin{cases} 
+        n/L_{fade} & 0 \le n < L_{fade} \\
+        1 & L_{fade} \le n < N - L_{fade} \\
+        (N-n)/L_{fade} & N - L_{fade} \le n < N 
+        \end{cases}
+    \end{equation}
+    \item \textbf{倒序重组}：建立切片索引映射 $i \to (9-i+1)$，并在片段间插入 \SI{150}{\milli\second} 的静音帧，以增强听感的清晰度。
+\end{enumerate}
 
 \subsection{实验结果}
-图 \ref{fig:task4_spectrogram} 为正放与倒放语音的语谱图。
-可以看出倒放信号的语谱图在时间轴上与原信号互为镜像。例如数字“1”，正向时呈现“起音平稳-收音渐弱”，倒放后变为“起音渐强-突然截断”。这造成了倒放声音中特殊的吸气感和突兀感。
+图 \ref{fig:semantic_reverse} 展示了处理前后的波形对比。
+\begin{itemize}
+    \item \textbf{时序重构}：下图中清晰可见 9 个独立的能量团，且幅度包络的顺序与上图完全相反。
+    \item \textbf{听感验证}：经回放测试，重组后的音频清晰地读出了“九、八、七……一”的顺序，且由于施加了平滑窗，字与字之间的衔接自然，无任何机械切断造成的爆音。
+\end{itemize}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{./task4/spectrogram.png}
-    % \fbox{\parbox[c][10cm][c]{14cm}{\centering [此处插入正放和倒放的语谱图对比] \\ 能够看出时间轴上的镜像对称关系}}
-    \caption{正放与倒放语音的语谱图对比}
-    \label{fig:task4_spectrogram}
+    \includegraphics[width=0.9\textwidth]{./task4/untitled.png}
+    % \fbox{\parbox[c][8cm][c]{14cm}{\centering [此处插入波形对比图] \\ 上图：原始录音 (1 $\to$ 9) \\ 下图：重组录音 (9 $\to$ 1) \\ 重点：展示出9个清晰的波包，顺序互为镜像}}
+    \caption{连读语音的语义倒序处理结果对比}
+    \label{fig:semantic_reverse}
 \end{figure}
 
 \newpage
-
-\newpage
-
 % =========================================================
 % 任务二与三：变调变速系统的算法原理与演进
 % =========================================================
