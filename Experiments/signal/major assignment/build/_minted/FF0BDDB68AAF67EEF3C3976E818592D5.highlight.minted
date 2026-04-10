@@ -1,0 +1,70 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{function}\PYG{+w}{ }\PYG{n+nf}{digit\PYGZus{}reverse\PYGZus{}manual}\PYG{p}{(}\PYG{p}{)}
+\PYG{+w}{    }\PYG{n}{filename}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{../test2.wav\PYGZsq{}}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{p}{[}\PYG{n}{x}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{]}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{audioread}\PYG{p}{(}\PYG{n}{filename}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{n+nb}{size}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{x}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{mean}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{end}
+\PYG{+w}{    }\PYG{n}{x}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{x}\PYG{+w}{ }\PYG{o}{/}\PYG{+w}{ }\PYG{n+nb}{max}\PYG{p}{(}\PYG{n+nb}{abs}\PYG{p}{(}\PYG{n}{x}\PYG{p}{)}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n+nb}{figure}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Name\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{手动切割工具\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{NumberTitle\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{off\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{t}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{:}\PYG{n+nb}{length}\PYG{p}{(}\PYG{n}{x}\PYG{p}{)}\PYG{p}{)}\PYG{o}{/}\PYG{n}{fs}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{plot}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{x}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{axis}\PYG{+w}{ }\PYG{l+s}{tight}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{grid}\PYG{+w}{ }\PYG{l+s}{on}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{title}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{【请动手】在每两个数字的缝隙处点一下左键 (需点 8 次)\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{FontSize\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{14}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{Color\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{r\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{xlabel}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{时间 (秒)\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{ylabel}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{幅度\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n+nb}{disp}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{\PYGZgt{}\PYGZgt{}\PYGZgt{} 请在弹出的图形窗口中，依次点击 1\PYGZhy{}2, 2\PYGZhy{}3, ... 8\PYGZhy{}9 之间的缝隙。\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{disp}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{\PYGZgt{}\PYGZgt{}\PYGZgt{} 一共点击 8 次。点完后会自动开始处理。\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{p}{[}\PYG{n}{cut\PYGZus{}times}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{p}{]}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{ginput}\PYG{p}{(}\PYG{l+m+mi}{8}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n}{cut\PYGZus{}times}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{sort}\PYG{p}{(}\PYG{n}{cut\PYGZus{}times}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n}{cut\PYGZus{}indices}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{round}\PYG{p}{(}\PYG{n}{cut\PYGZus{}times}\PYG{+w}{ }\PYG{o}{*}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n}{boundaries}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{cut\PYGZus{}indices}\PYG{p}{;}\PYG{+w}{ }\PYG{n+nb}{length}\PYG{p}{(}\PYG{n}{x}\PYG{p}{)}\PYG{p}{]}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n}{boundaries}\PYG{p}{(}\PYG{n}{boundaries}\PYG{+w}{ }\PYG{o}{\PYGZlt{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{boundaries}\PYG{p}{(}\PYG{n}{boundaries}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n+nb}{length}\PYG{p}{(}\PYG{n}{x}\PYG{p}{)}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{length}\PYG{p}{(}\PYG{n}{x}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n}{num\PYGZus{}segments}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{length}\PYG{p}{(}\PYG{n}{boundaries}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{fprintf}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{已手动确立 \PYGZpc{}d 个片段。\PYGZbs{}n\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{num\PYGZus{}segments}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+
+\PYG{+w}{    }\PYG{n}{y}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{p}{[}\PYG{p}{]}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{gap}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{zeros}\PYG{p}{(}\PYG{n+nb}{floor}\PYG{p}{(}\PYG{l+m+mf}{0.15}\PYG{o}{*}\PYG{n}{fs}\PYG{p}{)}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+
+\PYG{+w}{    }\PYG{k}{for}\PYG{+w}{ }\PYG{n+nb}{i}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{num\PYGZus{}segments}\PYG{+w}{ }\PYG{p}{:}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{p}{:}\PYG{+w}{ }\PYG{l+m+mi}{1}
+\PYG{+w}{        }\PYG{n}{idx\PYGZus{}start}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{boundaries}\PYG{p}{(}\PYG{n+nb}{i}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{idx\PYGZus{}end}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{boundaries}\PYG{p}{(}\PYG{n+nb}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{        }
+\PYG{+w}{        }\PYG{n}{segment}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{x}\PYG{p}{(}\PYG{n}{idx\PYGZus{}start}\PYG{+w}{ }\PYG{p}{:}\PYG{+w}{ }\PYG{n}{idx\PYGZus{}end}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{        }
+\PYG{+w}{      }
+\PYG{+w}{        }\PYG{n}{len\PYGZus{}seg}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{length}\PYG{p}{(}\PYG{n}{segment}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{fade\PYGZus{}len}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{min}\PYG{p}{(}\PYG{l+m+mi}{400}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nb}{floor}\PYG{p}{(}\PYG{n}{len\PYGZus{}seg}\PYG{o}{/}\PYG{l+m+mi}{10}\PYG{p}{)}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{ }
+\PYG{+w}{        }
+\PYG{+w}{        }\PYG{n}{fade\PYGZus{}in\PYGZus{}win}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{linspace}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fade\PYGZus{}len}\PYG{p}{)}\PYG{o}{\PYGZsq{}}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{fade\PYGZus{}out\PYGZus{}win}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n+nb}{linspace}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fade\PYGZus{}len}\PYG{p}{)}\PYG{o}{\PYGZsq{}}\PYG{p}{;}
+\PYG{+w}{        }
+\PYG{+w}{        }\PYG{n}{segment}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{:}\PYG{n}{fade\PYGZus{}len}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{segment}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{:}\PYG{n}{fade\PYGZus{}len}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{.*}\PYG{+w}{ }\PYG{n}{fade\PYGZus{}in\PYGZus{}win}\PYG{p}{;}
+\PYG{+w}{        }\PYG{n}{segment}\PYG{p}{(}\PYG{k}{end}\PYG{o}{\PYGZhy{}}\PYG{n}{fade\PYGZus{}len}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{:}\PYG{k}{end}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{n}{segment}\PYG{p}{(}\PYG{k}{end}\PYG{o}{\PYGZhy{}}\PYG{n}{fade\PYGZus{}len}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{:}\PYG{k}{end}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{.*}\PYG{+w}{ }\PYG{n}{fade\PYGZus{}out\PYGZus{}win}\PYG{p}{;}
+\PYG{+w}{        }
+
+\PYG{+w}{        }\PYG{n}{y}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{p}{[}\PYG{n}{y}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{segment}\PYG{p}{;}\PYG{+w}{ }\PYG{n}{gap}\PYG{p}{]}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{end}
+
+\PYG{+w}{    }\PYG{n}{out\PYGZus{}filename}\PYG{+w}{ }\PYG{p}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{reverse\PYGZus{}1to9\PYGZus{}manual.wav\PYGZsq{}}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{audiowrite}\PYG{p}{(}\PYG{n}{out\PYGZus{}filename}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{y}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{sound}\PYG{p}{(}\PYG{n}{y}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{fs}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n+nb}{fprintf}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{处理完成！已保存为 \PYGZpc{}s\PYGZbs{}n\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{out\PYGZus{}filename}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }
+\PYG{+w}{    }\PYG{n+nb}{figure}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{subplot}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{n+nb}{plot}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{x}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{n+nb}{title}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{原始语音 (1\PYGZhy{}\PYGZgt{}9)\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n+nb}{subplot}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{n+nb}{plot}\PYG{p}{(}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{:}\PYG{n+nb}{length}\PYG{p}{(}\PYG{n}{y}\PYG{p}{)}\PYG{p}{)}\PYG{o}{/}\PYG{n}{fs}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{y}\PYG{p}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{n+nb}{title}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{手动重组语音 (9\PYGZhy{}\PYGZgt{}1)\PYGZsq{}}\PYG{p}{)}\PYG{p}{;}
+\PYG{k}{end}
+\end{MintedVerbatim}
