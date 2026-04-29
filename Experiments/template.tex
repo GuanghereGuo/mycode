@@ -1,0 +1,112 @@
+% ============================================================
+% 实验报告通用模板（ctexart）
+% 使用前搜索 TODO 修改课程特定内容
+% ============================================================
+
+\documentclass[UTF8, a4paper, 12pt]{ctexart}
+
+% --- 宏包 ---
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{siunitx}
+\usepackage{makecell}
+\usepackage[
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=black,
+    citecolor=black
+]{hyperref}
+
+% --- 页面设置 ---
+\geometry{
+    a4paper,
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm,
+    headheight=15pt
+}
+\graphicspath{{./figures/}}
+\linespread{1.5}
+\sisetup{per-mode=symbol}
+\setlength{\jot}{6pt}
+\setlength{\parindent}{2em}
+\setlist{nosep}
+
+% --- 页眉页脚 ---
+% TODO: 修改页眉文字
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{课程名称实验}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\begin{document}
+
+% ==================== 封面 ====================
+\begin{titlepage}
+    \thispagestyle{empty}
+    \centering
+
+    \vspace*{1cm}
+    \includegraphics[width=13cm]{logo1.png}
+
+    \vspace*{\fill}
+    % TODO: 修改课程名
+    {\Huge\bfseries 课程名称实验报告\par}
+    \vspace*{\fill}
+
+    \large
+    \begin{tabular}{ll}
+        \toprule
+        % TODO: 修改实验标题
+        \textbf{题目:}    & 实验X 标题 \\
+        \textbf{小组成员:} & 姓名 \hspace{2em} 学号 \\
+        \textbf{小组成员:} & 姓名 \hspace{2em} 学号 \\
+        \textbf{组号:}    & 组号 \\
+        \textbf{班级:}    & \\
+        \textbf{学院:}    & 民航学院 \\
+        \textbf{专业:}    & 飞行器控制与信息工程 \\
+        \textbf{时间:}    & \today \\
+        \bottomrule
+    \end{tabular}
+\end{titlepage}
+
+% ==================== 正文 ====================
+
+% TODO: 按实验内容填写各节
+
+\section{一、实验目的}
+
+\section{二、实验要求}
+
+\section{三、实验设备}
+
+\section{四、实验原理}
+
+\section{五、实验内容}
+
+\section{六、实验过程中的问题}
+
+\begin{enumerate}
+    \item
+    \item
+\end{enumerate}
+
+\section{七、心得体会}
+
+\begin{enumerate}
+    \item
+    \item
+\end{enumerate}
+
+\end{document}
