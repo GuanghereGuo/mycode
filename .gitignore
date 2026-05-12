@@ -5,3 +5,12 @@ data/image/
 venv
 *.so #过滤某种类型的文件
 #指定过滤某个文件下具体文件
+
+# LaTeX build 中间产物（保留 PDF）
+**/build/*.aux
+**/build/*.fdb_latexmk
+**/build/*.fls
+**/build/*.log
+**/build/*.out
+**/build/*.synctex.gz
+**/build/*.xdv
