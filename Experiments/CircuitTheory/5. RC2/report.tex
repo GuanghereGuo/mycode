@@ -1,0 +1,319 @@
+% ============================================================
+% 电路基础实验 —— 实验五 一阶RC电路暂态分析 实验报告
+% 使用 CircuitTheory/template.tex 正式实验报告模板
+% ============================================================
+
+\documentclass[12pt]{ctexart}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{makecell}
+
+\sisetup{per-mode=symbol}
+
+\graphicspath{{./figures/}{../}{../requirements/extracted_images/word/media/}{./}}
+
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+
+\setlength{\jot}{6pt}
+\setlength{\headheight}{15pt}
+\linespread{1.5}
+\setlist{nosep}
+
+\pagestyle{fancy}
+\fancyhead[C]{电路基础实验}
+\fancyfoot[C]{\thepage}
+
+\begin{document}
+
+% ==================== 封面 ====================
+\thispagestyle{empty}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=13cm]{logo1.png}
+\end{figure}
+
+\vspace*{\fill}
+    \begin{center}
+        \Huge\textbf{电路基础}
+
+        \vspace{0.3cm}
+        \Huge\textbf{实验报告}
+
+        \vspace{1cm}
+        \LARGE\textbf{实验五：一阶RC电路暂态分析}
+    \end{center}
+\vspace*{\fill}
+
+\begin{table}[H]
+    \centering
+    \large
+    \begin{tabular}{ll}
+    \toprule
+    \textbf{课程:} & 电路基础实验 \\
+    \textbf{姓名:} & 郭浩然 2024303980 \\
+    \textbf{组号:} & 第7组 \\
+    \textbf{时间:} & \today \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\newpage
+
+% ==================== 正文 ====================
+
+\section{实验目的}
+
+\begin{enumerate}[label=\arabic*.]
+    \item 理解一阶 RC 电路的零状态响应、零输入响应和全响应的物理过程与数学描述。
+    \item 掌握时间常数 \(\tau\) 的理论计算方法和实验测量方法（63\% 法、描点拟合法）。
+    \item 学习使用示波器观测 RC 电路的暂态过程波形。
+    \item 了解 RC 积分电路和微分电路的工作条件与输出波形特征。
+\end{enumerate}
+
+\section{实验原理}
+
+\subsection{零状态响应}
+
+在图~\ref{fig:multisim-rc} 所示的 RC 串联电路中，设电容初始电压 \(u_C(0^-)=0\)，在 \(t=0\) 时施加阶跃电压 \(U_s\)，电容电压的零状态响应为
+\begin{equation}
+    u_C(t) = U_s\!\left(1 - e^{-t/\tau}\right), \quad t \geq 0,
+\end{equation}
+其中 \(\tau = RC\) 为电路的时间常数。当 \(t=\tau\) 时，
+\begin{equation}
+    u_C(\tau) = U_s(1-e^{-1}) \approx 0.632\,U_s,
+\end{equation}
+即电容电压上升到稳态值的 \(63.2\%\)。这是用示波器测量时间常数的理论依据（63\% 法）。
+
+\subsection{零输入响应}
+
+设电容初始电压 \(u_C(0^-)=U_0\)，在 \(t=0\) 时撤去电源，电容通过电阻放电，零输入响应为
+\begin{equation}
+    u_C(t) = U_0\,e^{-t/\tau}, \quad t \geq 0.
+\end{equation}
+当 \(t=\tau\) 时，\(u_C(\tau)=0.368\,U_0\)，即放电至初值的 \(36.8\%\)。
+
+\subsection{全响应}
+
+当电容具有初始电压 \(U_0\)，同时施加阶跃电压 \(U_s\) 时，电路的全响应为
+\begin{equation}
+    u_C(t) = U_\infty + (U_0 - U_\infty)\,e^{-t/\tau}, \quad t \geq 0,
+    \label{eq:full-response}
+\end{equation}
+其中 \(U_\infty = U_s\) 为稳态值。全响应可视为零输入响应与零状态响应的叠加。
+
+在方波信号激励下，电容经历周期性的充电和放电过程：方波高电平期间为充电（零状态响应），低电平期间为放电（零输入响应），构成周期性的全响应波形。
+
+代入本实验参数 \(R=\SI{10}{\kilo\ohm}\)、\(C=\SI{0.01}{\micro\farad}\)，理论时间常数为
+\begin{equation}
+    \tau = RC = 10\times10^{3} \times 0.01\times10^{-6} = \SI{100}{\micro\second}.
+\end{equation}
+
+\subsection{积分电路}
+
+当 RC 串联电路满足 \(\tau = RC \gg T/2\)（\(T\) 为方波周期）时，取电容电压 \(u_C\) 作为输出，电路近似实现积分运算。此时电容来不及充满电，输出波形近似为输入方波的积分——三角波。
+
+\subsection{微分电路}
+
+当 RC 串联电路满足 \(\tau = RC \ll T/2\) 时，将电容与电阻互换位置（C 在前、R 在后），取电阻电压 \(u_R\) 作为输出，电路近似实现微分运算。此时电容迅速充放电完毕，仅在方波跳变沿处输出尖脉冲，近似为输入的微分。
+
+\subsection{Multisim 仿真}
+
+图~\ref{fig:multisim-rc} 为全响应/积分电路的 Multisim 仿真电路，R-C 串联拓扑，输出取电容 \(u_C\)。图~\ref{fig:multisim-diff} 为微分电路的仿真电路，C-R 串联拓扑，输出取电阻 \(u_R\)。两电路均采用 \(R=\SI{10}{\kilo\ohm}\)、\(C=\SI{0.01}{\micro\farad}\)，仿真中信号源频率为 \(\SI{10}{\kilo\hertz}\)，实际实验中根据需要调整频率。
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image8.png}
+        \caption{R-C 电路（全响应/积分），输出取 \(u_C\)}
+        \label{fig:multisim-rc}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image10.png}
+        \caption{C-R 电路（微分），输出取 \(u_R\)}
+        \label{fig:multisim-diff}
+    \end{subfigure}
+    \caption{Multisim 仿真电路（\(R=\SI{10}{\kilo\ohm}\)，\(C=\SI{0.01}{\micro\farad}\)）}
+    \label{fig:multisim}
+\end{figure}
+
+\section{实验器件}
+
+\begin{itemize}
+    \item RIGOL DG922 函数信号发生器 \(\times 1\)
+    \item RIGOL DHO1204 数字示波器 \(\times 1\)
+    \item 电阻：\(\SI{10}{\kilo\ohm}\times 1\)
+    \item 电容：\(\SI{0.01}{\micro\farad}\times 1\)
+    \item 面包板 \(\times 1\)、导线若干
+\end{itemize}
+
+\section{实验步骤}
+
+\begin{enumerate}[label=\arabic*.]
+    \item 搭建 R-C 串联电路：信号发生器输出端串联电阻 \(R=\SI{10}{\kilo\ohm}\) 和电容 \(C=\SI{0.01}{\micro\farad}\)，构成串联回路。信号发生器设置为方波输出，幅值 \(\SI{2}{V_{pp}}\)，频率 \(\SI{500}{\hertz}\)。
+    \item 用示波器 CH1 接电容两端，观察全响应波形（周期性充放电），拍摄示波器波形照片。
+    \item 利用示波器光标功能，测量电容电压从初值上升到稳态值 \(63\%\) 处所对应的时间，即为 63\% 法测得的时间常数 \(\tau\)。
+    \item 逐点记录电容电压随时间变化的数据（描点法），选取充电过程中 6 个代表性时刻的 \((t, u_C)\) 数据对。
+    \item 改为微分电路拓扑：将电容 C 接在前（靠近信号源），电阻 R 接在后（靠近地端），输出取电阻两端电压 \(u_R\)。保持频率 \(\SI{500}{\hertz}\) 不变，观察并拍摄微分波形。
+    \item 改为积分电路：恢复 R-C 拓扑（R 在前、C 在后），输出取电容电压 \(u_C\)。将频率调至 \(\SI{5000}{\hertz}\)，观察并拍摄积分波形。
+    \item 记录全部数据，拆除电路，整理实验台。
+\end{enumerate}
+
+\section{实验数据}
+
+\subsection{原始数据记录}
+
+实验原始数据记录如图~\ref{fig:raw-data} 所示，包含 63\% 法测得的时间常数以及描点法的各测量点数据。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.72\textwidth]{数据（时间常数与描点）.jpg}
+    \caption{实验原始数据记录}
+    \label{fig:raw-data}
+\end{figure}
+
+\subsection{描点法测量数据}
+
+从原始数据中整理出的 6 个描点数据见表~\ref{tab:data-points}。
+
+\begin{table}[H]
+    \centering
+    \caption{描点法测量数据}
+    \label{tab:data-points}
+    \begin{tabular}{ccccccc}
+        \toprule
+        \(t\)/\si{\micro\second} & \(-60\) & \(-5\) & \(70\) & \(160\) & \(305\) & \(805\) \\
+        \midrule
+        \(u_C\)/mV & \(-968.4\) & \(0\) & \(508.1\) & \(805\) & \(945.6\) & \(1000\) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+63\% 法实测时间常数：\(\tau_{63\%} = \SI{120}{\micro\second}\)。
+
+\subsection{示波器波形}
+
+图~\ref{fig:full-response} 为 \(\SI{500}{\hertz}\) 方波激励下的全响应波形，可清楚观察到电容电压的周期性指数充放电过程。图~\ref{fig:diff-wave} 为微分电路输出波形，图~\ref{fig:int-wave} 为积分电路输出波形。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{全响应.jpg}
+    \caption{全响应波形（\(R=\SI{10}{\kilo\ohm}\)，\(C=\SI{0.01}{\micro\farad}\)，\(f=\SI{500}{\hertz}\)，\(\SI{2}{V_{pp}}\) 方波）}
+    \label{fig:full-response}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{微分波形.jpg}
+        \caption{微分电路输出（\(f=\SI{500}{\hertz}\)）}
+        \label{fig:diff-wave}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{积分波形.jpg}
+        \caption{积分电路输出（\(f=\SI{5000}{\hertz}\)）}
+        \label{fig:int-wave}
+    \end{subfigure}
+    \caption{微分与积分电路示波器波形}
+    \label{fig:diff-int}
+\end{figure}
+
+\section{数据分析}
+
+\subsection{时间常数对比}
+
+理论时间常数、63\% 法实测值与描点拟合值的对比见表~\ref{tab:tau-comparison}。
+
+\begin{table}[H]
+    \centering
+    \caption{时间常数 \(\tau\) 理论值与实测值对比}
+    \label{tab:tau-comparison}
+    \begin{tabular}{cccc}
+        \toprule
+        测量方法 & \(\tau\)/\si{\micro\second} & 与理论值的相对误差 \\
+        \midrule
+        理论值 \(\tau = RC\) & \(100\) & --- \\
+        63\% 法（示波器光标） & \(120\) & \(20\%\) \\
+        描点拟合法 & \(86.8\) & \(13.2\%\) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+63\% 法实测 \(\tau = \SI{120}{\micro\second}\) 偏大，描点拟合法得到 \(\tau = \SI{86.8}{\micro\second}\) 偏小，理论值 \(\SI{100}{\micro\second}\) 介于两者之间。两种方法的偏差方向相反，其原因将在误差来源分析中讨论。
+
+\subsection{描点法指数拟合}
+
+利用 Python 的 \texttt{scipy.optimize.curve\_fit} 对表~\ref{tab:data-points} 中的 6 个数据点进行指数函数拟合，拟合模型为式~\eqref{eq:full-response} 的全响应形式：
+\begin{equation}
+    u_C(t) = V_\infty + (V_0 - V_\infty)\,e^{-(t-t_0)/\tau},
+\end{equation}
+其中 \(t_0 = \SI{-60}{\micro\second}\) 固定为第一个数据点时刻（充电起始时刻），\(V_\infty\)、\(V_0\)、\(\tau\) 为待拟合参数。拟合结果为
+\begin{align}
+    V_\infty &= \SI{975.9}{\milli\volt}, \\
+    V_0 &= \SI{-952.9}{\milli\volt}, \\
+    \tau &= \SI{86.8}{\micro\second},
+\end{align}
+拟合优度 \(R^2 = 0.9983\)，表明拟合效果良好。
+
+拟合曲线与实测数据点的对比如图~\ref{fig:fitting} 所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{fitting_curve.pdf}
+    \caption{描点法数据的指数拟合曲线（\(\tau_{\text{fit}} = \SI{86.8}{\micro\second}\)，\(R^2 = 0.9983\)）}
+    \label{fig:fitting}
+\end{figure}
+
+\subsection{微分电路波形分析}
+
+微分电路的实验条件为：\(R=\SI{10}{\kilo\ohm}\)，\(C=\SI{0.01}{\micro\farad}\)，\(f=\SI{500}{\hertz}\)。此时
+\begin{equation}
+    \tau = \SI{100}{\micro\second}, \quad T/2 = \SI{1}{\milli\second} = \SI{1000}{\micro\second}, \quad \frac{\tau}{T/2} = 0.1.
+\end{equation}
+由于 \(\tau \ll T/2\)，满足微分条件。在每个方波跳变沿处，电容迅速完成充放电（约 \(5\tau = \SI{500}{\micro\second} < T/2\)），电阻上仅在跳变瞬间出现尖脉冲。
+
+从图~\ref{fig:diff-wave} 可见，输出波形在方波上升沿出现正向尖脉冲，在下降沿出现负向尖脉冲，脉冲宽度远小于半周期，与理论预期一致。
+
+\subsection{积分电路波形分析}
+
+积分电路的实验条件为：\(R=\SI{10}{\kilo\ohm}\)，\(C=\SI{0.01}{\micro\farad}\)，\(f=\SI{5000}{\hertz}\)。此时
+\begin{equation}
+    \tau = \SI{100}{\micro\second}, \quad T/2 = \SI{100}{\micro\second}, \quad \frac{\tau}{T/2} = 1.
+\end{equation}
+\(\tau/(T/2)=1\) 处于积分条件 \(\tau \gg T/2\) 的边界，并未严格满足积分条件。因此，输出波形不是理想的三角波，而是呈现明显的指数充放电特征——上升段为指数上升、下降段为指数下降。
+
+从图~\ref{fig:int-wave} 可见，输出波形呈近似三角波但带有弯曲（指数特征），与 \(\tau \approx T/2\) 的理论分析一致。若要获得更接近理想三角波的输出，需进一步提高频率以增大 \(\tau/(T/2)\) 的比值。
+
+\subsection{误差来源分析}
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{元件参数偏差}：电阻和电容的实际值与标称值存在容差（电阻通常 \(\pm5\%\)，瓷片电容可达 \(\pm10\%\sim20\%\)），导致实际 \(\tau\) 偏离理论值 \(\SI{100}{\micro\second}\)。
+
+    \item \textbf{信号发生器输出阻抗}：信号发生器内阻（通常 \(\SI{50}{\ohm}\)）等效串入回路，使实际电阻略大于 \(\SI{10}{\kilo\ohm}\)，不过 \(\SI{50}{\ohm}\) 相对 \(\SI{10}{\kilo\ohm}\) 的影响仅约 \(0.5\%\)。
+
+    \item \textbf{示波器探头负载效应}：示波器探头的输入电容（约 \(\SI{10}{\pico\farad}\sim\SI{20}{\pico\farad}\)）与被测电容并联，等效增大了总电容，使实测 \(\tau\) 偏大。这可以解释 63\% 法测得 \(\tau = \SI{120}{\micro\second} > \SI{100}{\micro\second}\) 的偏差。
+
+    \item \textbf{63\% 法的光标读数误差}：示波器光标定位存在分辨率限制，且 63\% 判据电压的确定依赖于对稳态值和初始值的准确读取，波形上的噪声和过冲会影响判定精度。
+
+    \item \textbf{描点法的数据点有限}：仅采集 6 个数据点进行拟合，数据密度较低，尤其在 \(t=305\sim805\,\si{\micro\second}\) 区间跨度过大，对 \(\tau\) 的约束不够充分，可能导致拟合值偏离真实值。
+
+\end{enumerate}
+
+综上，本实验通过两种方法测量了一阶 RC 电路的时间常数。63\% 法实测 \(\tau = \SI{120}{\micro\second}\)，描点拟合法得到 \(\tau = \SI{86.8}{\micro\second}\)，理论值 \(\tau = \SI{100}{\micro\second}\) 介于两者之间。63\% 法偏大主要归因于示波器探头电容的并联效应，描点拟合法偏小可能与有限数据点的拟合偏差有关。实验同时验证了微分电路（\(\tau \ll T/2\)）输出尖脉冲和积分电路（\(\tau \approx T/2\)）输出近似三角波的波形特征，定性符合理论预期。
+
+\end{document}

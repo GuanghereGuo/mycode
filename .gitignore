@@ -14,3 +14,18 @@ venv
 **/build/*.out
 **/build/*.synctex.gz
 **/build/*.xdv
+
+# Quartus 工程缓存与生成文件
+**/db/
+**/incremental_db/
+**/output_files/
+**/simulation/
+*.qws
+*.rpt
+*.done
+*.pin
+*.summary
+*.smsg
+*.jdi
+*.sld
+*.cdf
