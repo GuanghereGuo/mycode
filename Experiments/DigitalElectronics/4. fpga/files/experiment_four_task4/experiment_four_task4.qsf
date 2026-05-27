@@ -1,0 +1,18 @@
+# Experiment 4 Task 4: 50 MHz divider with BDF top level
+# Board/device: DE0-CV, Cyclone V 5CEBA4F23C7
+
+set_global_assignment -name FAMILY "Cyclone III"
+set_global_assignment -name DEVICE Auto
+set_global_assignment -name TOP_LEVEL_ENTITY experiment_four_task4
+set_global_assignment -name LAST_QUARTUS_VERSION "13.0 SP1"
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "2.5 V"
+
+set_global_assignment -name BDF_FILE experiment_four_task4.bdf
+set_global_assignment -name VHDL_FILE exa4_4_divider_1hz_10hz.vhd
+
+# CLOCK_50 -> clk50, LEDR2 -> clk_1hz, LEDR1 -> clk_10hz
+set_location_assignment PIN_M9 -to clk50
+set_location_assignment PIN_W2 -to clk_1hz
+set_location_assignment PIN_AA1 -to clk_10hz
+
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

@@ -1,0 +1,35 @@
+/*
+WARNING: Do NOT edit the input and output ports in this file in a text
+editor if you plan to continue editing the block that represents it in
+the Block Editor! File corruption is VERY likely to occur.
+*/
+(header "symbol" (version "1.1"))
+(symbol
+	(rect 16 16 208 112)
+	(text "exa4_4_divider_1hz_10hz" (rect 5 0 140 12)(font "Arial" ))
+	(text "inst" (rect 8 80 20 92)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "clk50" (rect 0 0 28 12)(font "Arial" ))
+		(text "clk50" (rect 21 27 49 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32)(line_width 1))
+	)
+	(port
+		(pt 192 32)
+		(output)
+		(text "clk_1hz" (rect 0 0 44 12)(font "Arial" ))
+		(text "clk_1hz" (rect 127 27 171 39)(font "Arial" ))
+		(line (pt 192 32)(pt 176 32)(line_width 1))
+	)
+	(port
+		(pt 192 48)
+		(output)
+		(text "clk_10hz" (rect 0 0 51 12)(font "Arial" ))
+		(text "clk_10hz" (rect 120 43 171 55)(font "Arial" ))
+		(line (pt 192 48)(pt 176 48)(line_width 1))
+	)
+	(drawing
+		(rectangle (rect 16 16 176 80)(line_width 1))
+	)
+)

@@ -1,0 +1,28 @@
+/*
+WARNING: Do NOT edit the input and output ports in this file in a text
+editor if you plan to continue editing the block that represents it in
+the Block Editor! File corruption is VERY likely to occur.
+*/
+(header "symbol" (version "1.1"))
+(symbol
+	(rect 16 16 232 96)
+	(text "exa4_2_hex_0e" (rect 5 0 86 12)(font "Arial" ))
+	(text "inst" (rect 8 64 20 76)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "data_in[3..0]" (rect 0 0 68 12)(font "Arial" ))
+		(text "data_in[3..0]" (rect 21 27 89 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32)(line_width 3))
+	)
+	(port
+		(pt 216 32)
+		(output)
+		(text "seg_out[6..0]" (rect 0 0 70 12)(font "Arial" ))
+		(text "seg_out[6..0]" (rect 130 27 200 39)(font "Arial" ))
+		(line (pt 216 32)(pt 200 32)(line_width 3))
+	)
+	(drawing
+		(rectangle (rect 16 16 200 64)(line_width 1))
+	)
+)
