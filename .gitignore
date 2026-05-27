@@ -14,12 +14,14 @@ venv
 **/build/*.out
 **/build/*.synctex.gz
 **/build/*.xdv
+**/build/_minted-*/
 
 # Quartus 工程缓存与生成文件
 **/db/
 **/incremental_db/
 **/output_files/
 **/simulation/
+**/hc_output/
 *.qws
 *.rpt
 *.done
@@ -29,3 +31,9 @@ venv
 *.jdi
 *.sld
 *.cdf
+*.sof
+*.qdf
+*.vwf.temp
+*.vhd.bak
+*.bak
+c5_pin_model_dump.txt
