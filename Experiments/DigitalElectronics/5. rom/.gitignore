@@ -1,0 +1,17 @@
+# LaTeX 编译产物（仅保留最终 PDF）
+build/*
+!build/report.pdf
+
+# Quartus 工程缓存与编译输出（不入库）
+files/db1/db/
+files/db1/incremental_db/
+files/db1/output_files/
+files/db1/simulation/
+files/db1/greybox_tmp/
+files/db1/hc_output/
+
+# 工具二进制、备份与会话文件
+files/db1/*.exe
+files/db1/*.bak
+files/db1/*.dpf
+files/db1/c5_pin_model_dump.txt
