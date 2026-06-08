@@ -1,0 +1,19 @@
+# LaTeX 编译产物（仅保留最终 PDF）
+build/*
+!build/report.pdf
+
+# Quartus 工程缓存与编译输出（不入库）
+file/db/
+file/incremental_db/
+file/output_files/
+file/greybox_tmp/
+file/hc_output/
+file/PLL_sim/
+
+# 工具备份、会话与自动生成的日志文件
+file/*.bak
+file/*.dpf
+file/*.qws
+file/c5_pin_model_dump.txt
+file/qmegawiz_errors_log.txt
+file/PLLJ_PLLSPE_INFO.txt
