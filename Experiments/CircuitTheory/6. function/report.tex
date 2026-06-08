@@ -1,0 +1,394 @@
+% ============================================================
+% 电路基础实验 —— 实验六 RC无源滤波器的频率特性 实验报告
+% ============================================================
+
+\documentclass[12pt]{ctexart}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{makecell}
+
+\sisetup{per-mode=symbol}
+
+\graphicspath{{./figures/}{../}{../requirements/extracted_images/word/media/}{./}}
+
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+
+\setlength{\jot}{6pt}
+\setlength{\headheight}{15pt}
+\linespread{1.5}
+\setlist{nosep}
+
+\pagestyle{fancy}
+\fancyhead[C]{电路基础实验}
+\fancyfoot[C]{\thepage}
+
+\begin{document}
+
+% ==================== 封面 ====================
+\thispagestyle{empty}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=13cm]{logo1.png}
+\end{figure}
+
+\vspace*{\fill}
+    \begin{center}
+        \Huge\textbf{电路基础}
+
+        \vspace{0.3cm}
+        \Huge\textbf{实验报告}
+
+        \vspace{1cm}
+        \LARGE\textbf{实验六：RC无源滤波器的频率特性}
+    \end{center}
+\vspace*{\fill}
+
+\begin{table}[H]
+    \centering
+    \large
+    \begin{tabular}{ll}
+    \toprule
+    \textbf{课程:} & 电路基础实验 \\
+    \textbf{姓名:} & 郭浩然 2024303980 \\
+    \textbf{组号:} & 第7组 \\
+    \textbf{时间:} & \today \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\newpage
+
+% ==================== 正文 ====================
+
+\section{实验目的}
+
+\begin{enumerate}[label=\arabic*.]
+    \item 了解 RC 低通与高通无源滤波器的基本工作原理和频率选择特性。
+    \item 掌握用点频法测量滤波器幅频特性的方法。
+    \item 掌握用相差法测量滤波器相频特性的方法。
+    \item 理解截止频率的概念及其实验测定方法，即输出幅值下降至输入的 \(0.707\) 倍时对应的频率。
+    \item 学会根据技术指标自行选取元件参数，设计简单的 RC 滤波器电路。
+\end{enumerate}
+
+\section{实验原理}
+
+\subsection{低通无源滤波器}
+
+如图~\ref{fig:multisim-lp} 所示，RC 低通滤波器由电阻 \(R\) 和电容 \(C\) 串联组成，输出取电容两端电压 \(u_o\)。由分压关系可得系统函数
+\begin{equation}
+    H(j\omega) = \frac{\dot{U}_o}{\dot{U}_i}
+    = \frac{\dfrac{1}{j\omega C}}{R+\dfrac{1}{j\omega C}}
+    = \frac{1}{1+j\omega RC}.
+    \label{eq:lp-tf}
+\end{equation}
+
+令截止角频率 \(\omega_c = 1/(RC)\)，对应截止频率 \(f_c = 1/(2\pi RC)\)，则幅频特性和相频特性分别为
+\begin{align}
+    |H(j\omega)| &= \frac{1}{\sqrt{1+\left(\dfrac{\omega}{\omega_c}\right)^{\!2}}}, \label{eq:lp-mag} \\[6pt]
+    \varphi(\omega) &= -\arctan\frac{\omega}{\omega_c}. \label{eq:lp-phase}
+\end{align}
+
+在截止频率处，\(|H(j\omega_c)|=1/\sqrt{2}\approx 0.707\)，\(\varphi(\omega_c)=-45°\)。频率远低于 \(\omega_c\) 时输出近似等于输入，属于通带；远高于 \(\omega_c\) 时输出迅速衰减，属于阻带，体现低通特性。
+
+\subsection{高通无源滤波器}
+
+如图~\ref{fig:multisim-hp} 所示，将电容 \(C\) 与电阻 \(R\) 位置互换，输出取电阻两端电压 \(u_o\)，即得高通滤波器。其系统函数为
+\begin{equation}
+    H(j\omega) = \frac{R}{R+\dfrac{1}{j\omega C}}
+    = \frac{j\omega RC}{1+j\omega RC}.
+    \label{eq:hp-tf}
+\end{equation}
+
+截止频率同为 \(f_c = 1/(2\pi RC)\)，幅频特性和相频特性分别为
+\begin{align}
+    |H(j\omega)| &= \frac{1}{\sqrt{1+\left(\dfrac{\omega_c}{\omega}\right)^{\!2}}}, \label{eq:hp-mag} \\[6pt]
+    \varphi(\omega) &= \arctan\frac{\omega_c}{\omega}. \label{eq:hp-phase}
+\end{align}
+
+在截止频率处同样有 \(|H(j\omega_c)|=0.707\)，\(\varphi(\omega_c)=+45°\)。频率远高于 \(\omega_c\) 时信号顺利通过，远低于 \(\omega_c\) 时信号被衰减。
+
+\subsection{点频法测量幅频特性}
+
+点频法是将信号发生器输出的单频正弦信号逐一加至被测电路输入端，用示波器分别测量输入电压 \(U_i\) 和输出电压 \(U_o\)，计算电压比 \(|H|=U_o/U_i\)。逐一改变信号频率并重复测量，即可得到不同频率下的幅值响应，描点后绘制幅频特性曲线。
+
+\subsection{相差法测量相频特性}
+
+测量时，示波器一个通道接信号发生器输出端，即滤波器输入，另一个通道接滤波器输出端。利用示波器光标功能读出两通道波形之间的时间差 \(\Delta t\)，再根据当前信号周期 \(T\) 换算为相位差
+\begin{equation}
+    \varphi = \frac{\Delta t}{T}\times 360°.
+    \label{eq:phase-diff}
+\end{equation}
+
+逐步改变频率并重复测量，即可得到相频特性曲线。
+
+\subsection{Multisim 仿真}
+
+图~\ref{fig:multisim} 为低通和高通滤波器的 Multisim 仿真电路。低通电路中电阻 \(R\) 在前，电容 \(C\) 在后，输出取电容电压 \(u_C\)；高通电路中电容 \(C\) 在前，电阻 \(R\) 在后，输出取电阻电压 \(u_R\)。仿真中信号源设置为方波以便观察暂态响应，实际实验中使用正弦波进行点频法测量，电路拓扑一致。
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image8.png}
+        \caption{R-C 低通滤波器，输出取 \(u_C\)}
+        \label{fig:multisim-lp}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image10.png}
+        \caption{C-R 高通滤波器，输出取 \(u_R\)}
+        \label{fig:multisim-hp}
+    \end{subfigure}
+    \caption{Multisim 仿真电路}
+    \label{fig:multisim}
+\end{figure}
+
+\section{实验器件}
+
+\begin{itemize}
+    \item RIGOL DG922 函数信号发生器 \(\times 1\)
+    \item RIGOL DHO1204 数字示波器 \(\times 1\)
+    \item 电阻：\(\SI{10}{\kilo\ohm}\times 1\) 和 \(\SI{2}{\kilo\ohm}\times 1\)
+    \item 电容：\(\SI{10}{\nano\farad}\times 2\)
+    \item 导线若干
+\end{itemize}
+
+\section{实验步骤}
+
+\begin{enumerate}[label=\arabic*.]
+    \item 根据低通滤波器的设计指标，即通过 \(\SI{1}{\kilo\hertz}\) 信号且截止频率不超过 \(\SI{3}{\kilo\hertz}\)，从元器件包中选取合适的电阻和电容，计算理论截止频率。用万用表测量实际阻值和容值。
+    \item 搭建 R-C 低通滤波器，将元件引脚直接夹接。信号发生器输出端串联电阻 \(R\)，电容 \(C\) 并联在输出端与地之间，输出取电容两端电压。
+    \item 信号发生器设置为正弦波输出，幅值 \(\SI{5}{V_{pp}}\)。示波器 CH1 接信号发生器输出端作为滤波器输入，CH2 接滤波器输出端。
+    \item 逐步改变信号频率，用示波器观察输出波形。当输出幅值下降到输入幅值的 \(0.707\) 倍时，对应频率即为实测截止频率。
+    \item 以截止频率为中心，前后各取至少 5 个频率点。在每个频率点用点频法记录输入电压 \(U_i\) 和输出电压 \(U_o\)，同时用相差法测量两通道时间差 \(\Delta t\) 并计算相位差 \(\varphi\)。
+    \item 在截止频率处拍摄示波器双通道波形。
+    \item 拆除低通电路。根据高通滤波器的设计指标，即通过 \(\SI{10}{\kilo\hertz}\) 信号且截止频率不低于 \(\SI{7}{\kilo\hertz}\)，重新选取元件参数，搭建 C-R 高通滤波器，电容 \(C\) 在前，电阻 \(R\) 在后，输出取电阻两端电压。
+    \item 重复步骤 3--6，测量高通滤波器的幅频特性和相频特性。
+    \item 记录全部数据，拆除电路并整理实验台。
+\end{enumerate}
+
+\section{实验数据}
+
+\subsection{元件参数与截止频率}
+
+低通滤波器和高通滤波器分别选用不同的 RC 参数以满足各自的截止频率要求，具体参数和截止频率见表~\ref{tab:params}。
+
+\begin{table}[H]
+    \centering
+    \caption{两组滤波器的元件参数与截止频率}
+    \label{tab:params}
+    \begin{tabular}{ccccc}
+        \toprule
+        滤波器类型 & \(R\) & \(C\) & 理论 \(f_c=\frac{1}{2\pi RC}\) & 实测 \(f_c\) \\
+        \midrule
+        低通 & \(\SI{10}{\kilo\ohm}\) & \(\SI{10}{\nano\farad}\) & \(\SI{1591.5}{\hertz}\) & \(\SI{1440}{\hertz}\) \\
+        高通 & \(\SI{2}{\kilo\ohm}\)  & \(\SI{10}{\nano\farad}\) & \(\SI{7957.7}{\hertz}\) & \(\SI{8000}{\hertz}\) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+由实测截止频率可反推 RC 时间常数：低通滤波器 \(R=\SI{10}{\kilo\ohm}\) 和 \(C=\SI{10}{\nano\farad}\)，理论 \(f_c=1/(2\pi\times10^4\times10^{-8})=\SI{1591.5}{\hertz}\)，实测 \(\SI{1440}{\hertz}\)，相对误差 \(9.5\%\)。高通滤波器 \(R=\SI{2}{\kilo\ohm}\) 和 \(C=\SI{10}{\nano\farad}\)，理论 \(f_c=1/(2\pi\times2\times10^3\times10^{-8})=\SI{7957.7}{\hertz}\)，实测 \(\SI{8000}{\hertz}\)，相对误差 \(0.5\%\)。低通滤波器理论截止频率与实测值的偏差较大，主要归因于电容实际值与标称值的容差，\(\SI{10}{\nano\farad}\) 瓷片或薄膜电容的容差可达 \(\pm10\%\sim20\%\)。
+
+\subsection{原始数据记录}
+
+实验原始数据记录如图~\ref{fig:raw-data} 所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.72\textwidth]{数据.jpg}
+    \caption{实验原始数据记录}
+    \label{fig:raw-data}
+\end{figure}
+
+\subsection{低通滤波器测量数据}
+
+信号发生器输出幅值 \(U_i=\SI{5}{\volt}\) 峰峰值，实测截止频率 \(f_c\approx\SI{1.44}{\kilo\hertz}\)，截止点处 \(U_o\approx\SI{3.53}{\volt}\)。整理后的测量数据见表~\ref{tab:lp-data}。
+
+\begin{table}[H]
+    \centering
+    \caption{低通滤波器幅频与相频测量数据，\(U_i=\SI{5}{\volt}\)}
+    \label{tab:lp-data}
+    \small
+    \begin{tabular}{ccccccc}
+        \toprule
+        \(f\)/Hz & \(U_o\)/V & \(|H|=U_o/U_i\) & \(|H|_{\text{理论}}\) & \(\Delta t\)/\si{\micro\second} & \(\varphi_{\text{实测}}\)/° & \(\varphi_{\text{理论}}\)/° \\
+        \midrule
+        260    & 4.76 & 0.952 & 0.987 & 190   & \(-17.8\) & \(-9.3\) \\
+        640    & 4.48 & 0.896 & 0.928 & 111   & \(-25.6\) & \(-21.9\) \\
+        1040   & 4.00 & 0.800 & 0.837 & 98.6  & \(-36.9\) & \(-33.2\) \\
+        1140   & 3.88 & 0.776 & 0.813 & 95.3  & \(-39.1\) & \(-35.6\) \\
+        1240   & 3.75 & 0.750 & 0.789 & 92.7  & \(-41.4\) & \(-37.9\) \\
+        1340   & 3.63 & 0.726 & 0.765 & 90    & \(-43.4\) & \(-40.1\) \\
+        1440   & 3.53 & 0.706 & 0.742 & 88    & \(-45.6\) & \(-42.1\) \\
+        1640   & 3.29 & 0.658 & 0.696 & 82.8  & \(-48.9\) & \(-45.9\) \\
+        1840   & 3.08 & 0.616 & 0.654 & 78.3  & \(-52.0\) & \(-49.1\) \\
+        2240   & 2.73 & 0.546 & 0.579 & 70.6  & \(-56.9\) & \(-54.6\) \\
+        3040   & 2.20 & 0.440 & 0.464 & 58.4  & \(-63.9\) & \(-62.4\) \\
+        7040   & 1.75 & 0.350 & 0.221 & 30.3  & \(-76.7\) & \(-77.3\) \\
+        10000  & 0.795 & 0.159 & 0.157 & 22.5  & \(-80.9\) & \(-81.0\) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{高通滤波器测量数据}
+
+信号发生器输出幅值 \(U_i=\SI{5}{\volt}\) 峰峰值，实测截止频率 \(f_c\approx\SI{8}{\kilo\hertz}\)，截止点处 \(U_o\approx\SI{3.53}{\volt}\)。整理后的测量数据见表~\ref{tab:hp-data}。
+
+\begin{table}[H]
+    \centering
+    \caption{高通滤波器幅频与相频测量数据，\(U_i=\SI{5}{\volt}\)}
+    \label{tab:hp-data}
+    \small
+    \begin{tabular}{ccccccc}
+        \toprule
+        \(f\)/Hz & \(U_o\)/V & \(|H|=U_o/U_i\) & \(|H|_{\text{理论}}\) & \(\Delta t\)/\si{\micro\second} & \(\varphi_{\text{实测}}\)/° & \(\varphi_{\text{理论}}\)/° \\
+        \midrule
+        1000   & 0.16  & 0.032 & 0.125 & 235   & \(+85\)   & \(+82.8\) \\
+        2000   & 0.689 & 0.138 & 0.244 & 114   & \(+82\)   & \(+75.9\) \\
+        3000   & 1.57  & 0.314 & 0.353 & 66    & \(+72\)   & \(+69.3\) \\
+        4000   & 2.32  & 0.464 & 0.449 & 43    & \(+62\)   & \(+63.3\) \\
+        5000   & 2.73  & 0.546 & 0.532 & 32    & \(+57\)   & \(+57.9\) \\
+        6000   & 3.05  & 0.610 & 0.602 & 24    & \(+52\)   & \(+53.0\) \\
+        7000   & 3.31  & 0.662 & 0.660 & 19    & \(+49\)   & \(+48.7\) \\
+        8000   & 3.53  & 0.706 & 0.709 & 16    & \(+46\)   & \(+44.8\) \\
+        8500   & 3.63  & 0.726 & 0.730 & 14    & \(+43\)   & \(+43.1\) \\
+        9000   & 3.72  & 0.744 & 0.749 & 13    & \(+42\)   & \(+41.5\) \\
+        10000  & 3.86  & 0.772 & 0.782 & 11    & \(+40\)   & \(+38.5\) \\
+        11000  & 3.97  & 0.794 & 0.810 & 9.5   & \(+37\)   & \(+35.9\) \\
+        12000  & 4.08  & 0.816 & 0.833 & 8     & \(+35\)   & \(+33.6\) \\
+        20000  & 4.49  & 0.898 & 0.929 & 3.6   & \(+26\)   & \(+21.7\) \\
+        30000  & 4.65  & 0.930 & 0.967 & 2     & \(+22\)   & \(+14.9\) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{截止频率处波形}
+
+图~\ref{fig:cutoff-waveforms} 为低通和高通滤波器在各自截止频率处拍摄的示波器双通道波形。两通道分别显示输入正弦波和输出正弦波，可见输出幅值约为输入的 \(0.707\) 倍，且两波形之间存在明显的相位差。
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{低通截止波形.jpg}
+        \caption{低通滤波器，\(f_c\approx\SI{1.44}{\kilo\hertz}\)}
+        \label{fig:cutoff-lp}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{高通截止波形.jpg}
+        \caption{高通滤波器，\(f_c\approx\SI{8}{\kilo\hertz}\)}
+        \label{fig:cutoff-hp}
+    \end{subfigure}
+    \caption{截止频率处示波器波形，双通道显示输入与输出}
+    \label{fig:cutoff-waveforms}
+\end{figure}
+
+\section{数据分析}
+
+\subsection{截止频率验证}
+
+在截止频率处，滤波器的幅值增益应恰好为 \(0.707\)，即输出电压 \(U_o = 0.707\times U_i = 0.707\times 5 = \SI{3.535}{\volt}\)。两组滤波器的理论截止频率与实测值的对比见表~\ref{tab:fc-comparison}。
+
+\begin{table}[H]
+    \centering
+    \caption{截止频率理论值与实测值对比}
+    \label{tab:fc-comparison}
+    \begin{tabular}{ccccc}
+        \toprule
+        & \(RC\) 参数 & 理论 \(f_c\) & 实测 \(f_c\) & 相对误差 \\
+        \midrule
+        低通 & \(\SI{10}{\kilo\ohm}\times\SI{10}{\nano\farad}\) & \(\SI{1591.5}{\hertz}\) & \(\SI{1440}{\hertz}\) & \(9.5\%\) \\
+        高通 & \(\SI{2}{\kilo\ohm}\times\SI{10}{\nano\farad}\) & \(\SI{7957.7}{\hertz}\) & \(\SI{8000}{\hertz}\) & \(0.5\%\) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+高通滤波器理论与实测截止频率吻合极好，误差仅 \(0.5\%\)。低通滤波器实测截止频率偏低 \(9.5\%\)，表明实际 RC 时间常数大于标称值，可能是 \(\SI{10}{\nano\farad}\) 电容实际容值偏大，瓷片和薄膜电容容差可达 \(\pm10\%\sim20\%\)，也可能是信号发生器内阻 \(\SI{50}{\ohm}\) 串入回路使等效电阻增大。
+
+低通滤波器截止点 \(U_o=\SI{3.53}{\volt}\)，\(|H|=0.706\)，实测相位 \(\varphi=-45.6°\)。高通滤波器截止点 \(U_o=\SI{3.53}{\volt}\)，\(|H|=0.706\)，实测相位 \(\varphi=+46°\)。两者的幅值和相位均与 \(0.707\) 和 \(\pm45°\) 的理论判据高度一致，验证了截止频率的定义和测定方法。
+
+\subsection{幅频特性分析}
+
+由表~\ref{tab:lp-data} 和表~\ref{tab:hp-data} 中实测 \(|H|\) 与理论 \(|H|\) 的对比可见：
+
+\textbf{低通滤波器}：在 \(f < f_c\) 的通带内，实测幅值系统性低于理论值，例如 \(\SI{260}{\hertz}\) 处实测 \(0.952\) 而理论为 \(0.987\)，差值约 \(3\%\sim5\%\)，这主要是信号发生器内阻 \(\SI{50}{\ohm}\) 串入回路对 \(\SI{10}{\kilo\ohm}\) 电阻的分压效应以及电容实际容值偏大所致。在 \(\SI{1}{\kilo\hertz}\) 至 \(\SI{3}{\kilo\hertz}\) 的截止频率附近，实测 \(|H|\) 与理论值的差异缩小到 \(3\%\sim5\%\) 以内。在远离截止频率的 \(\SI{7.04}{\kilo\hertz}\) 高频段，实测 \(|H|=0.350\) 明显高于标称参数理论值 \(0.221\)，但若考虑电容实际值偏大使 \(f_c\) 降至实测的 \(\SI{1440}{\hertz}\)，重新计算该频率处理论 \(|H|\approx0.200\)，偏差仍较大，这可能是示波器探头电容约 \(\SI{15}{\pico\farad}\) 和导线接触处的寄生参数在高频下引入了额外通路。
+
+\textbf{高通滤波器}：在 \(f < f_c\) 的阻带低频段，\(\SI{1}{\kilo\hertz}\) 处实测 \(|H|=0.032\) 远低于理论值 \(0.125\)，说明实际电路在低频段的衰减比理论更强，可能与分布电阻和导线寄生电感有关。在 \(\SI{5}{\kilo\hertz}\) 至 \(\SI{12}{\kilo\hertz}\) 的截止频率附近，实测与理论吻合最好，多数频率点偏差在 \(2\%\) 以内。在 \(\SI{20}{\kilo\hertz}\) 以上的高频通带，实测幅值略低于理论值，与导线分布电感和分布电容有关。
+
+实测数据与理论曲线的对比如图~\ref{fig:response} 所示。
+
+\subsection{相频特性分析}
+
+低通滤波器的实测相位从低频的 \(-17.8°\) 逐步增大到高频的 \(-80.9°\)，单调递减趋势与理论一致。在截止频率处实测 \(-45.6°\)，接近理论值 \(-45°\)。\(\SI{1}{\kilo\hertz}\) 至 \(\SI{3}{\kilo\hertz}\) 中频段实测相位与理论值的偏差普遍在 \(1°\sim2°\) 以内，吻合良好。
+
+高通滤波器的实测相位从低频的 \(+85°\) 逐步减小到高频的 \(+22°\)，单调递减趋势与理论一致。在截止频率处实测 \(+46°\)，接近理论值 \(+45°\)。但在 \(\SI{20}{\kilo\hertz}\) 以上的高频段，实测相位明显大于理论值，\(\SI{20}{\kilo\hertz}\) 处实测 \(+26°\) 而理论为 \(+21.8°\)，\(\SI{30}{\kilo\hertz}\) 处实测 \(+22°\) 而理论为 \(+14.9°\)，这是由于高频下寄生参数引入了额外的相移。
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{lp_magnitude.pdf}
+        \caption{低通滤波器幅频特性}
+        \label{fig:lp-mag}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{hp_magnitude.pdf}
+        \caption{高通滤波器幅频特性}
+        \label{fig:hp-mag}
+    \end{subfigure}
+
+    \vspace{0.5cm}
+
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{lp_phase.pdf}
+        \caption{低通滤波器相频特性}
+        \label{fig:lp-phase}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{hp_phase.pdf}
+        \caption{高通滤波器相频特性}
+        \label{fig:hp-phase}
+    \end{subfigure}
+    \caption{理论曲线与实测数据对比}
+    \label{fig:response}
+\end{figure}
+
+\subsection{幅频与相频的相互印证}
+
+幅频特性与相频特性的变化趋势相互印证：当频率偏离通带进入过渡带时，幅值开始下降的同时相位偏移也开始增大。例如低通滤波器在 \(\SI{1.04}{\kilo\hertz}\) 处幅值已降至 \(0.800\)，对应相位 \(-36.9°\)；到截止频率 \(\SI{1.44}{\kilo\hertz}\) 处幅值恰好降至 \(0.707\)，相位恰好为 \(-45°\) 附近。这一对应关系与一阶 RC 网络的 Bode 图分析完全一致。
+
+\subsection{误差来源分析}
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{元件参数偏差}：电阻和电容的实际值与标称值存在容差，电阻通常 \(\pm5\%\)，电容可达 \(\pm10\%\sim20\%\)，导致实际截止频率偏离设计值。不过由于本实验直接从幅值判据确定实测截止频率，该误差不影响测量方法的有效性。
+
+    \item \textbf{信号发生器输出阻抗}：信号发生器内阻通常为 \(\SI{50}{\ohm}\)，等效串入回路，使实际到达滤波器输入端的电压低于标称设定值，导致通带内实测 \(|H|\) 系统性偏低。对于低通滤波器，分压效应为 \(R/(R+R_s)\)，若 \(R\) 较小则影响显著。
+
+    \item \textbf{示波器探头负载效应}：探头的输入电容约 \(\SI{15}{\pico\farad}\)，与被测电容并联，在高频段等效增大了总电容，使高频段实测幅值偏离理论值。这可以解释低通滤波器在 \(\SI{7}{\kilo\hertz}\) 处实测 \(|H|\) 高于理论值，探头电容使等效截止频率降低，相当于在该频率点的归一化频率 \(\omega/\omega_c\) 变小，幅值相对上升。
+
+    \item \textbf{导线与接触寄生参数}：元件引脚直接夹接，接触电阻和导线分布电容在高频段不可忽略，会引入额外的幅值衰减和相位偏移，尤其影响高通滤波器在高频段的测量精度。
+
+    \item \textbf{相差法读数精度}：示波器光标测量时间差的分辨率有限，低频信号周期长，时间差大，相对误差小；高频信号周期短，时间差小，相对误差大。这解释了高频段相位测量偏差较大的现象。
+\end{enumerate}
+
+综上，本实验通过点频法和相差法分别测量了 RC 低通与高通无源滤波器的幅频特性与相频特性。两组滤波器在截止频率处的 \(|H|\) 均精确地等于 \(0.707\)，相位分别为 \(-45°\) 和 \(+45°\) 附近，与一阶 RC 滤波器的理论完全一致。中频段实测数据与理论曲线吻合良好，高频段和低频段的偏差主要归因于信号源内阻和探头电容以及导线接触处寄生参数的综合影响。实验结果验证了 RC 无源滤波器的基本频率选择特性。
+
+\end{document}
