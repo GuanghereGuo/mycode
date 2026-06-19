@@ -1,0 +1,118 @@
+% ============================================================
+% 电路基础实验报告合集 —— 汇总主文件
+% 将 8 个实验的正式报告正文（各目录 content.tex）合成一册
+% 编译：cd CircuitTheory && latexmk -xelatex -outdir=build main.tex
+% ============================================================
+
+\documentclass[12pt, oneside, openany]{ctexbook}
+
+% --- 宏包 ---
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{makecell}
+
+\sisetup{per-mode=symbol}
+
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+
+\setlength{\jot}{6pt}
+\setlength{\headheight}{15pt}
+\linespread{1.5}
+\setlist{nosep}
+
+% --- 章标题：以「实验一」「实验二」…作为章名 ---
+\ctexset{chapter/name={实验,}}
+
+% --- 目录只列到节，保持简洁 ---
+\setcounter{tocdepth}{1}
+
+% --- 页眉页脚 ---
+\pagestyle{fancy}
+\fancyhead[C]{电路基础实验}
+\fancyfoot[C]{\thepage}
+\fancypagestyle{plain}{%
+    \fancyhf{}%
+    \fancyhead[C]{电路基础实验}%
+    \fancyfoot[C]{\thepage}%
+}
+
+\begin{document}
+
+% ==================== 总封面 ====================
+\thispagestyle{empty}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=13cm]{logo1.png}
+\end{figure}
+
+\vspace*{\fill}
+    \begin{center}
+        \Huge\textbf{电路基础}
+
+        \vspace{0.3cm}
+        \Huge\textbf{实验报告合集}
+    \end{center}
+\vspace*{\fill}
+
+\begin{table}[H]
+    \centering
+    \large
+    \begin{tabular}{ll}
+    \toprule
+    \textbf{课程:} & 电路基础实验 \\
+    \textbf{姓名:} & 郭浩然 2024303980 \\
+    \textbf{组号:} & 第7组 \\
+    \textbf{时间:} & \today \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\newpage
+
+% ==================== 目录 ====================
+\tableofcontents
+
+% ==================== 各实验正文 ====================
+
+\graphicspath{{./1. Kirchhoff/figure/}{./1. Kirchhoff/figures/}{./requirements/extracted_images/word/media/}{./}}
+\chapter{电路基本概念与定律}
+\input{1. Kirchhoff/content.tex}
+
+\graphicspath{{./2. linear_circuit/figures/}{./}}
+\chapter{线性电路的线性特征}
+\input{2. linear_circuit/content.tex}
+
+\graphicspath{{./3. Thevenin/figures/}{./requirements/extracted_images/word/media/}{./}}
+\chapter{等效电源定理}
+\input{3. Thevenin/content.tex}
+
+\graphicspath{{./4. RC/figures/}{./requirements/extracted_images/word/media/}{./}}
+\chapter{RLC 串联谐振电路}
+\input{4. RC/content.tex}
+
+\graphicspath{{./5. RC2/figures/}{./requirements/extracted_images/word/media/}{./}}
+\chapter{一阶 RC 电路暂态分析}
+\input{5. RC2/content.tex}
+
+\graphicspath{{./6. function/figures/}{./requirements/extracted_images/word/media/}{./}}
+\chapter{RC 无源滤波器的频率特性}
+\input{6. function/content.tex}
+
+\graphicspath{{./7. amp/figures/}{./}}
+\chapter{集成运算放大器电路}
+\input{7. amp/content.tex}
+
+\graphicspath{{./8. final/figures/}{./}}
+\chapter{有源带通滤波器设计与测量}
+\input{8. final/content.tex}
+
+\end{document}
