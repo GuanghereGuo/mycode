@@ -1,0 +1,305 @@
+\section{实验目的}
+
+\begin{enumerate}[label=\arabic*.]
+    \item 掌握一阶有源低通滤波器与高通滤波器的电路结构和设计方法。
+    \item 理解有源滤波器相对于无源滤波器在增益与阻抗匹配方面的优势。
+    \item 学会将有源低通滤波器与高通滤波器级联构成带通滤波器，并确定通带频率范围。
+    \item 掌握电压放大倍数与功率放大倍数的分贝定义及二者之间的换算关系。
+    \item 通过 Multisim 仿真与实测波形验证有源带通滤波器的频率特性。
+\end{enumerate}
+
+% (20) 实验原理
+\section{实验原理}
+
+\subsection{一阶有源低通与高通滤波器}
+
+无源滤波器的通带增益始终小于 1，引入运算放大器可在实现滤波功能的同时提供信号放大能力。本实验的有源低通滤波器与高通滤波器均基于反向比例放大器结构，电路设计如图~\ref{e8-fig:design-lp-hp} 所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{手绘设计图：高通低通及传递函数.png}
+    \caption{有源低通滤波器与高通滤波器电路设计}
+    \label{e8-fig:design-lp-hp}
+\end{figure}
+
+低通级将反馈支路的电阻换为电阻 $R_f$ 与电容 $C$ 的并联，由虚短与虚断条件，传递函数为
+\begin{equation}
+    H_{\mathrm{LP}}(s) = -\frac{R_f}{R_1}\cdot\frac{1}{1 + sR_fC},
+    \label{e8-eq:lp-tf}
+\end{equation}
+通带增益为 $R_f/R_1$，截止频率为 $f_H = 1/(2\pi R_fC)$。取 $R_1 = R_f = \SI{10}{\kilo\ohm}$，$C_1 = \SI{0.01}{\micro\farad}$，则通带增益为 1，即 $\SI{0}{\decibel}$，截止频率为
+\begin{equation}
+    f_H = \frac{1}{2\pi R_f C_1}
+        = \frac{1}{2\pi \times \SI{10}{\kilo\ohm} \times \SI{0.01}{\micro\farad}}
+        \approx \SI{1591.5}{\hertz}.
+    \label{e8-eq:lp-fc}
+\end{equation}
+
+高通级将输入支路的电阻换为电容 $C$ 与电阻 $R$ 的串联，反馈支路仅含电阻 $R_f$，传递函数为
+\begin{equation}
+    H_{\mathrm{HP}}(s) = -\frac{R_f}{R}\cdot\frac{sRC}{1 + sRC},
+    \label{e8-eq:hp-tf}
+\end{equation}
+通带增益为 $R_f/R$，截止频率为 $f_L = 1/(2\pi RC)$。取 $R = R_f = \SI{100}{\kilo\ohm}$，$C_2 = \SI{0.01}{\micro\farad}$，则通带增益为 1，即 $\SI{0}{\decibel}$，截止频率为
+\begin{equation}
+    f_L = \frac{1}{2\pi R C_2}
+        = \frac{1}{2\pi \times \SI{100}{\kilo\ohm} \times \SI{0.01}{\micro\farad}}
+        \approx \SI{159.2}{\hertz}.
+    \label{e8-eq:hp-fc}
+\end{equation}
+
+两级在各自截止频率处增益均下降 $\SI{3}{\decibel}$，通带外幅值以每十倍频程 $\SI{20}{\decibel}$ 的速率衰减。
+
+\subsection{有源带通滤波器}
+
+将高通级与低通级级联即构成带通滤波器，高通级抑制低频成分，低通级抑制高频成分，二者共同限定出通带。级联电路设计如图~\ref{e8-fig:design-bp} 所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{手绘设计图：组合.png}
+    \caption{有源带通滤波器级联设计及元件参数}
+    \label{e8-fig:design-bp}
+\end{figure}
+
+总传递函数为两级之积，两级反向放大器的负号相消，得
+\begin{equation}
+    H_{\mathrm{BP}}(s) = H_{\mathrm{HP}}(s)\cdot H_{\mathrm{LP}}(s)
+    = \frac{R_{f1}}{R}\cdot\frac{R_{f2}}{R_1}
+      \cdot\frac{sRC_2}{1 + sRC_2}\cdot\frac{1}{1 + sR_{f2}C_1}.
+    \label{e8-eq:bp-tf}
+\end{equation}
+
+两级通带增益均为 1，故总通带增益亦为 1。通带频率范围为 $f_L < f < f_H$，通带宽度与中心频率分别为
+\begin{equation}
+    \mathrm{BW} = f_H - f_L \approx \SI{1432}{\hertz},\qquad
+    f_0 = \sqrt{f_L f_H} \approx \SI{503}{\hertz}.
+\end{equation}
+设计时须保证 $f_L < f_H$，否则两级通带不重叠，无法构成有效带通滤波器。
+
+\subsection{无源滤波器与有源滤波器的比较}
+
+无源滤波器仅由电阻电容构成，电路简单且无需供电，但通带内信号被衰减，增益始终小于 1，且对源和负载阻抗敏感，级联时需要专门的阻抗匹配。有源滤波器引入运放后可在滤波同时放大信号，高输入阻抗与低输出阻抗使各级可直接级联，但需外部供电且工作频段受运放带宽限制。两者特性比较见表~\ref{e8-tab:filter-comparison}。
+
+\begin{table}[H]
+    \centering
+    \caption{无源滤波器与有源滤波器的比较}
+    \label{e8-tab:filter-comparison}
+    \begin{tabular}{lll}
+        \toprule
+        特性 & 无源滤波器 & 有源滤波器 \\
+        \midrule
+        通带增益   & 小于 1           & 大于等于 1，可调 \\
+        电源需求   & 无需             & 需要直流电源 \\
+        阻抗特性   & 受源和负载影响大 & 高输入阻抗，低输出阻抗 \\
+        级联特性   & 需阻抗匹配       & 可直接级联 \\
+        适用频段   & 宽，含高频       & 受运放带宽限制 \\
+        电路复杂度 & 简单             & 较复杂 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{电压与功率放大倍数的分贝表示}
+
+分贝以对数比值表示信号的增益或衰减。电压放大倍数与功率放大倍数的分贝定义分别为
+\begin{equation}
+    A_{v,\mathrm{dB}} = 20\lg\frac{V_o}{V_i},\qquad
+    A_{p,\mathrm{dB}} = 10\lg\frac{P_o}{P_i}.
+    \label{e8-eq:db-def}
+\end{equation}
+设输入端阻抗为 $R_i$、输出端阻抗为 $R_o$，则二者的关系为
+\begin{equation}
+    A_{p,\mathrm{dB}} = A_{v,\mathrm{dB}} + 10\lg\frac{R_i}{R_o}.
+    \label{e8-eq:db-relation}
+\end{equation}
+当 $R_i = R_o$ 时电压分贝数与功率分贝数数值相等。滤波器截止频率定义的 $-\SI{3}{\decibel}$ 对应电压比 $1/\sqrt{2}\approx 0.707$，功率比 $1/2 = 0.5$，即输出功率下降至一半。
+
+\subsection{Multisim 仿真}
+
+根据上述设计，在 Multisim 中搭建有源带通滤波器电路，采用 LM324AD 运算放大器，双电源供电 $V_{\mathrm{CC}} = +\SI{5}{\volt}$、$V_{\mathrm{EE}} = -\SI{5}{\volt}$，信号源为正弦波。仿真电路如图~\ref{e8-fig:multisim-circuit} 所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{multisim电路图.png}
+    \caption{有源带通滤波器 Multisim 仿真电路}
+    \label{e8-fig:multisim-circuit}
+\end{figure}
+
+使用波特测试仪扫频，得到带通滤波器的幅频特性曲线，低频与高频 $-\SI{3}{\decibel}$ 截止点的测量结果如图~\ref{e8-fig:bode-plots} 所示。仿真值与理论值的对比见表~\ref{e8-tab:simulation-comparison}，相对误差均小于 $1\%$，验证了设计的正确性。
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{multisim波特图：低频截止.png}
+        \caption{低频截止 $\SI{160.573}{\hertz}$，$-3.016\,\mathrm{dB}$}
+        \label{e8-fig:bode-low}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{multisim波特图：高频截止.png}
+        \caption{高频截止 $\SI{1.58}{\kilo\hertz}$，$-3.028\,\mathrm{dB}$}
+        \label{e8-fig:bode-high}
+    \end{subfigure}
+    \caption{带通滤波器幅频特性 $-\SI{3}{\decibel}$ 截止点仿真结果}
+    \label{e8-fig:bode-plots}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \caption{截止频率理论值与仿真值对比}
+    \label{e8-tab:simulation-comparison}
+    \begin{tabular}{llll}
+        \toprule
+        截止频率 & 理论值 & 仿真值 & 相对误差 \\
+        \midrule
+        低频截止 $f_L$ & $\SI{159.2}{\hertz}$  & $\SI{160.6}{\hertz}$ & $0.86\%$ \\
+        高频截止 $f_H$ & $\SI{1591.5}{\hertz}$ & $\SI{1580}{\hertz}$  & $0.72\%$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% (10) 实验器件
+\section{实验器件}
+
+\begin{itemize}
+    \item 面包板 $\times 1$
+    \item 直流稳压电源 $\times 1$
+    \item 函数信号发生器 RIGOL DG922 $\times 1$
+    \item 数字示波器 RIGOL DHO1204 $\times 1$
+    \item 数字万用表 RIGOL DM858 $\times 1$
+    \item 集成运算放大器 LM324 $\times 1$
+    \item 电阻：$\SI{10}{\kilo\ohm} \times 3$，$\SI{100}{\kilo\ohm} \times 3$
+    \item 电容：$\SI{0.01}{\micro\farad} \times 2$
+    \item 导线若干
+\end{itemize}
+
+% (10) 实验步骤
+\section{实验步骤}
+
+\begin{enumerate}[label=\arabic*.]
+    \item 用直流稳压电源调出 $+\SI{5}{\volt}$ 和 $-\SI{5}{\volt}$ 两路输出，分别接到 LM324 的 $V_{\mathrm{CC}}$ 和 $V_{\mathrm{EE}}$ 引脚，公共端接地。
+    \item 在面包板上搭建高通级，输入端串入 $C_2 = \SI{0.01}{\micro\farad}$ 与 $R = \SI{100}{\kilo\ohm}$，反馈电阻 $R_{f1} = \SI{100}{\kilo\ohm}$ 跨接输出与反相输入端，同相输入端接地。
+    \item 搭建低通级，输入电阻 $R_1 = \SI{10}{\kilo\ohm}$ 接入反相输入端，反馈支路用 $R_{f2} = \SI{10}{\kilo\ohm}$ 与 $C_1 = \SI{0.01}{\micro\farad}$ 并联，同相输入端接地。将高通级输出接到低通级输入，构成带通滤波器。
+    \item 信号发生器输出正弦波，幅值调为 $U_{i,pp} = \SI{1}{\volt}$。示波器 CH1 接电路输入端，CH2 接带通滤波器输出端，双通道同时观测输入与输出波形。
+    \item 改变信号频率，分别在 $\SI{169}{\hertz}$、$\SI{1000}{\hertz}$、$\SI{1590}{\hertz}$ 三个频率点读取输出峰峰值，其中 $\SI{169}{\hertz}$ 与 $\SI{1590}{\hertz}$ 用于确定下限与上限截止频率，$\SI{1000}{\hertz}$ 用于考察通带内增益。
+    \item 记录各频率点的输入与输出峰峰值，计算电压增益并换算为分贝，与理论值和仿真值比较。
+    \item 记录全部数据，拆除电路并整理实验台。
+\end{enumerate}
+
+% (10) 实验数据
+\section{实验数据}
+
+实物搭建的有源带通滤波器电路如图~\ref{e8-fig:real-circuit} 所示，高通级与低通级在面包板上级联，由直流稳压电源双电源供电。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{实物电路图.jpg}
+    \caption{面包板搭建的有源带通滤波器实物电路}
+    \label{e8-fig:real-circuit}
+\end{figure}
+
+固定输入峰峰值 $U_{i,pp} = \SI{1}{\volt}$，在三个频率点测得的输入输出波形如图~\ref{e8-fig:waveforms} 所示。
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{169Hz_703.45mV.jpg}
+        \caption{$\SI{169}{\hertz}$，$U_{o,pp}=\SI{703.45}{\milli\volt}$}
+        \label{e8-fig:wave-169}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1000Hz_869.36mV.jpg}
+        \caption{$\SI{1000}{\hertz}$，$U_{o,pp}=\SI{869.36}{\milli\volt}$}
+        \label{e8-fig:wave-1000}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1590Hz_702.16mV.jpg}
+        \caption{$\SI{1590}{\hertz}$，$U_{o,pp}=\SI{702.16}{\milli\volt}$}
+        \label{e8-fig:wave-1590}
+    \end{subfigure}
+    \caption{三个频率点的实测输入输出波形，$U_{i,pp}=\SI{1}{\volt}$}
+    \label{e8-fig:waveforms}
+\end{figure}
+
+按 $A_v = U_{o,pp}/U_{i,pp}$ 计算各点电压增益并由式~\eqref{e8-eq:db-def} 换算为分贝，结果见表~\ref{e8-tab:measured-data}。
+
+\begin{table}[H]
+    \centering
+    \caption{有源带通滤波器实测数据，$U_{i,pp}=\SI{1000}{\milli\volt}$}
+    \label{e8-tab:measured-data}
+    \begin{tabular}{cccccl}
+        \toprule
+        频率/Hz & 输入 $U_{i,pp}$/mV & 输出 $U_{o,pp}$/mV & 实测增益 $A_v$ & 增益/dB & 频率特征 \\
+        \midrule
+        169  & 1000 & 703.45 & 0.703 & $-3.06$ & 下限截止点附近 \\
+        1000 & 1000 & 869.36 & 0.869 & $-1.22$ & 通带内 \\
+        1590 & 1000 & 702.16 & 0.702 & $-3.07$ & 上限截止点附近 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% (20) 数据分析
+\section{数据分析}
+
+\subsection{截止频率验证}
+
+由表~\ref{e8-tab:measured-data} 可见，$\SI{169}{\hertz}$ 与 $\SI{1590}{\hertz}$ 处输出峰峰值分别为 $\SI{703.45}{\milli\volt}$ 和 $\SI{702.16}{\milli\volt}$，电压增益均约为 $0.703$，对应 $-\SI{3.06}{\decibel}$，恰好落在 $-\SI{3}{\decibel}$ 截止线上。这说明带通滤波器的下限与上限截止频率分别位于 $\SI{169}{\hertz}$ 和 $\SI{1590}{\hertz}$ 附近。实测截止频率与理论值、仿真值的对比见表~\ref{e8-tab:fc-comparison}。
+
+\begin{table}[H]
+    \centering
+    \caption{截止频率理论值、仿真值与实测值对比}
+    \label{e8-tab:fc-comparison}
+    \begin{tabular}{llll}
+        \toprule
+        截止频率 & 理论值/Hz & 仿真值/Hz & 实测 $-\SI{3}{\decibel}$ 点/Hz \\
+        \midrule
+        下限 $f_L$ & 159.2  & 160.6 & $\approx 169$ \\
+        上限 $f_H$ & 1591.5 & 1580  & $\approx 1590$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+上限截止频率实测约 $\SI{1590}{\hertz}$，与理论值 $\SI{1591.5}{\hertz}$ 和仿真值 $\SI{1580}{\hertz}$ 高度吻合，相对偏差不足 $1\%$。下限截止频率实测约 $\SI{169}{\hertz}$，比理论值 $\SI{159.2}{\hertz}$ 偏高约 $6\%$，主要原因是高通级电容 $C_2$ 的实际容值因容差偏小，使 $f_L = 1/(2\pi RC_2)$ 偏大；测量时频率点按整数选取，也使读到的 $-\SI{3}{\decibel}$ 点略有偏移。总体上实测两个截止频率界定的通带范围与设计目标一致。
+
+\subsection{通带增益验证}
+
+$\SI{1000}{\hertz}$ 处于通带内偏高频一侧，实测输出峰峰值 $\SI{869.36}{\milli\volt}$，电压增益 $0.869$，对应 $-\SI{1.22}{\decibel}$，接近通带 $\SI{0}{\decibel}$ 的设计增益。由带通幅频特性可知，该点尚未到达上限截止频率，增益已因低通级的衰减而略低于通带中心值，实测结果与这一趋势一致，表明级联后的带通滤波器在通带内基本保持单位增益。
+
+\subsection{理论值与实测值对比}
+
+将三个频率点的实测增益与由式~\eqref{e8-eq:bp-tf} 计算的理论增益对比，结果见表~\ref{e8-tab:gain-comparison}。理论增益按 $|H_{\mathrm{BP}}(j2\pi f)|$ 取 $f_L = \SI{159.2}{\hertz}$、$f_H = \SI{1591.5}{\hertz}$ 计算。
+
+\begin{table}[H]
+    \centering
+    \caption{三个频率点理论增益与实测增益对比}
+    \label{e8-tab:gain-comparison}
+    \begin{tabular}{cccccc}
+        \toprule
+        频率/Hz & 理论增益 $A_v$ & 理论/dB & 实测增益 $A_v$ & 实测/dB & 偏差/dB \\
+        \midrule
+        169  & 0.724 & $-2.81$ & 0.703 & $-3.06$ & $-0.25$ \\
+        1000 & 0.836 & $-1.55$ & 0.869 & $-1.22$ & $+0.34$ \\
+        1590 & 0.704 & $-3.05$ & 0.702 & $-3.07$ & $-0.02$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+三个频率点的实测增益与理论增益偏差均在 $\SI{0.35}{\decibel}$ 以内。$\SI{1590}{\hertz}$ 处吻合最好，偏差仅 $\SI{0.02}{\decibel}$；$\SI{169}{\hertz}$ 处实测增益略低于理论值，与下限截止频率偏高的结论一致；$\SI{1000}{\hertz}$ 处实测增益略高于理论值，反映通带内实际增益受元件容差影响有小幅上浮。整体而言，实测幅频特性与理论分析和 Multisim 仿真三者相互印证。
+
+\subsection{误差来源分析}
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{元件参数容差}：电阻容差通常 $\pm5\%$，电容容差可达 $\pm10\%\sim20\%$，使实际截止频率 $f_L$、$f_H$ 和通带增益偏离标称值，是下限截止频率偏高的主要原因。
+    \item \textbf{运放非理想特性}：LM324 开环增益有限，增益带宽积约 $\SI{1}{\mega\hertz}$，在通带高频端会引入附加幅值衰减。
+    \item \textbf{信号源与读数误差}：信号发生器输出阻抗与频率精度、示波器光标读取峰峰值的分辨率，均会带来测量误差，且测量频率点按整数选取使 $-\SI{3}{\decibel}$ 点的判读存在偏移。
+    \item \textbf{面包板寄生参数}：面包板的接触电阻与分布电容在级联高阻电路中会引入轻微附加相移和衰减。
+\end{enumerate}
+
+综上，本实验设计并搭建了由一阶有源高通级与低通级级联构成的有源带通滤波器，实测下限截止频率约 $\SI{169}{\hertz}$、上限截止频率约 $\SI{1590}{\hertz}$，通带内 $\SI{1000}{\hertz}$ 处增益约 $-\SI{1.22}{\decibel}$ 接近单位增益。实测结果与理论计算和 Multisim 仿真三者吻合良好，验证了有源带通滤波器的设计方法和频率特性。
+
