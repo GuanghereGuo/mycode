@@ -1,0 +1,18 @@
+# LaTeX 编译产物（仅保留最终 report.pdf）
+build/*
+!build/report.pdf
+
+# Quartus 工程缓存与编译输出（不入库）
+files/shudian7/db/
+files/shudian7/incremental_db/
+files/shudian7/output_files/
+files/shudian7/hc_output/
+
+# 工具备份、会话与自动生成的日志文件
+files/shudian7/*.bak
+files/shudian7/*.qws
+files/shudian7/*.dpf
+files/shudian7/c5_pin_model_dump.txt
+
+# 原始 docx 压缩包
+files/exp7.docx.zip
