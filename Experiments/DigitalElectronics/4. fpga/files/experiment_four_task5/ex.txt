@@ -1,0 +1,11 @@
+entity exa4_auto_sel is
+port(
+    rst_n     : in  std_logic;  -- 总复位，低电平有效
+    cout_1hz  : in  std_logic;  -- 1Hz 计数器 cout
+    cout_10hz : in  std_logic;  -- 10Hz 计数器 cout
+
+    rs_1hz    : out std_logic;  -- 接 1Hz 计数器 rs
+    rs_10hz   : out std_logic;  -- 接 10Hz 计数器 rs
+    sel_led   : out std_logic   -- 可选，接 LED 看当前频率
+);
+end exa4_auto_sel;

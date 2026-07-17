@@ -1,0 +1,113 @@
+% ============================================================
+% 数电实验报告模板
+% 使用前搜索 TODO 修改实验特定内容
+% ============================================================
+
+\documentclass[12pt]{ctexart}
+
+% --- 宏包 ---
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{fancyhdr}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{makecell}
+\usepackage{enumitem}
+
+\sisetup{per-mode=symbol}
+
+\graphicspath{{./figures/}}
+
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+
+\setlength{\jot}{6pt}
+\linespread{1.5}
+\setlist{nosep}
+
+% --- 页眉页脚 ---
+\pagestyle{fancy}
+\fancyhead[C]{数字电子技术实验}
+\fancyfoot[C]{\thepage}
+
+\begin{document}
+
+% ==================== 封面 ====================
+\thispagestyle{empty}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=13cm]{logo1.png}
+\end{figure}
+
+\vspace*{\fill}
+    \begin{center}
+        \Huge\textbf{数字电子技术基础}
+
+        \vspace{0.3cm}
+        \Huge\textbf{实验报告}
+
+        \vspace{1cm}
+        % TODO: 修改实验标题
+        \LARGE\textbf{实验一：TTL集成门电路逻辑变换}
+    \end{center}
+\vspace*{\fill}
+
+\begin{table}[H]
+    \centering
+    \large
+    \begin{tabular}{ll}
+    \toprule
+    \textbf{课程:} & 数字电子技术实验 \\
+    % TODO: 修改姓名、学号、组号
+    \textbf{组员1:} & 姓名 学号 \\
+    \textbf{组员2:} & 姓名 学号 \\
+    \textbf{组号:} & 组号 \\
+    \textbf{时间:} & \today \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\newpage
+
+% ==================== 正文 ====================
+
+\section{实验目的}
+
+% TODO: 填写实验目的
+
+\section{实验要求}
+
+% TODO: 填写实验要求
+
+\section{实验设备}
+
+% TODO: 填写实验设备
+
+\section{实验原理}
+
+% TODO: 填写实验原理
+
+\section{实验内容}
+
+% TODO: 填写实验内容
+
+\section{实验过程中的问题}
+
+\begin{enumerate}
+    \item
+    \item
+\end{enumerate}
+
+\section{心得体会}
+
+\begin{enumerate}
+    \item
+    \item
+\end{enumerate}
+
+\end{document}

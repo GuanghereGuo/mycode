@@ -1,0 +1,197 @@
+\section{实验目的}
+
+\begin{enumerate}[label=\arabic*.]
+    \item 熟悉集成运算放大器 LM324 的基本结构与各引脚功能。
+    \item 理解双电源供电对运放输出动态范围的影响。
+    \item 掌握反向比例放大器的工作原理与电压增益的计算方法。
+    \item 掌握有源积分电路的工作原理与方波到三角波的波形变换特性。
+    \item 通过实测波形与 Multisim 仿真验证理论分析结果，并分析输出失真的原因。
+\end{enumerate}
+
+\section{实验原理}
+
+\subsection{LM324 集成运算放大器}
+
+LM324 是一款四运放集成电路，采用 14 引脚双列直插封装，内部含 4 个独立的运算放大器，引脚分布如图~\ref{e7-fig:lm324-pinout} 所示。本实验只使用其中一个运放，同相输入端经偏置电阻接地，反相输入端接入信号与反馈网络。LM324 的共模输入范围包含负电源电位，输出摆幅上限约为 \(V_{\mathrm{CC}}-\SI{1.5}{\volt}\)，在 \(\pm\SI{5}{\volt}\) 双电源下输出线性范围约为 \(\pm\SI{3.5}{\volt}\)。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{lm324_pinout.jpeg}
+    \caption{LM324 引脚分布}
+    \label{e7-fig:lm324-pinout}
+\end{figure}
+
+为使运放对称放大交流信号的正负半周，本实验采用 \(V_{\mathrm{CC}}=+\SI{5}{\volt}\) 和 \(V_{\mathrm{EE}}=-\SI{5}{\volt}\) 的双电源供电，同相输入端可直接接地作为参考零电位。
+
+\subsection{反向比例放大器}
+
+反向比例放大器中，信号经输入电阻 \(R_1\) 接入运放反相输入端，反馈电阻 \(R_f\) 连接在输出端与反相输入端之间，同相输入端经偏置电阻 \(R_2\) 接地。利用理想运放的虚短 \(v_+=v_-\) 与虚断 \(i_+=i_-=0\)，同相端接地使 \(v_-=0\) 形成虚地。在反相输入节点列 KCL 方程
+\begin{equation}
+    \frac{v_i}{R_1} = -\frac{v_o}{R_f},
+\end{equation}
+得电压增益
+\begin{equation}
+    A_v = \frac{v_o}{v_i} = -\frac{R_f}{R_1}.
+    \label{e7-eq:inverting-gain}
+\end{equation}
+
+本实验取 \(R_1=\SI{1}{\kilo\ohm}\) 和 \(R_f=\SI{10}{\kilo\ohm}\)，理论增益为
+\begin{equation}
+    A_v = -\frac{\SI{10}{\kilo\ohm}}{\SI{1}{\kilo\ohm}} = -10,
+\end{equation}
+即输出幅值为输入的 10 倍且相位反转 \(180°\)。反向比例放大器的 Multisim 仿真电路如图~\ref{e7-fig:inverting-amp} 所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.78\textwidth]{inverting_amp_multisim.png}
+    \caption{反向比例放大器 Multisim 仿真电路}
+    \label{e7-fig:inverting-amp}
+\end{figure}
+
+\subsection{有源积分电路}
+
+将反向比例放大器的反馈电阻 \(R_f\) 换为电容 \(C\)，即构成有源积分电路。在反相输入节点列 KCL 方程并对时间积分，得
+\begin{equation}
+    v_o(t) = -\frac{1}{R_1 C}\int_0^t v_i(\tau)\,\mathrm{d}\tau + v_o(0).
+    \label{e7-eq:integrator}
+\end{equation}
+
+本实验取 \(R_1=\SI{1}{\kilo\ohm}\) 和 \(C_1=\SI{1}{\micro\farad}\)，积分时间常数为
+\begin{equation}
+    \tau = R_1 C_1 = \SI{1}{\kilo\ohm}\times\SI{1}{\micro\farad} = \SI{1}{\milli\second}.
+\end{equation}
+
+当输入为幅值 \(V_m\) 的方波时，正半周输出线性下降，负半周输出线性上升，输出呈三角波，斜坡斜率为
+\begin{equation}
+    \left|\frac{\mathrm{d}v_o}{\mathrm{d}t}\right| = \frac{V_m}{R_1 C_1}.
+    \label{e7-eq:slope}
+\end{equation}
+
+有源积分电路的 Multisim 仿真电路如图~\ref{e7-fig:integrator} 所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.78\textwidth]{integrator_multisim.png}
+    \caption{有源积分电路 Multisim 仿真电路}
+    \label{e7-fig:integrator}
+\end{figure}
+
+\section{实验器件}
+
+\begin{itemize}
+    \item 面包板 \(\times 1\)
+    \item 直流稳压电源（双路输出）\(\times 1\)
+    \item 函数信号发生器 RIGOL DG922 \(\times 1\)
+    \item 数字示波器 RIGOL DHO1204 \(\times 1\)
+    \item 数字万用表 RIGOL DM858 \(\times 1\)
+    \item 集成运算放大器 LM324 \(\times 1\)
+    \item 电阻：\(\SI{1}{\kilo\ohm}\times 2\) 和 \(\SI{10}{\kilo\ohm}\times 1\)
+    \item 电容：\(\SI{1}{\micro\farad}\times 1\)
+    \item 导线若干
+\end{itemize}
+
+\section{实验步骤}
+
+\begin{enumerate}[label=\arabic*.]
+    \item 用双路稳压电源调出 \(+\SI{5}{\volt}\) 和 \(-\SI{5}{\volt}\) 两路输出，分别接到 LM324 的 \(V_{\mathrm{CC}}\) 和 \(V_{\mathrm{EE}}\) 引脚，公共端接地。
+    \item 在面包板上搭建反向比例放大器，\(R_1=\SI{1}{\kilo\ohm}\) 串入反相输入端，\(R_f=\SI{10}{\kilo\ohm}\) 跨接输出与反相输入端，同相输入端经 \(R_2=\SI{1}{\kilo\ohm}\) 接地。
+    \item 信号发生器输出 \(\SI{1}{\kilo\hertz}\) 正弦波，示波器 CH1 接电路输入端，CH2 接 LM324 输出端，双通道同时观测。
+    \item 将输入幅值调至 \(\SI{0.5}{V_{pp}}\)，记录输入与输出波形，读取输出峰峰值并与理论值比较。
+    \item 逐步改变输入幅值，取 \(0.1\)、\(0.3\)、\(0.5\)、\(1\)、\(\SI{2}{V_{pp}}\) 五个点，分别记录输出峰峰值，填入数据表。
+    \item 继续增大输入幅值，观察输出波形，确定输出开始出现削顶失真的输入幅值并拍照记录。
+    \item 拆除反馈电阻，换接 \(C_1=\SI{1}{\micro\farad}\) 电容，构成有源积分电路。信号发生器改输出方波，调整频率使示波器上获得稳定的三角波输出，记录输入方波与输出三角波波形。
+    \item 记录全部数据，拆除电路并整理实验台。
+\end{enumerate}
+
+\section{实验数据}
+
+\subsection{反向比例放大器幅值测量}
+
+信号发生器输出 \(\SI{1}{\kilo\hertz}\) 正弦波，反向比例放大器取 \(R_1=\SI{1}{\kilo\ohm}\) 和 \(R_f=\SI{10}{\kilo\ohm}\)，理论增益 \(|A_v|=10\)。示波器 CH1 监测电路输入端，CH2 监测输出端。将输入峰峰值从约 \(\SI{0.14}{\volt}\) 逐步增大到约 \(\SI{1.98}{\volt}\)，记录对应输出峰峰值，并按 \(|A_v|=U_{o,pp}/U_{i,pp}\) 计算各点实测增益，数据见表~\ref{e7-tab:gain-data}。
+
+\begin{table}[H]
+    \centering
+    \caption{反向比例放大器输入输出峰峰值测量数据，\(f=\SI{1}{\kilo\hertz}\)}
+    \label{e7-tab:gain-data}
+    \begin{tabular}{ccccc}
+        \toprule
+        序号 & 输入 \(U_{i,pp}\)/V & 输出 \(U_{o,pp}\)/V & 实测增益 \(|A_v|\) & 工作区 \\
+        \midrule
+        1  & 0.14 & 0.85 & 6.07 & 线性 \\
+        2  & 0.24 & 1.62 & 6.75 & 线性 \\
+        3  & 0.32 & 2.31 & 7.22 & 线性 \\
+        4  & 0.51 & 3.93 & 7.71 & 线性 \\
+        5  & 0.70 & 5.46 & 7.80 & 线性 \\
+        6  & 0.98 & 7.71 & 7.87 & 线性 \\
+        7  & 1.18 & 8.01 & 6.79 & 饱和 \\
+        8  & 1.38 & 8.01 & 5.80 & 饱和 \\
+        9  & 1.78 & 8.01 & 4.50 & 饱和 \\
+        10 & 1.98 & 8.01 & 4.05 & 饱和 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+由表~\ref{e7-tab:gain-data} 可见，输入小于约 \(\SI{1}{\volt}\) 时输出随输入近似线性增大，输入超过约 \(\SI{1}{\volt}\) 后输出峰峰值钳位在约 \(\SI{8.01}{\volt}\) 不再增大。对六个未饱和点作最小二乘拟合，得实测增益斜率约 \(8.2\)，对应的输入输出传输特性如图~\ref{e7-fig:transfer} 所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{transfer_characteristic.png}
+    \caption{反向比例放大器输入输出传输特性，\(f=\SI{1}{\kilo\hertz}\)}
+    \label{e7-fig:transfer}
+\end{figure}
+
+图~\ref{e7-fig:inverting-wave} 为输入幅值 \(\SI{0.5}{V_{pp}}\) 时示波器记录的输入与输出波形。两通道分别为输入正弦波和输出正弦波，输出幅值明显大于输入且与输入反相，符合反向比例放大的特征。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.72\textwidth]{inverting_waveform.jpg}
+    \caption{反向比例放大器实测波形，\(U_{i,pp}=\SI{0.5}{\volt}\)，\(f=\SI{1}{\kilo\hertz}\)}
+    \label{e7-fig:inverting-wave}
+\end{figure}
+
+\subsection{输出失真观测}
+
+继续增大输入幅值，当输出试图超过 LM324 在 \(\pm\SI{5}{\volt}\) 供电下的线性摆幅时，输出波形顶部和底部出现削顶。由表~\ref{e7-tab:gain-data} 可知，输入超过约 \(\SI{1}{V_{pp}}\) 后输出峰峰值恒定在约 \(\SI{8.01}{\volt}\)，对应输出峰值约 \(\pm\SI{4.0}{\volt}\)，即进入削顶失真状态。专门记录削顶波形的示波器照片待补充。
+
+\subsection{有源积分电路波形}
+
+有源积分电路取 \(R_1=\SI{1}{\kilo\ohm}\) 和 \(C_1=\SI{1}{\micro\farad}\)，输入方波。图~\ref{e7-fig:integrator-wave} 为示波器记录的输入方波与输出三角波。可见在方波的每个半周内输出按线性斜坡变化，正负半周交替形成对称三角波，验证了积分电路的波形变换功能。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.72\textwidth]{integrator_waveform.jpg}
+    \caption{有源积分电路实测波形，输入方波，输出三角波}
+    \label{e7-fig:integrator-wave}
+\end{figure}
+
+\section{数据分析}
+
+\subsection{增益验证}
+
+反向比例放大器的理论增益由式~\eqref{e7-eq:inverting-gain} 给出，\(|A_v|=R_f/R_1=10\)。由图~\ref{e7-fig:inverting-wave} 可见输出幅值明显大于输入且与输入反相 \(180°\)，与理论增益的符号一致。表~\ref{e7-tab:gain-data} 与图~\ref{e7-fig:transfer} 给出了完整的输入输出关系。
+
+在输入小于约 \(\SI{1}{V_{pp}}\) 的线性区，输出随输入近似成正比，对六个未饱和点作最小二乘拟合得实测增益斜率约 \(8.2\)，比理论值 \(10\) 偏低约 \(18\%\)。拟合直线存在约 \(-\SI{0.3}{\volt}\) 的截距，使小输入下的逐点增益 \(U_{o,pp}/U_{i,pp}\) 偏小，并随输入增大从 \(6.07\) 逐步上升到 \(7.87\)，逐渐接近拟合斜率，这是输出失调和小信号读数误差共同造成的。增益整体偏低主要源于电阻容差使实际 \(R_f/R_1\) 偏离 \(10\)，以及小峰峰值正弦波的示波器读数误差；LM324 在 \(\SI{1}{\kilo\hertz}\) 处开环增益仍达约 \(10^3\)，由有限开环增益引入的闭环增益误差仅约 \(1\%\)，不是主要因素。
+
+\subsection{积分特性分析}
+
+由式~\eqref{e7-eq:integrator} 可知，方波输入下输出为分段线性的三角波，斜率由式~\eqref{e7-eq:slope} 决定，时间常数 \(\tau=R_1 C_1=\SI{1}{\milli\second}\)。图~\ref{e7-fig:integrator-wave} 中输出三角波与输入方波在时序上严格对应：方波处于高电平的半周内输出线性下降，处于低电平的半周内输出线性上升，转折点与方波跳变沿对齐。三角波的峰峰值正比于方波半周时间 \(T/2\) 与幅值 \(V_m\) 之积，频率越低或幅值越大，三角波幅度越大。实测三角波保持良好的线性斜坡，说明在该频率下电路工作于理想积分区。
+
+实际有源积分电路在极低频或直流分量下会因运放失调电压和偏置电流的累积导致输出漂移甚至饱和，本实验通过选用合适的方波频率使输出稳定在量程内，避免了积分饱和。
+
+\subsection{输出失真分析}
+
+LM324 的输出摆幅受供电电压限制。由表~\ref{e7-tab:gain-data} 与图~\ref{e7-fig:transfer} 可知，输出峰峰值在约 \(\SI{8.01}{\volt}\) 处饱和，对应输出峰值约 \(\pm\SI{4.0}{\volt}\)，与 \(\pm\SI{5}{\volt}\) 电源扣除 LM324 输出级约 \(\SI{1}{\volt}\) 的余量相符。当输入增大使输出试图超过该摆幅时，波形的顶部与底部被削平，呈现削顶失真。
+
+按实测增益斜率 \(8.2\) 推算，输出达到饱和电平 \(\SI{8.01}{\volt}\) 对应的输入约为 \(\SI{1.0}{V_{pp}}\)，与测量结果一致：输入 \(\SI{0.98}{V_{pp}}\) 时输出 \(\SI{7.71}{\volt}\) 尚未饱和，输入 \(\SI{1.18}{V_{pp}}\) 时输出已钳位于 \(\SI{8.01}{\volt}\)。因此失真临界输入幅值约为 \(\SI{1.0}{V_{pp}}\)。在饱和区，输入继续增大而输出不变，使逐点比值 \(U_{o,pp}/U_{i,pp}\) 从 \(6.79\) 持续下降到 \(4.05\)，这并非真实增益下降，而是输出被钳位的结果。
+
+\subsection{误差来源分析}
+
+\begin{enumerate}[label=\arabic*.]
+    \item \textbf{元件参数容差}：电阻容差通常 \(\pm5\%\)，电容容差可达 \(\pm10\%\sim20\%\)，使实际增益和积分时间常数偏离标称值。
+    \item \textbf{运放非理想特性}：LM324 的开环增益有限、增益带宽积约 \(\SI{1}{\mega\hertz}\)、压摆率较低，在较高频率或大幅值输出时会引入幅值衰减和波形变缓。
+    \item \textbf{信号源输出阻抗}：信号发生器内阻约 \(\SI{50}{\ohm}\) 与 \(R_1\) 串联，使实际加到电路的输入幅值略低于设定值。
+    \item \textbf{示波器读数与探头负载}：示波器光标读取峰峰值存在分辨率误差，探头输入电容在高频段对波形有轻微影响。
+\end{enumerate}
+
+综上，本实验搭建并测量了基于 LM324 的反向比例放大器与有源积分电路。反向比例放大器输出与输入反相，线性区实测增益约为 \(8.2\)，比理论值 \(10\) 偏低约 \(18\%\)，偏差主要来自电阻容差和小信号读数误差；输出在约 \(\SI{8.01}{\volt}\) 峰峰值处饱和，对应失真临界输入约 \(\SI{1.0}{V_{pp}}\)，符合 LM324 在 \(\pm\SI{5}{\volt}\) 供电下的输出摆幅限制。有源积分电路将方波变换为对称三角波，验证了积分时间常数对斜率的决定作用。
+
