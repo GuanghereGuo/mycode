@@ -3,7 +3,7 @@ project(Week0419)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(Week0419 main.cpp)
+add_executable(Week0419 main.c)
 add_executable(D D.cpp)
 add_executable(K K.cpp)
 add_executable(C C.cpp)
